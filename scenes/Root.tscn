@@ -11,7 +11,7 @@ script = ExtResource( 2 )
 [node name="OrbitAnchor" type="Spatial" parent="."]
 
 [node name="Camera" type="Camera" parent="OrbitAnchor"]
-transform = Transform( 1, 0, 0, 0, 0.835366, 0.549694, 0, -0.549694, 0.835366, 5, 20, 20 )
+transform = Transform( 1, 0, 0, 0, 0.906264, 0.422713, 0, -0.422713, 0.906264, 0, 10, 15 )
 script = ExtResource( 4 )
 OrbitTargetPath = NodePath("..")
 

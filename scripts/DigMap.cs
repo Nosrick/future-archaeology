@@ -15,15 +15,15 @@ public class DigMap : GridMap
     public override void _Ready()
     {
         this.MeshList = this.MeshLibrary.GetItemList();
-        this.Width = 10;
-        this.Height = 10;
-        this.Depth = 10;
+        this.Width = 5;
+        this.Height = 5;
+        this.Depth = 5;
         
-        for (int x = 0; x < this.Width; x++)
+        for (int x = -this.Width; x < this.Width; x++)
         {
-            for (int y = 0; y < this.Height; y++)
+            for (int y = -this.Height; y < this.Height; y++)
             {
-                for (int z = 0; z < this.Depth; z++)
+                for (int z = -this.Depth; z < this.Depth; z++)
                 {
                     this.SetCellItem(x, y, z, this.MeshList[0]);
                 }

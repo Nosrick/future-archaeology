@@ -80,7 +80,6 @@ public class OrbitCamera : Camera
 
     protected void SetRotation()
     {
-        this.OrbitTarget.SetIdentity();
         Quat t = new Quat(this.Rotation);
         Transform orbitTargetTransform = this.OrbitTarget.Transform;
         orbitTargetTransform.basis = new Basis(t);
