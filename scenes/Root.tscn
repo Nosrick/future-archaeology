@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://assets/digging-tileset.tres" type="MeshLibrary" id=1]
+[ext_resource path="res://assets/digging-meshlibrary.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://scripts/GameManager.cs" type="Script" id=2]
 [ext_resource path="res://scripts/DigMap.cs" type="Script" id=3]
 [ext_resource path="res://scripts/OrbitCamera.cs" type="Script" id=4]
