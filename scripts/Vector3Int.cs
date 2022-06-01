@@ -13,11 +13,18 @@ namespace DiggyDig.scripts
             this.z = z;
         }
 
+        public Vector3Int(float x, float y, float z)
+        {
+            this.x = Mathf.FloorToInt(x);
+            this.y = Mathf.FloorToInt(y);
+            this.z = Mathf.FloorToInt(z);
+        }
+
         public Vector3Int(Vector3 vec)
         {
-            this.x = (int) vec.x;
-            this.y = (int) vec.y;
-            this.z = (int) vec.z;
+            this.x = Mathf.FloorToInt(vec.x);
+            this.y = Mathf.FloorToInt(vec.y);
+            this.z = Mathf.FloorToInt(vec.z);
         }
 
         public override string ToString()

@@ -71,10 +71,15 @@ public class DigPicker : RayCast
                 if (iRay.Contains("position"))
                 {
                     Vector3 point = (Vector3) iRay["position"];
-                    Vector3Int pointInt = new Vector3Int(point);
-                    GD.Print(pointInt);
-                    
-                    this.DigMap?.SetCellItem(pointInt.x, pointInt.y, pointInt.z, -1);
+                    Vector3Int p = new Vector3Int(point.x, point.y, point.z);
+                    GD.Print(point);
+                    GD.Print(p);
+
+                    var cell = this.DigMap?.GetCellItem(p.x, p.y, p.z);
+                    if (cell >= 0)
+                    {
+                        this.DigMap?.SetCellItem(p.x, p.y, p.z, cell.Value + 1);
+                    }
                 }
             }
 

@@ -19,17 +19,15 @@ public class DigMap : GridMap
         this.Height = 5;
         this.Depth = 5;
         
-        for (int x = -this.Width; x < this.Width; x++)
+        for (int x = -this.Width; x <= this.Width; x++)
         {
-            for (int y = -this.Height; y < this.Height; y++)
+            for (int y = -this.Height; y <= this.Height; y++)
             {
-                for (int z = -this.Depth; z < this.Depth; z++)
+                for (int z = -this.Depth; z <= this.Depth; z++)
                 {
                     this.SetCellItem(x, y, z, this.MeshList[0]);
                 }
             }
         }
-        
-        
     }
 }
