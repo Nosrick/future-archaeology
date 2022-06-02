@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=7 format=2]
 
-[ext_resource path="res://assets/fonts/Silver.tres" type="DynamicFont" id=1]
+[ext_resource path="res://assets/fonts/KenneyPixelSquare.tres" type="DynamicFont" id=2]
 
 [sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0.0392157, 0.0392157, 0.0392157, 1 )
@@ -18,8 +18,7 @@ bg_color = Color( 0.145098, 0.0705882, 0.145098, 1 )
 bg_color = Color( 0.0862745, 0.054902, 0.0862745, 1 )
 
 [resource]
-default_font = ExtResource( 1 )
-Button/fonts/font = ExtResource( 1 )
+default_font = ExtResource( 2 )
 Button/styles/disabled = SubResource( 3 )
 Button/styles/focus = SubResource( 4 )
 Button/styles/hover = SubResource( 5 )
