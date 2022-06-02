@@ -78,7 +78,7 @@ public class DigPicker : RayCast
                     var cell = this.DigMap?.GetCellItem(p.x, p.y, p.z);
                     if (cell >= 0)
                     {
-                        this.DigMap?.SetCellItem(p.x, p.y, p.z, cell.Value + 1);
+                        GlobalConstants.GameManager?.ExecuteTool(p);
                     }
                 }
             }
