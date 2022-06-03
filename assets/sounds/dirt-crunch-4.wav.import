@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/dirt-crunch-4.wav-fbca66f2ca19ce4baefd04bc491e9f18.sample"
+
+[deps]
+
+source_file="res://assets/sounds/dirt-crunch-4.wav"
+dest_files=[ "res://.import/dirt-crunch-4.wav-fbca66f2ca19ce4baefd04bc491e9f18.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

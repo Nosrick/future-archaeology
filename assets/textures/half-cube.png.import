@@ -2,8 +2,8 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/half-cube.png-5958fea96efc2c5645a9e36c129610a8.s3tc.stex"
-path.etc2="res://.import/half-cube.png-5958fea96efc2c5645a9e36c129610a8.etc2.stex"
+path.s3tc="res://.import/half-cube.png-2d79a5df2d19c67a5a130e5e1d103623.s3tc.stex"
+path.etc2="res://.import/half-cube.png-2d79a5df2d19c67a5a130e5e1d103623.etc2.stex"
 metadata={
 "imported_formats": [ "s3tc", "etc2" ],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://textures/half-cube.png"
-dest_files=[ "res://.import/half-cube.png-5958fea96efc2c5645a9e36c129610a8.s3tc.stex", "res://.import/half-cube.png-5958fea96efc2c5645a9e36c129610a8.etc2.stex" ]
+source_file="C:/Users/nosri/Projects/DiggyDig/assets/textures/half-cube.png"
+dest_files=[ "res://.import/half-cube.png-2d79a5df2d19c67a5a130e5e1d103623.s3tc.stex", "res://.import/half-cube.png-2d79a5df2d19c67a5a130e5e1d103623.etc2.stex" ]
 
 [params]
 

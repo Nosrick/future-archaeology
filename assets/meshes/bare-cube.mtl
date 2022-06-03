@@ -1,4 +1,4 @@
-# Blender MTL File: 'half-cube.blend'
+# Blender MTL File: 'bare-cube.blend'
 # Material Count: 1
 
 newmtl Material
@@ -10,4 +10,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\nosri\\Projects\\DiggyDig\\textures\\half-cube.png
+map_Kd C:\\Users\\nosri\\Projects\\DiggyDig\\assets\\textures\\bare-cube.png
