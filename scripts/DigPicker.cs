@@ -202,7 +202,7 @@ public class DigPicker : RayCast
             GD.Print(current);
             GD.Print(current - previous);
 
-            GlobalConstants.GameManager.CurrentTool?.Execute(current, previous);
+            GlobalConstants.GameManager.ExecuteTool(current, previous);
 
             this.CastRay = false;
         }
