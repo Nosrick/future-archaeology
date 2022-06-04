@@ -27,9 +27,31 @@ namespace DiggyDig.scripts
             this.z = Mathf.FloorToInt(vec.z);
         }
 
+        public Vector3Int(Vector3Int copy)
+        {
+            this.x = copy.x;
+            this.y = copy.y;
+            this.z = copy.z;
+        }
+
         public override string ToString()
         {
-            return this.x + ", " + this.y + ", " + this.z;
+            return "{ " + this.x + ", " + this.y + ", " + this.z + " }";
+        }
+        
+        public static Vector3Int operator -(Vector3Int left, Vector3Int right)
+        {
+            return new Vector3Int(left.x - right.x, left.y - right.y, left.z - right.z);
+        }
+
+        public static Vector3Int operator +(Vector3Int left, Vector3Int right)
+        {
+            return new Vector3Int(left.x + right.x, left.y + right.y, left.z + right.z);
+        }
+
+        public static Vector3Int operator *(Vector3Int left, Vector3Int right)
+        {
+            return new Vector3Int(left.x * right.x, left.y * right.y, left.z * right.z);
         }
     }
 }
