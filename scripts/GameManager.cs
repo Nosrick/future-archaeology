@@ -5,7 +5,7 @@ namespace DiggyDig.scripts
 {
     public class GameManager : Spatial
     {
-        public GridMap DiggingSpace { get; protected set; }
+        public DigMap DiggingSpace { get; protected set; }
 
         public IDictionary<string, ITool> ToolBox { get; protected set; }
 
@@ -35,19 +35,23 @@ namespace DiggyDig.scripts
 
         [Export] protected NodePath CashLabelPath;
         [Export] protected NodePath ToolLabelPath;
+        [Export] protected NodePath CameraPath;
         
         protected Label CashLabel { get; set; }
         protected Label ToolLabel { get; set; }
+        
+        public Camera Camera { get; protected set; }
 
         protected const string CashString = "BiggaBux: ";
         protected const string CurrentToolString = "Current Tool: ";
 
         public override void _Ready()
         {
-            this.DiggingSpace = this.GetNode<GridMap>("DigMap");
+            this.DiggingSpace = this.GetNode<DigMap>("DigMap");
 
             this.CashLabel = this.GetNodeOrNull<Label>(this.CashLabelPath);
             this.ToolLabel = this.GetNodeOrNull<Label>(this.ToolLabelPath);
+            this.Camera = this.GetNodeOrNull<Camera>(this.CameraPath);
 
             if (this.CashLabel is null == false)
             {
@@ -80,14 +84,14 @@ namespace DiggyDig.scripts
             }
         }
 
-        public void ExecuteTool(Vector3Int target)
+        public void ExecuteTool(Vector3Int hit, Vector3Int previous)
         {
             if (this.CurrentTool is null)
             {
                 return;
             }
 
-            this.Cash -= this.CurrentTool.Execute(target);
+            this.Cash -= this.CurrentTool.Execute(hit, previous);
         }
     }
 }

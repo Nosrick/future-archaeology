@@ -4,17 +4,17 @@ using DiggyDig.scripts;
 
 public class DigPicker : RayCast
 {
-    protected const float RayLength = 1000f;
+    protected const float RayLength = 60f;
 
     [Export] protected NodePath CameraPath;
     [Export] protected NodePath GridPath;
 
     protected Camera MyCamera { get; set; }
-    protected GridMap DigMap { get; set; }
-    
+    protected DigMap DigMap { get; set; }
+
     protected Vector2 MousePosition { get; set; }
     protected bool CastRay { get; set; }
-    
+
     public override void _Ready()
     {
         if (this.CameraPath is null)
@@ -30,7 +30,7 @@ public class DigPicker : RayCast
         }
 
         this.MyCamera = this.GetNodeOrNull<Camera>(this.CameraPath);
-        this.DigMap = this.GetNodeOrNull<GridMap>(this.GridPath);
+        this.DigMap = this.GetNodeOrNull<DigMap>(this.GridPath);
     }
 
     public override void _Input(InputEvent @event)
@@ -52,36 +52,157 @@ public class DigPicker : RayCast
 
         if (this.CastRay)
         {
-            var origin = this.MyCamera?.ProjectRayOrigin(this.MousePosition);
-            var direction = origin + this.MyCamera?.ProjectRayNormal(this.MousePosition) * RayLength;
+            Vector3 origin = this.MyCamera.ProjectRayOrigin(this.MousePosition);
+            Vector3 direction = this.MyCamera.ProjectRayNormal(this.MousePosition).Normalized();
 
-            if (!origin.HasValue || !direction.HasValue)
+            Vector3Int current = new Vector3Int(origin);
+            Vector3Int previous = new Vector3Int(origin);
+
+            int xiStep = Mathf.Sign(direction.x);
+            int yiStep = Mathf.Sign(direction.y);
+            int ziStep = Mathf.Sign(direction.z);
+
+            float deltaX = float.MaxValue;
+            if (xiStep != 0)
             {
-                this.CastRay = false;
-                return;
+                deltaX = 1.0f / Mathf.Abs(direction.x);
             }
 
-            var spaceState = this.GetWorld().DirectSpaceState;
-            this.ForceRaycastUpdate();
-            GD.Print("CLICK");
-
-            if (this.IsColliding())
+            float deltaY = float.MaxValue;
+            if (yiStep != 0)
             {
-                var iRay = spaceState.IntersectRay(origin.Value, direction.Value);
-                if (iRay.Contains("position"))
-                {
-                    Vector3 point = (Vector3) iRay["position"];
-                    Vector3Int p = new Vector3Int(point.x, point.y, point.z);
-                    GD.Print(point);
-                    GD.Print(p);
+                deltaY = 1.0f / Mathf.Abs(direction.y);
+            }
 
-                    var cell = this.DigMap?.GetCellItem(p.x, p.y, p.z);
-                    if (cell >= 0)
-                    {
-                        GlobalConstants.GameManager?.ExecuteTool(p);
-                    }
+            float deltaZ = float.MaxValue;
+            if (ziStep != 0)
+            {
+                deltaZ = 1.0f / Mathf.Abs(direction.z);
+            }
+
+            float crossX = float.MaxValue;
+            float crossY = float.MaxValue;
+            float crossZ = float.MaxValue;
+
+            if (xiStep == 1)
+            {
+                crossX = (Mathf.Ceil(origin.x) - origin.x) * deltaX;
+            }
+            else if (xiStep != 0)
+            {
+                crossX = (origin.x - Mathf.Floor(origin.x)) * deltaX;
+            }
+
+            if (yiStep == 1)
+            {
+                crossY = (Mathf.Ceil(origin.y) - origin.y) * deltaY;
+            }
+            else if (yiStep != 0)
+            {
+                crossY = (origin.y - Mathf.Floor(origin.y)) * deltaY;
+            }
+
+            if (ziStep == 1)
+            {
+                crossZ = (Mathf.Ceil(origin.z) - origin.z) * deltaZ;
+            }
+            else if (ziStep != 0)
+            {
+                crossZ = (origin.z - Mathf.Floor(origin.z)) * deltaZ;
+            }
+
+            if (crossX == 0.0f)
+            {
+                crossX += deltaX;
+                if (xiStep == -1)
+                {
+                    current.x -= 1;
                 }
             }
+
+            if (crossY == 0.0f)
+            {
+                crossY += deltaY;
+                if (yiStep == -1)
+                {
+                    current.y -= 1;
+                }
+            }
+
+            if (crossZ == 0.0f)
+            {
+                crossZ += deltaZ;
+                if (ziStep == -1)
+                {
+                    current.z -= 1;
+                }
+            }
+
+            while (true)
+            {
+                previous = new Vector3Int(current);
+
+                if (crossX < crossY)
+                {
+                    if (crossX < crossZ)
+                    {
+                        current.x += xiStep;
+                        if (crossX > RayLength)
+                        {
+                            this.CastRay = false;
+                            return;
+                        }
+
+                        crossX += deltaX;
+                    }
+                    else
+                    {
+                        current.z += ziStep;
+                        if (crossZ > RayLength)
+                        {
+                            this.CastRay = false;
+                            return;
+                        }
+
+                        crossZ += deltaZ;
+                    }
+                }
+                else
+                {
+                    if (crossY < crossZ)
+                    {
+                        current.y += yiStep;
+                        if (crossY > RayLength)
+                        {
+                            this.CastRay = false;
+                            return;
+                        }
+
+                        crossY += deltaY;
+                    }
+                    else
+                    {
+                        current.z += ziStep;
+                        if (crossZ > RayLength)
+                        {
+                            this.CastRay = false;
+                            return;
+                        }
+
+                        crossZ += deltaZ;
+                    }
+                }
+
+                if (this.DigMap.IsValid(current))
+                {
+                    break;
+                }
+            }
+            
+            GD.Print(current);
+            GD.Print(current - previous);
+
+            GlobalConstants.GameManager.CurrentTool?.Execute(current, previous);
 
             this.CastRay = false;
         }
