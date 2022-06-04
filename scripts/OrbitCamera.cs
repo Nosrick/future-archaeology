@@ -12,7 +12,7 @@ public class OrbitCamera : Camera
 
     protected Vector2 MoveSpeed;
     protected float Distance = 20f;
-    protected Vector3 Rotation;
+    protected Vector3 MyRotation;
 
     protected const float RADIAN = Mathf.Pi / 2;
 
@@ -22,7 +22,7 @@ public class OrbitCamera : Camera
     {
         Node target = this.GetNode(this.OrbitTargetPath);
 
-        this.Rotation = this.Transform.basis.GetEuler();
+        this.MyRotation = this.Transform.basis.GetEuler();
         
         if (target is Spatial spatial)
         {
@@ -50,37 +50,26 @@ public class OrbitCamera : Camera
 
         if (this.Moving)
         {
-            this.Rotation.x -= this.MoveSensitivity * this.MoveSpeed.y * delta;
-            this.Rotation.y -= this.MoveSensitivity * this.MoveSpeed.x * delta;
+            this.MyRotation.x -= this.MoveSensitivity * this.MoveSpeed.y * delta;
+            this.MyRotation.y -= this.MoveSensitivity * this.MoveSpeed.x * delta;
             
-            if (this.Rotation.x < -RADIAN)
+            if (this.MyRotation.x < -RADIAN)
             {
-                this.Rotation.x = -RADIAN;
+                this.MyRotation.x = -RADIAN;
             }
-            else if (this.Rotation.x > RADIAN)
+            else if (this.MyRotation.x > RADIAN)
             {
-                this.Rotation.x = RADIAN;
+                this.MyRotation.x = RADIAN;
             }
             
             this.MoveSpeed = Vector2.Zero;
-
-            /*
-            this.Distance += this.MoveSensitivity * delta;
-
-            if (this.Distance < 0)
-            {
-                this.Distance = 0;
-            }
-
-            this.TranslateObjectLocal(new Vector3(0, 0, this.Distance));
-            */
             this.SetRotation();
         }
     }
 
     protected void SetRotation()
     {
-        Quat t = new Quat(this.Rotation);
+        Quat t = new Quat(this.MyRotation);
         Transform orbitTargetTransform = this.OrbitTarget.Transform;
         orbitTargetTransform.basis = new Basis(t);
         this.OrbitTarget.Transform = orbitTargetTransform;
