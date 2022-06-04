@@ -12,6 +12,7 @@
 script = ExtResource( 2 )
 CashLabelPath = NodePath("UIRoot/CashLabel")
 ToolLabelPath = NodePath("UIRoot/ToolLabel")
+CameraPath = NodePath("OrbitAnchor/Camera")
 
 [node name="OrbitAnchor" type="Spatial" parent="."]
 
@@ -22,7 +23,7 @@ script = ExtResource( 4 )
 OrbitTargetPath = NodePath("..")
 
 [node name="RayCast" type="RayCast" parent="OrbitAnchor/Camera"]
-cast_to = Vector3( 0, 0, -100 )
+cast_to = Vector3( 0, 0, -30 )
 script = ExtResource( 5 )
 CameraPath = NodePath("..")
 GridPath = NodePath("../../../DigMap")

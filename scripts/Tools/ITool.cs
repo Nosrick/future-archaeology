@@ -1,9 +1,11 @@
-﻿namespace DiggyDig.scripts
+﻿using Godot;
+
+namespace DiggyDig.scripts
 {
     public interface ITool
     {
         string Name { get; }
         int Cost { get; }
-        int Execute(Vector3Int t);
+        int Execute(Vector3Int hit, Vector3Int previous);
     }
 }

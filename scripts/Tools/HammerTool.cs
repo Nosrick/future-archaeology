@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using System.Linq;
+using Godot;
 
 namespace DiggyDig.scripts
 {
@@ -7,40 +8,69 @@ namespace DiggyDig.scripts
         public string Name => "Hammer";
         public int Cost => 40;
 
-        public int Execute(Vector3Int t)
+        public int Execute(Vector3Int hit, Vector3Int previous)
         {
-            int xFlip = 1;
-            int yFlip = 1;
-            int zFlip = 1;
+            DigMap digSite = GlobalConstants.GameManager.DiggingSpace;
 
-            if (t.x < 0)
+            Vector3Int dir = hit - previous;
+
+            Vector3.Axis hitAxis = Vector3.Axis.X;
+
+            if (dir.y != 0)
             {
-                xFlip = -1;
+                hitAxis = Vector3.Axis.Y;
+            }
+            else if (dir.z != 0)
+            {
+                hitAxis = Vector3.Axis.Z;
             }
 
-            if (t.y < 0)
-            {
-                yFlip = -1;
-            }
+            int xStep = 0;
+            int yStep = 0;
+            int zStep = 0;
 
-            if (t.z < 0)
+            if (hitAxis == Vector3.Axis.X)
             {
-                zFlip = -1;
-            }
+                yStep = 1;
+                zStep = 1;
 
-            GridMap digSite = GlobalConstants.GameManager.DiggingSpace;
+                int x = hit.x;
 
-            for (int x = -1; x < 2; x++)
-            {
-                for (int y = -1; y < 2; y++)
+                for (int y = hit.y - yStep; y <= hit.y + yStep; y += yStep)
                 {
-                    for (int z = -1; z < 2; z++)
+                    for (int z = hit.z - zStep; z <= hit.z + zStep; z += zStep)
                     {
-                        int cell = digSite.GetCellItem(t.x + x, t.y + y, t.z + z);
-                        if (cell >= 0)
-                        {
-                            digSite.SetCellItem(t.x + x, t.y + y, t.z + z, cell + 1);
-                        }
+                        digSite.DamageCell(x, y, z, 1);
+                    }
+                }
+            }
+            else if (hitAxis == Vector3.Axis.Y)
+            {
+                xStep = 1;
+                zStep = 1;
+
+                int y = hit.y;
+
+                for (int x = hit.x - xStep; x <= hit.x + xStep; x += xStep)
+                {
+                    for (int z = hit.z - zStep; z <= hit.z + zStep; z += zStep)
+                    {
+                        digSite.DamageCell(x, y, z, 1);
+                    }
+                }
+            }
+            else
+            {
+                xStep = 1;
+                yStep = 1;
+
+                int z = hit.z;
+
+                for (int x = hit.x - xStep; x <= hit.x + xStep; x += xStep)
+                {
+                    for (int y = hit.y - yStep; y <= hit.y + yStep; y += yStep)
+                    {
+                        digSite.DamageCell(x, y, z, 1);
                     }
                 }
             }

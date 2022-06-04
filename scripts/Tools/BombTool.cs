@@ -11,7 +11,7 @@ namespace DiggyDig.scripts
         
         protected const int Tiles = 20;
         
-        public int Execute(Vector3Int t)
+        public int Execute(Vector3Int hit, Vector3Int previous)
         {
             GridMap digSite = GlobalConstants.GameManager.DiggingSpace;
 
