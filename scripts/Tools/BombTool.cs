@@ -13,6 +13,8 @@ namespace DiggyDig.scripts.Tools
         
         protected const int Tiles = 20;
 
+        protected const int Damage = 3;
+
         protected static readonly Random Random = new Random();
         
         public int Execute(Vector3Int hit, Vector3Int previous)
@@ -32,7 +34,7 @@ namespace DiggyDig.scripts.Tools
             {
                 foreach (Vector3Int pos in outerTiles)
                 {
-                    digSite.DamageCell(pos.x, pos.y, pos.z, 1);
+                    digSite.DamageCell(pos.x, pos.y, pos.z, Damage);
                 }
 
                 return this.Cost;
@@ -54,7 +56,7 @@ namespace DiggyDig.scripts.Tools
             foreach (int index in tilesToHit)
             {
                 Vector3Int tile = outerTiles[index];
-                digSite.DamageCell(tile, 1);
+                digSite.DamageCell(tile, Damage);
             }
 
             return this.Cost;
