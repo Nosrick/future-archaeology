@@ -1,4 +1,6 @@
-﻿namespace DiggyDig.scripts.Tools
+﻿using DiggyDig.scripts.utils;
+
+namespace DiggyDig.scripts.Tools
 {
     public interface ITool
     {

@@ -1,6 +1,7 @@
+using DiggyDig.scripts.utils;
 using Godot;
 
-namespace DiggyDig.scripts
+namespace DiggyDig.scripts.digging
 {
     public class DigPicker : RayCast
     {

@@ -1,6 +1,6 @@
 ﻿using Godot;
 
-namespace DiggyDig.scripts
+namespace DiggyDig.scripts.utils
 {
     public struct Vector3Int
     {

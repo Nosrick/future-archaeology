@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using DiggyDig.scripts.digging;
 using DiggyDig.scripts.Tools;
+using DiggyDig.scripts.utils;
 using Godot;
 
 namespace DiggyDig.scripts

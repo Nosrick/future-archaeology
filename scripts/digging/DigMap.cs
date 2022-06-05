@@ -1,7 +1,8 @@
 using System.Linq;
+using DiggyDig.scripts.utils;
 using Godot;
 
-namespace DiggyDig.scripts
+namespace DiggyDig.scripts.digging
 {
     public class DigMap : GridMap
     {
@@ -28,7 +29,7 @@ namespace DiggyDig.scripts
                 {
                     for (int z = -this.Depth; z <= this.Depth; z++)
                     {
-                        this.SetCellItem(x, y, z, this.ValidCells[0]);
+                        this.SetCellItem(x, y, z, FULL_CUBE);
                     }
                 }
             }
