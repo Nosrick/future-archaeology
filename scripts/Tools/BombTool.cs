@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
-using Godot.Collections;
+using Array = Godot.Collections.Array;
 
-namespace DiggyDig.scripts
+namespace DiggyDig.scripts.Tools
 {
     public class BombTool : ITool
     {
@@ -10,18 +12,50 @@ namespace DiggyDig.scripts
         public int Cost => 75;
         
         protected const int Tiles = 20;
+
+        protected static readonly Random Random = new Random();
         
         public int Execute(Vector3Int hit, Vector3Int previous)
         {
-            GridMap digSite = GlobalConstants.GameManager.DiggingSpace;
+            DigMap digSite = GlobalConstants.GameManager.DiggingSpace;
 
             Array usedCells = digSite.GetUsedCells();
-            List<Vector3> outerTiles = new List<Vector3>();
+            List<Vector3Int> outerTiles = new List<Vector3Int>();
             foreach (Vector3 cell in usedCells)
             {
+                outerTiles.Add(new Vector3Int(cell));
             }
-            
-            GD.Print("BOOM!");
+
+            outerTiles = outerTiles.Where(tile => digSite.IsOuterCell(tile)).ToList();
+
+            if (outerTiles.Count <= Tiles)
+            {
+                foreach (Vector3Int pos in outerTiles)
+                {
+                    digSite.DamageCell(pos.x, pos.y, pos.z, 1);
+                }
+
+                return this.Cost;
+            }
+
+            HashSet<int> tilesToHit = new HashSet<int>();
+
+            while(tilesToHit.Count < Tiles)
+            {
+                int roll = Random.Next(outerTiles.Count);
+                if (tilesToHit.Contains(roll))
+                {
+                    continue;
+                }
+
+                tilesToHit.Add(roll);
+            }
+
+            foreach (int index in tilesToHit)
+            {
+                Vector3Int tile = outerTiles[index];
+                digSite.DamageCell(tile, 1);
+            }
 
             return this.Cost;
         }

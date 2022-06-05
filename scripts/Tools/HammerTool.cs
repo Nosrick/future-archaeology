@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using Godot;
+﻿using Godot;
 
-namespace DiggyDig.scripts
+namespace DiggyDig.scripts.Tools
 {
     public class HammerTool : ITool
     {
