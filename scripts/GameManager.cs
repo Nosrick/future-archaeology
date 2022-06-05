@@ -92,6 +92,12 @@ namespace DiggyDig.scripts
                 return;
             }
 
+            if (this.Cash - this.CurrentTool.Cost < 0)
+            {
+                GD.Print("Take out a loan!");
+                return;
+            }
+
             this.Cash -= this.CurrentTool.Execute(hit, previous);
         }
     }
