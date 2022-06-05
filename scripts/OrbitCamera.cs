@@ -1,6 +1,4 @@
 using Godot;
-using Vector2 = Godot.Vector2;
-using Vector3 = Godot.Vector3;
 
 namespace DiggyDig.scripts
 {
@@ -8,23 +6,27 @@ namespace DiggyDig.scripts
     {
         [Export] protected NodePath OrbitTargetPath;
 
-        [Export(PropertyHint.Range)] protected float MoveSensitivity = 0.1f;
+        [Export(PropertyHint.Range)] protected float RotationSensitivity = 0.1f;
+        [Export] protected float PanSensitivity = 1f;
 
         protected Spatial OrbitTarget;
 
         protected Vector2 MoveSpeed;
         protected float Distance = 20f;
-        protected Vector3 MyRotation;
+        protected Vector3 RotationDelta;
+        protected Vector3 PanningDelta;
 
         protected const float RADIAN = Mathf.Pi / 2;
 
-        protected bool Moving { get; set; }
+        protected bool Rotating { get; set; }
+        protected bool Panning { get; set; }
 
         public override void _Ready()
         {
             Node target = this.GetNode(this.OrbitTargetPath);
 
-            this.MyRotation = this.Transform.basis.GetEuler();
+            this.RotationDelta = this.Transform.basis.GetEuler();
+            this.PanningDelta = Vector3.Zero;
         
             if (target is Spatial spatial)
             {
@@ -41,37 +43,59 @@ namespace DiggyDig.scripts
         {
             base._Process(delta);
 
-            if (!this.Moving && Input.IsMouseButtonPressed((int) ButtonList.Right))
+            if (!this.Rotating && Input.IsMouseButtonPressed((int) ButtonList.Right))
             {
-                this.Moving = true;
+                this.Rotating = true;
             }
-            else if (this.Moving)
+            else if (this.Rotating)
             {
-                this.Moving = false;
+                this.Rotating = false;
             }
 
-            if (this.Moving)
+            if (!this.Panning && Input.IsMouseButtonPressed((int) ButtonList.Middle))
             {
-                this.MyRotation.x -= this.MoveSensitivity * this.MoveSpeed.y * delta;
-                this.MyRotation.y -= this.MoveSensitivity * this.MoveSpeed.x * delta;
+                this.Panning = true;
+            }
+            else if (this.Panning)
+            {
+                this.Panning = false;
+            }
+
+            if (this.Rotating)
+            {
+                this.RotationDelta.x += this.RotationSensitivity * this.MoveSpeed.y * delta;
+                this.RotationDelta.y += this.RotationSensitivity * this.MoveSpeed.x * delta;
             
-                if (this.MyRotation.x < -RADIAN)
+                /*
+                if (this.RotationDelta.x < -RADIAN)
                 {
-                    this.MyRotation.x = -RADIAN;
+                    this.RotationDelta.x = -RADIAN;
                 }
-                else if (this.MyRotation.x > RADIAN)
+                else if (this.RotationDelta.x > RADIAN)
                 {
-                    this.MyRotation.x = RADIAN;
+                    this.RotationDelta.x = RADIAN;
                 }
+                */
             
                 this.MoveSpeed = Vector2.Zero;
                 this.SetRotation();
+            }
+            else if (this.Panning)
+            {
+                this.PanningDelta.x += this.PanSensitivity * this.MoveSpeed.x * delta;
+                this.PanningDelta.y -= this.PanSensitivity * this.MoveSpeed.y * delta;
+
+                this.MoveSpeed = Vector2.Zero;
+                this.OrbitTarget.TranslateObjectLocal(this.PanningDelta);
+                
+                this.LookAt(this.OrbitTarget.GlobalTransform.origin, this.GlobalTransform.basis.y);
+                this.PanningDelta = Vector3.Zero;
             }
         }
 
         protected void SetRotation()
         {
-            Quat t = new Quat(this.MyRotation);
+            Quat t = new Quat(this.RotationDelta);
             Transform orbitTargetTransform = this.OrbitTarget.Transform;
             orbitTargetTransform.basis = new Basis(t);
             this.OrbitTarget.Transform = orbitTargetTransform;
@@ -81,7 +105,8 @@ namespace DiggyDig.scripts
         {
             base._Input(@event);
 
-            if (this.Moving && @event is InputEventMouseMotion mouseMotion)
+            if ((this.Rotating || this.Panning)
+                && @event is InputEventMouseMotion mouseMotion)
             {
                 this.MoveSpeed = mouseMotion.Relative;
             }
