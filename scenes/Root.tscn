@@ -71,19 +71,35 @@ theme = ExtResource( 7 )
 text = "Current Tool:"
 valign = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UIRoot"]
-anchor_top = 0.783
-anchor_right = 0.211
+[node name="MarginContainer" type="MarginContainer" parent="UIRoot"]
+anchor_top = 0.76
+anchor_right = 0.284
 anchor_bottom = 1.0
+custom_constants/margin_right = 5
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 5
 
-[node name="PriceContainer" type="VBoxContainer" parent="UIRoot/HBoxContainer"]
-margin_right = 40.0
-margin_bottom = 132.0
-rect_min_size = Vector2( 40, 0 )
+[node name="HBoxContainer" type="HBoxContainer" parent="UIRoot/MarginContainer"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 285.0
+margin_bottom = 139.0
+
+[node name="MarginContainer" type="MarginContainer" parent="UIRoot/MarginContainer/HBoxContainer"]
+margin_right = 41.0
+margin_bottom = 134.0
+custom_constants/margin_left = 5
+
+[node name="PriceContainer" type="VBoxContainer" parent="UIRoot/MarginContainer/HBoxContainer/MarginContainer"]
+margin_left = 5.0
+margin_right = 41.0
+margin_bottom = 134.0
+rect_min_size = Vector2( 35, 0 )
 size_flags_vertical = 9
 
-[node name="BrushLabel" type="Label" parent="UIRoot/HBoxContainer/PriceContainer"]
-margin_right = 40.0
+[node name="BrushLabel" type="Label" parent="UIRoot/MarginContainer/HBoxContainer/MarginContainer/PriceContainer"]
+margin_right = 36.0
 margin_bottom = 30.0
 rect_min_size = Vector2( 30, 30 )
 size_flags_vertical = 9
@@ -92,9 +108,9 @@ text = "$5"
 align = 1
 valign = 1
 
-[node name="ChiselLabel" type="Label" parent="UIRoot/HBoxContainer/PriceContainer"]
+[node name="ChiselLabel" type="Label" parent="UIRoot/MarginContainer/HBoxContainer/MarginContainer/PriceContainer"]
 margin_top = 34.0
-margin_right = 40.0
+margin_right = 36.0
 margin_bottom = 64.0
 rect_min_size = Vector2( 30, 30 )
 size_flags_vertical = 9
@@ -103,9 +119,9 @@ text = "$10"
 align = 1
 valign = 1
 
-[node name="HammerLabel" type="Label" parent="UIRoot/HBoxContainer/PriceContainer"]
+[node name="HammerLabel" type="Label" parent="UIRoot/MarginContainer/HBoxContainer/MarginContainer/PriceContainer"]
 margin_top = 68.0
-margin_right = 40.0
+margin_right = 36.0
 margin_bottom = 98.0
 rect_min_size = Vector2( 30, 30 )
 size_flags_vertical = 9
@@ -114,9 +130,9 @@ text = "$40"
 align = 1
 valign = 1
 
-[node name="BombLabel" type="Label" parent="UIRoot/HBoxContainer/PriceContainer"]
+[node name="BombLabel" type="Label" parent="UIRoot/MarginContainer/HBoxContainer/MarginContainer/PriceContainer"]
 margin_top = 102.0
-margin_right = 40.0
+margin_right = 36.0
 margin_bottom = 132.0
 rect_min_size = Vector2( 30, 30 )
 size_flags_vertical = 9
@@ -125,45 +141,45 @@ text = "$75"
 align = 1
 valign = 1
 
-[node name="ToolContainer" type="VBoxContainer" parent="UIRoot/HBoxContainer"]
-margin_left = 44.0
-margin_right = 216.0
-margin_bottom = 132.0
+[node name="ToolContainer" type="VBoxContainer" parent="UIRoot/MarginContainer/HBoxContainer"]
+margin_left = 45.0
+margin_right = 280.0
+margin_bottom = 134.0
 size_flags_horizontal = 3
 size_flags_vertical = 9
 
-[node name="BrushButton" type="Button" parent="UIRoot/HBoxContainer/ToolContainer"]
-margin_right = 172.0
+[node name="BrushButton" type="Button" parent="UIRoot/MarginContainer/HBoxContainer/ToolContainer"]
+margin_right = 235.0
 margin_bottom = 30.0
 rect_min_size = Vector2( 0, 30 )
 theme = ExtResource( 7 )
 text = "Brush"
 
-[node name="ChiselButton" type="Button" parent="UIRoot/HBoxContainer/ToolContainer"]
+[node name="ChiselButton" type="Button" parent="UIRoot/MarginContainer/HBoxContainer/ToolContainer"]
 margin_top = 34.0
-margin_right = 172.0
+margin_right = 235.0
 margin_bottom = 64.0
 rect_min_size = Vector2( 0, 30 )
 theme = ExtResource( 7 )
 text = "Chisel"
 
-[node name="HammerButton" type="Button" parent="UIRoot/HBoxContainer/ToolContainer"]
+[node name="HammerButton" type="Button" parent="UIRoot/MarginContainer/HBoxContainer/ToolContainer"]
 margin_top = 68.0
-margin_right = 172.0
+margin_right = 235.0
 margin_bottom = 98.0
 rect_min_size = Vector2( 0, 30 )
 theme = ExtResource( 7 )
 text = "Hammer"
 
-[node name="BombButton" type="Button" parent="UIRoot/HBoxContainer/ToolContainer"]
+[node name="BombButton" type="Button" parent="UIRoot/MarginContainer/HBoxContainer/ToolContainer"]
 margin_top = 102.0
-margin_right = 172.0
+margin_right = 235.0
 margin_bottom = 132.0
 rect_min_size = Vector2( 0, 30 )
 theme = ExtResource( 7 )
 text = "Bomb"
 
-[connection signal="pressed" from="UIRoot/HBoxContainer/ToolContainer/BrushButton" to="." method="SetTool" binds= [ "brush" ]]
-[connection signal="pressed" from="UIRoot/HBoxContainer/ToolContainer/ChiselButton" to="." method="SetTool" binds= [ "chisel" ]]
-[connection signal="pressed" from="UIRoot/HBoxContainer/ToolContainer/HammerButton" to="." method="SetTool" binds= [ "hammer" ]]
-[connection signal="pressed" from="UIRoot/HBoxContainer/ToolContainer/BombButton" to="." method="SetTool" binds= [ "bomb" ]]
+[connection signal="pressed" from="UIRoot/MarginContainer/HBoxContainer/ToolContainer/BrushButton" to="." method="SetTool" binds= [ "brush" ]]
+[connection signal="pressed" from="UIRoot/MarginContainer/HBoxContainer/ToolContainer/ChiselButton" to="." method="SetTool" binds= [ "chisel" ]]
+[connection signal="pressed" from="UIRoot/MarginContainer/HBoxContainer/ToolContainer/HammerButton" to="." method="SetTool" binds= [ "hammer" ]]
+[connection signal="pressed" from="UIRoot/MarginContainer/HBoxContainer/ToolContainer/BombButton" to="." method="SetTool" binds= [ "bomb" ]]
