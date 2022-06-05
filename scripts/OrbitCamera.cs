@@ -6,20 +6,22 @@ namespace DiggyDig.scripts
     {
         [Export] protected NodePath OrbitTargetPath;
 
-        [Export(PropertyHint.Range)] protected float RotationSensitivity = 0.1f;
+        [Export] protected float RotationSensitivity = 0.1f;
         [Export] protected float PanSensitivity = 1f;
+        [Export] protected float ZoomSensitivity = 1f;
 
         protected Spatial OrbitTarget;
 
         protected Vector2 MoveSpeed;
-        protected float Distance = 20f;
         protected Vector3 RotationDelta;
         protected Vector3 PanningDelta;
+        protected float ZoomingDelta;
 
         protected const float RADIAN = Mathf.Pi / 2;
 
         protected bool Rotating { get; set; }
         protected bool Panning { get; set; }
+        protected bool Zooming { get; set; }
 
         public override void _Ready()
         {
@@ -91,6 +93,16 @@ namespace DiggyDig.scripts
                 this.LookAt(this.OrbitTarget.GlobalTransform.origin, this.GlobalTransform.basis.y);
                 this.PanningDelta = Vector3.Zero;
             }
+            else if (this.Zooming)
+            {
+                this.Translate(Vector3.Forward * this.ZoomingDelta);
+            }
+
+            if (this.Zooming)
+            {
+                this.Zooming = false;
+                this.ZoomingDelta = 0;
+            }
         }
 
         protected void SetRotation()
@@ -109,6 +121,19 @@ namespace DiggyDig.scripts
                 && @event is InputEventMouseMotion mouseMotion)
             {
                 this.MoveSpeed = mouseMotion.Relative;
+            }
+            else if (@event is InputEventMouseButton mouseButton)
+            {
+                if (mouseButton.ButtonIndex == (int) ButtonList.WheelUp)
+                {
+                    this.Zooming = true;
+                    this.ZoomingDelta = ZoomSensitivity;
+                }
+                else if (mouseButton.ButtonIndex == (int) ButtonList.WheelDown)
+                {
+                    this.Zooming = true;
+                    this.ZoomingDelta = -ZoomSensitivity;
+                }
             }
         }
     }
