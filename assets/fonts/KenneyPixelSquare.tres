@@ -3,4 +3,6 @@
 [ext_resource path="res://assets/fonts/Kenney Pixel Square.ttf" type="DynamicFontData" id=1]
 
 [resource]
+outline_size = 2
+outline_color = Color( 0.0666667, 0.0196078, 0.0627451, 1 )
 font_data = ExtResource( 1 )
