@@ -30,7 +30,7 @@ namespace DiggyDig.scripts.Tools
                 outerTiles.Add(new Vector3Int(cell));
             }
 
-            outerTiles = outerTiles.Where(tile => digSite.IsOuterCell(tile)).ToList();
+            outerTiles = outerTiles.Where(tile => digSite.IsValid(tile) && digSite.IsOuterCell(tile)).ToList();
 
             if (outerTiles.Count <= Tiles)
             {
