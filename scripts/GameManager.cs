@@ -16,6 +16,8 @@ namespace DiggyDig.scripts
         protected PackedScene OptionsPackedScene { get; set; }
 
         protected Options OptionsScreen { get; set; }
+        
+        public int AccumulatedLoan { get; set; }
 
         public ITool CurrentTool
         {
@@ -32,7 +34,7 @@ namespace DiggyDig.scripts
         public int Cash
         {
             get => this.m_Cash;
-            protected set
+            set
             {
                 this.m_Cash = value;
                 this.CashLabel.Text = CashString + this.m_Cash;
