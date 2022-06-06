@@ -1,3 +1,4 @@
+using DiggyDig.scripts.options;
 using Godot;
 
 namespace DiggyDig.scripts.utils
@@ -23,6 +24,12 @@ namespace DiggyDig.scripts.utils
         protected bool Panning { get; set; }
         protected bool Zooming { get; set; }
 
+        protected int XRotationDirection = 1;
+        protected int YRotationDirection = 1;
+        protected int XPanningDirection = 1;
+        protected int YPanningDirection = 1;
+        protected int ZoomingDirection = 1;
+
         public override void _Ready()
         {
             Node target = this.GetNode(this.OrbitTargetPath);
@@ -39,6 +46,8 @@ namespace DiggyDig.scripts.utils
             {
                 GD.PrintErr("OrbitTargetPath is not of type Spatial!");
             }
+            
+            this.RefreshOptions();
         }
 
         public override void _Process(float delta)
@@ -65,27 +74,16 @@ namespace DiggyDig.scripts.utils
 
             if (this.Rotating)
             {
-                this.RotationDelta.x += this.RotationSensitivity * this.MoveSpeed.y * delta;
-                this.RotationDelta.y += this.RotationSensitivity * this.MoveSpeed.x * delta;
-            
-                /*
-                if (this.RotationDelta.x < -RADIAN)
-                {
-                    this.RotationDelta.x = -RADIAN;
-                }
-                else if (this.RotationDelta.x > RADIAN)
-                {
-                    this.RotationDelta.x = RADIAN;
-                }
-                */
-            
+                this.RotationDelta.x += this.RotationSensitivity * this.MoveSpeed.y * delta * this.XRotationDirection;
+                this.RotationDelta.y += this.RotationSensitivity * this.MoveSpeed.x * delta * this.YRotationDirection;
+
                 this.MoveSpeed = Vector2.Zero;
                 this.SetRotation();
             }
             else if (this.Panning)
             {
-                this.PanningDelta.x += this.PanSensitivity * this.MoveSpeed.x * delta;
-                this.PanningDelta.y -= this.PanSensitivity * this.MoveSpeed.y * delta;
+                this.PanningDelta.x += this.PanSensitivity * this.MoveSpeed.x * delta * this.XPanningDirection;
+                this.PanningDelta.y -= this.PanSensitivity * this.MoveSpeed.y * delta * this.YPanningDirection;
 
                 this.MoveSpeed = Vector2.Zero;
                 this.OrbitTarget.TranslateObjectLocal(this.PanningDelta);
@@ -95,7 +93,7 @@ namespace DiggyDig.scripts.utils
             }
             else if (this.Zooming)
             {
-                this.Translate(Vector3.Forward * this.ZoomingDelta);
+                this.Translate(Vector3.Forward * this.ZoomingDelta * this.ZoomingDirection);
             }
 
             if (this.Zooming)
@@ -103,6 +101,19 @@ namespace DiggyDig.scripts.utils
                 this.Zooming = false;
                 this.ZoomingDelta = 0;
             }
+        }
+
+        public void RefreshOptions()
+        {
+            OptionHandler optionHandler = GlobalConstants.AppManager.OptionHandler;
+
+            this.XRotationDirection = optionHandler.GetOption(optionHandler.InvertXRotation) ? -1 : 1;
+            this.YRotationDirection = optionHandler.GetOption(optionHandler.InvertYRotation) ? -1 : 1;
+
+            this.XPanningDirection = optionHandler.GetOption(optionHandler.InvertXPanning) ? -1 : 1;
+            this.YPanningDirection = optionHandler.GetOption(optionHandler.InvertYPanning) ? -1 : 1;
+
+            this.ZoomingDirection = optionHandler.GetOption(optionHandler.InvertZooming) ? -1 : 1;
         }
 
         protected void SetRotation()
