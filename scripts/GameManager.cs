@@ -11,6 +11,8 @@ namespace DiggyDig.scripts
         public DigMap DiggingSpace { get; protected set; }
 
         public IDictionary<string, ITool> ToolBox { get; protected set; }
+        
+        protected PackedScene OptionsMenu { get; set; }
 
         public ITool CurrentTool
         {
@@ -43,18 +45,20 @@ namespace DiggyDig.scripts
         protected Label CashLabel { get; set; }
         protected Label ToolLabel { get; set; }
         
-        public Camera Camera { get; protected set; }
+        public OrbitCamera Camera { get; protected set; }
 
         protected const string CashString = "BiggaBux: ";
         protected const string CurrentToolString = "Current Tool: ";
 
         public override void _Ready()
         {
+            this.OptionsMenu = GD.Load<PackedScene>("scenes/ui/Options.tscn");
+            
             this.DiggingSpace = this.GetNode<DigMap>("DigMap");
 
             this.CashLabel = this.GetNodeOrNull<Label>(this.CashLabelPath);
             this.ToolLabel = this.GetNodeOrNull<Label>(this.ToolLabelPath);
-            this.Camera = this.GetNodeOrNull<Camera>(this.CameraPath);
+            this.Camera = this.GetNodeOrNull<OrbitCamera>(this.CameraPath);
 
             if (this.CashLabel is null == false)
             {
@@ -77,6 +81,26 @@ namespace DiggyDig.scripts
             this.Cash = 500;
 
             GlobalConstants.GameManager = this;
+        }
+
+        public override void _Input(InputEvent @event)
+        {
+            base._Input(@event);
+            if (@event is InputEventKey eventKey)
+            {
+                if (eventKey.IsActionPressed("open_pause_menu"))
+                {
+                    Node options = this.OptionsMenu.Instance();
+                    this.AddChild(options);
+
+                    options.Connect("tree_exiting", this, "RefreshCameraOptions");
+                }
+            }
+        }
+
+        public void RefreshCameraOptions()
+        {
+            this.Camera.RefreshOptions();
         }
 
         public void SetTool(string tool)

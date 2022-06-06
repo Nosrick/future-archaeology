@@ -114,6 +114,8 @@ namespace DiggyDig.scripts.utils
             this.YPanningDirection = optionHandler.GetOption(optionHandler.InvertYPanning) ? -1 : 1;
 
             this.ZoomingDirection = optionHandler.GetOption(optionHandler.InvertZooming) ? -1 : 1;
+            
+            GD.Print("Refreshed camera option variables");
         }
 
         protected void SetRotation()

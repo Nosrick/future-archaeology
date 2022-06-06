@@ -97,4 +97,4 @@ text = "Main Menu"
 [connection signal="toggled" from="ScrollContainer/OptionContainer/InvertXPanCheck" to="." method="SetOption" binds= [ "Invert X Panning" ]]
 [connection signal="toggled" from="ScrollContainer/OptionContainer/InvertYPanCheck" to="." method="SetOption" binds= [ "Invert Y Panning" ]]
 [connection signal="toggled" from="ScrollContainer/OptionContainer/InvertZoomCheck" to="." method="SetOption" binds= [ "Invert Zooming" ]]
-[connection signal="pressed" from="BackButton" to="." method="ReturnToMainMenu"]
+[connection signal="pressed" from="BackButton" to="." method="CloseMe"]

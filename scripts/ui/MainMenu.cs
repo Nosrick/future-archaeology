@@ -22,7 +22,7 @@ namespace DiggyDig.scripts.ui
 
             if (screen == "options")
             {
-                this.GetTree().ChangeSceneTo(this.OptionsScreen);
+                this.AddChild(this.OptionsScreen.Instance());
             }
             else if (screen == "exit")
             {

@@ -34,10 +34,10 @@ namespace DiggyDig.scripts.ui
             }
         }
 
-        public void ReturnToMainMenu()
+        public void CloseMe()
         {
             GlobalConstants.AppManager.OptionHandler.SaveOptions();
-            this.GetTree().ChangeScene("scenes/ui/MainMenu.tscn");
+            this.QueueFree();
         }
 
         public void SetOption(object value, string name)
