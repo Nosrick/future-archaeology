@@ -1,17 +1,19 @@
-using DiggyDig.scripts;
 using Godot;
 
-public class AppManager : Spatial
+namespace DiggyDig.scripts
 {
-    protected PackedScene MainMenu;
-    protected PackedScene GameScene;
-
-    public override void _Ready()
+    public class AppManager : Spatial
     {
-        this.MainMenu = GD.Load<PackedScene>("scenes/ui/MainMenu.tscn");
-        
-        this.AddChild(this.MainMenu.Instance());
+        protected PackedScene MainMenu;
+        protected PackedScene GameScene;
 
-        GlobalConstants.AppManager = this;
+        public override void _Ready()
+        {
+            this.MainMenu = GD.Load<PackedScene>("scenes/ui/MainMenu.tscn");
+        
+            this.AddChild(this.MainMenu.Instance());
+
+            GlobalConstants.AppManager = this;
+        }
     }
 }
