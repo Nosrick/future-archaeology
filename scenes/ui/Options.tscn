@@ -9,6 +9,7 @@
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 4 )
+OptionContainerPath = NodePath("ScrollContainer/OptionContainer")
 
 [node name="MenuBackground" parent="." instance=ExtResource( 1 )]
 
@@ -91,4 +92,9 @@ anchor_bottom = 0.98
 theme = ExtResource( 2 )
 text = "Main Menu"
 
+[connection signal="toggled" from="ScrollContainer/OptionContainer/InvertXRotationCheck" to="." method="SetOption" binds= [ "Invert X Rotation" ]]
+[connection signal="toggled" from="ScrollContainer/OptionContainer/InvertYRotationCheck" to="." method="SetOption" binds= [ "Invert Y Rotation" ]]
+[connection signal="toggled" from="ScrollContainer/OptionContainer/InvertXPanCheck" to="." method="SetOption" binds= [ "Invert X Panning" ]]
+[connection signal="toggled" from="ScrollContainer/OptionContainer/InvertYPanCheck" to="." method="SetOption" binds= [ "Invert Y Panning" ]]
+[connection signal="toggled" from="ScrollContainer/OptionContainer/InvertZoomCheck" to="." method="SetOption" binds= [ "Invert Zooming" ]]
 [connection signal="pressed" from="BackButton" to="." method="ReturnToMainMenu"]
