@@ -1,0 +1,20 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/full-cube.obj-45b43eb761471dc03893922eb9a3d8ec.mesh"
+
+[deps]
+
+files=[ "res://.import/full-cube.obj-45b43eb761471dc03893922eb9a3d8ec.mesh" ]
+
+source_file="res://assets/meshes/digging/full-cube.obj"
+dest_files=[ "res://.import/full-cube.obj-45b43eb761471dc03893922eb9a3d8ec.mesh", "res://.import/full-cube.obj-45b43eb761471dc03893922eb9a3d8ec.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+octahedral_compression=true
+optimize_mesh_flags=0
