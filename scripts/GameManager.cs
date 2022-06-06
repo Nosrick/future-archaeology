@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DiggyDig.scripts.digging;
 using DiggyDig.scripts.Tools;
+using DiggyDig.scripts.ui;
 using DiggyDig.scripts.utils;
 using Godot;
 
@@ -11,8 +12,10 @@ namespace DiggyDig.scripts
         public DigMap DiggingSpace { get; protected set; }
 
         public IDictionary<string, ITool> ToolBox { get; protected set; }
-        
-        protected PackedScene OptionsMenu { get; set; }
+
+        protected PackedScene OptionsPackedScene { get; set; }
+
+        protected Options OptionsScreen { get; set; }
 
         public ITool CurrentTool
         {
@@ -41,10 +44,10 @@ namespace DiggyDig.scripts
         [Export] protected NodePath CashLabelPath;
         [Export] protected NodePath ToolLabelPath;
         [Export] protected NodePath CameraPath;
-        
+
         protected Label CashLabel { get; set; }
         protected Label ToolLabel { get; set; }
-        
+
         public OrbitCamera Camera { get; protected set; }
 
         protected const string CashString = "BiggaBux: ";
@@ -52,8 +55,8 @@ namespace DiggyDig.scripts
 
         public override void _Ready()
         {
-            this.OptionsMenu = GD.Load<PackedScene>("scenes/ui/Options.tscn");
-            
+            this.OptionsPackedScene = GD.Load<PackedScene>("scenes/ui/Options.tscn");
+
             this.DiggingSpace = this.GetNode<DigMap>("DigMap");
 
             this.CashLabel = this.GetNodeOrNull<Label>(this.CashLabelPath);
@@ -88,12 +91,20 @@ namespace DiggyDig.scripts
             base._Input(@event);
             if (@event is InputEventKey eventKey)
             {
-                if (eventKey.IsActionPressed("open_pause_menu"))
+                if (eventKey.IsActionReleased("open_pause_menu"))
                 {
-                    Node options = this.OptionsMenu.Instance();
-                    this.AddChild(options);
+                    if (this.OptionsScreen is null || IsInstanceValid(this.OptionsScreen) == false)
+                    {
+                        this.OptionsScreen = (Options) this.OptionsPackedScene.Instance();
+                        this.AddChild(this.OptionsScreen);
 
-                    options.Connect("tree_exiting", this, "RefreshCameraOptions");
+                        this.OptionsScreen.Connect("tree_exiting", this, "RefreshCameraOptions");
+                    }
+                    else if (IsInstanceValid(this.OptionsScreen))
+                    {
+                        this.OptionsScreen?.CloseMe();
+                        this.Camera.RefreshOptions();
+                    }
                 }
             }
         }

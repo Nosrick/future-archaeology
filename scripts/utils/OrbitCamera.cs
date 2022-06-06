@@ -7,9 +7,9 @@ namespace DiggyDig.scripts.utils
     {
         [Export] protected NodePath OrbitTargetPath;
 
-        [Export] protected float RotationSensitivity = 0.1f;
-        [Export] protected float PanSensitivity = 1f;
-        [Export] protected float ZoomSensitivity = 1f;
+        protected float RotationSensitivity = 0.1f;
+        protected float PanSensitivity = 1f;
+        protected float ZoomSensitivity = 1f;
 
         protected Spatial OrbitTarget;
 
@@ -107,13 +107,16 @@ namespace DiggyDig.scripts.utils
         {
             OptionHandler optionHandler = GlobalConstants.AppManager.OptionHandler;
 
-            this.XRotationDirection = optionHandler.GetOption(optionHandler.InvertXRotation) ? -1 : 1;
-            this.YRotationDirection = optionHandler.GetOption(optionHandler.InvertYRotation) ? -1 : 1;
+            this.XRotationDirection = optionHandler.GetOption<bool>(optionHandler.InvertXRotation) ? -1 : 1;
+            this.YRotationDirection = optionHandler.GetOption<bool>(optionHandler.InvertYRotation) ? -1 : 1;
 
-            this.XPanningDirection = optionHandler.GetOption(optionHandler.InvertXPanning) ? -1 : 1;
-            this.YPanningDirection = optionHandler.GetOption(optionHandler.InvertYPanning) ? -1 : 1;
+            this.XPanningDirection = optionHandler.GetOption<bool>(optionHandler.InvertXPanning) ? -1 : 1;
+            this.YPanningDirection = optionHandler.GetOption<bool>(optionHandler.InvertYPanning) ? -1 : 1;
 
-            this.ZoomingDirection = optionHandler.GetOption(optionHandler.InvertZooming) ? -1 : 1;
+            this.ZoomingDirection = optionHandler.GetOption<bool>(optionHandler.InvertZooming) ? -1 : 1;
+
+            this.RotationSensitivity = optionHandler.GetOption<float>(optionHandler.RotationSensitivity);
+            this.PanSensitivity = optionHandler.GetOption<float>(optionHandler.PanningSensitivity);
             
             GD.Print("Refreshed camera option variables");
         }

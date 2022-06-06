@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scenes/ui/MenuBackground.tscn" type="PackedScene" id=1]
 [ext_resource path="res://assets/themes/menu-theme.tres" type="Theme" id=2]
 [ext_resource path="res://assets/themes/basic-theme.tres" type="Theme" id=3]
 [ext_resource path="res://scripts/ui/Options.cs" type="Script" id=4]
+[ext_resource path="res://scenes/ui/LabelledHSlider.tscn" type="PackedScene" id=5]
 
 [node name="Options" type="Control"]
 anchor_right = 1.0
@@ -37,7 +38,7 @@ size_flags_vertical = 3
 
 [node name="InvertXRotationCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
 margin_right = 962.0
-margin_bottom = 82.0
+margin_bottom = 57.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
@@ -45,9 +46,9 @@ text = "Invert X Rotation"
 align = 1
 
 [node name="InvertYRotationCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
-margin_top = 86.0
+margin_top = 61.0
 margin_right = 962.0
-margin_bottom = 168.0
+margin_bottom = 118.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
@@ -55,9 +56,9 @@ text = "Invert Y Rotation"
 align = 1
 
 [node name="InvertXPanCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
-margin_top = 172.0
+margin_top = 122.0
 margin_right = 962.0
-margin_bottom = 254.0
+margin_bottom = 180.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
@@ -65,9 +66,9 @@ text = "Invert X Panning"
 align = 1
 
 [node name="InvertYPanCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
-margin_top = 258.0
+margin_top = 184.0
 margin_right = 962.0
-margin_bottom = 340.0
+margin_bottom = 241.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
@@ -75,26 +76,78 @@ text = "Invert Y Panning"
 align = 1
 
 [node name="InvertZoomCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
-margin_top = 344.0
+margin_top = 245.0
 margin_right = 962.0
-margin_bottom = 426.0
+margin_bottom = 303.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
 text = "Invert Zooming"
 align = 1
 
-[node name="BackButton" type="Button" parent="."]
-anchor_left = 0.35
+[node name="RotationSensitivitySlider" parent="ScrollContainer/OptionContainer" instance=ExtResource( 5 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 307.0
+margin_right = 962.0
+margin_bottom = 364.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+MaxValue = 1.0
+Value = 0.1
+Text = "Rotation Sensitivity"
+
+[node name="Slider" parent="ScrollContainer/OptionContainer/RotationSensitivitySlider" index="1"]
+max_value = 1.0
+value = 0.1
+
+[node name="Name" parent="ScrollContainer/OptionContainer/RotationSensitivitySlider" index="2"]
+text = "Rotation Sensitivity"
+
+[node name="PanningSensitivitySlider" parent="ScrollContainer/OptionContainer" instance=ExtResource( 5 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 368.0
+margin_right = 962.0
+margin_bottom = 426.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+MaxValue = 10.0
+Value = 1.0
+Text = "Panning Sensitivity"
+
+[node name="Slider" parent="ScrollContainer/OptionContainer/PanningSensitivitySlider" index="1"]
+max_value = 10.0
+value = 1.0
+
+[node name="Name" parent="ScrollContainer/OptionContainer/PanningSensitivitySlider" index="2"]
+text = "Panning Sensitivity"
+
+[node name="ResetButton" type="Button" parent="."]
+anchor_left = 0.15
 anchor_top = 0.881
-anchor_right = 0.65
+anchor_right = 0.44
 anchor_bottom = 0.98
 theme = ExtResource( 2 )
-text = "Main Menu"
+text = "Defaults"
+
+[node name="BackButton" type="Button" parent="."]
+anchor_left = 0.46
+anchor_top = 0.881
+anchor_right = 0.75
+anchor_bottom = 0.98
+theme = ExtResource( 2 )
+text = "Back"
 
 [connection signal="toggled" from="ScrollContainer/OptionContainer/InvertXRotationCheck" to="." method="SetOption" binds= [ "Invert X Rotation" ]]
 [connection signal="toggled" from="ScrollContainer/OptionContainer/InvertYRotationCheck" to="." method="SetOption" binds= [ "Invert Y Rotation" ]]
 [connection signal="toggled" from="ScrollContainer/OptionContainer/InvertXPanCheck" to="." method="SetOption" binds= [ "Invert X Panning" ]]
 [connection signal="toggled" from="ScrollContainer/OptionContainer/InvertYPanCheck" to="." method="SetOption" binds= [ "Invert Y Panning" ]]
 [connection signal="toggled" from="ScrollContainer/OptionContainer/InvertZoomCheck" to="." method="SetOption" binds= [ "Invert Zooming" ]]
+[connection signal="ValueChanged" from="ScrollContainer/OptionContainer/RotationSensitivitySlider" to="." method="SetOption" binds= [ "Rotation Sensitivity" ]]
+[connection signal="ValueChanged" from="ScrollContainer/OptionContainer/PanningSensitivitySlider" to="." method="SetOption" binds= [ "Panning Sensitivity" ]]
+[connection signal="pressed" from="ResetButton" to="." method="ResetOptions"]
 [connection signal="pressed" from="BackButton" to="." method="CloseMe"]
+
+[editable path="ScrollContainer/OptionContainer/RotationSensitivitySlider"]
+[editable path="ScrollContainer/OptionContainer/PanningSensitivitySlider"]

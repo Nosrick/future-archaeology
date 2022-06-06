@@ -5,13 +5,21 @@ namespace DiggyDig.scripts.options
 {
     public class OptionHandler
     {
-        protected Dictionary Options { get; set; }
+        public Dictionary Options
+        {
+            get => this.m_Options.Duplicate();
+            protected set => this.m_Options = value;
+        }
+
+        protected Dictionary m_Options;
 
         public readonly string InvertXRotation = "Invert X Rotation";
         public readonly string InvertYRotation = "Invert Y Rotation";
         public readonly string InvertXPanning = "Invert X Panning";
         public readonly string InvertYPanning = "Invert Y Panning";
         public readonly string InvertZooming = "Invert Zooming";
+        public readonly string RotationSensitivity = "Rotation Sensitivity";
+        public readonly string PanningSensitivity = "Panning Sensitivity";
 
         public readonly string OptionsFile = "user://options.dat";
         
@@ -19,20 +27,27 @@ namespace DiggyDig.scripts.options
         {
             if (this.LoadOptions() == false)
             {
-                this.Options = new Dictionary
-                {
-                    {InvertXRotation, false},
-                    {InvertYRotation, false},
-                    {InvertXPanning, false},
-                    {InvertYPanning, false},
-                    {InvertZooming, false}
-                };
+                this.ResetToDefaults();
             }
         }
 
+        protected Dictionary LoadDefaults()
+        {
+            return new Dictionary
+            {
+                {InvertXRotation, false},
+                {InvertYRotation, false},
+                {InvertXPanning, false},
+                {InvertYPanning, false},
+                {InvertZooming, false},
+                {RotationSensitivity, 0.1f},
+                {PanningSensitivity, 1f}
+            };
+        }
+        
         public bool SaveOptions()
         {
-            string result = JSON.Print(this.Options);
+            string result = JSON.Print(this.m_Options);
             File optionsFile = new File();
             if (optionsFile.Open(OptionsFile, File.ModeFlags.Write) == Error.Ok)
             {
@@ -61,7 +76,7 @@ namespace DiggyDig.scripts.options
                     return false;
                 }
 
-                this.Options = (Dictionary) parseResult.Result;
+                this.m_Options = (Dictionary) parseResult.Result;
 
                 GD.Print("Loaded options!");
                 return true;
@@ -71,24 +86,30 @@ namespace DiggyDig.scripts.options
             return false;
         }
 
-        public bool GetOption(string name)
+        public void ResetToDefaults()
         {
-            if (this.Options.Contains(name))
+            this.m_Options = this.LoadDefaults();
+        }
+
+        public T GetOption<T>(string name)
+        {
+            if (this.m_Options.Contains(name))
             {
-                return (bool) this.Options[name];
+                return (T) this.m_Options[name];
             }
 
-            return false;
+            return default;
         }
 
         public bool SetOption(string name, object value)
         {
-            if (!this.Options.Contains(name))
+            if (!this.m_Options.Contains(name))
             {
-                return false;
+                this.m_Options.Add(name, value);
+                return true;
             }
-            
-            this.Options[name] = value;
+
+            this.m_Options[name] = value;
             return true;
         }
     }
