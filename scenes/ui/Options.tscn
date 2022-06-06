@@ -1,9 +1,94 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scenes/ui/MenuBackground.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/themes/menu-theme.tres" type="Theme" id=2]
+[ext_resource path="res://assets/themes/basic-theme.tres" type="Theme" id=3]
+[ext_resource path="res://scripts/Options.cs" type="Script" id=4]
 
 [node name="Options" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+script = ExtResource( 4 )
 
 [node name="MenuBackground" parent="." instance=ExtResource( 1 )]
+
+[node name="OptionsLabel" type="Label" parent="."]
+anchor_left = 0.3
+anchor_top = 0.027
+anchor_right = 0.7
+anchor_bottom = 0.129
+theme = ExtResource( 2 )
+text = "Options Menu"
+align = 1
+valign = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+anchor_left = 0.03
+anchor_top = 0.147
+anchor_right = 0.97
+anchor_bottom = 0.858
+
+[node name="OptionContainer" type="VBoxContainer" parent="ScrollContainer"]
+margin_right = 962.56
+margin_bottom = 426.6
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="InvertXRotationCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
+margin_right = 962.0
+margin_bottom = 82.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource( 3 )
+text = "Invert X Rotation"
+align = 1
+
+[node name="InvertYRotationCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
+margin_top = 86.0
+margin_right = 962.0
+margin_bottom = 168.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource( 3 )
+text = "Invert Y Rotation"
+align = 1
+
+[node name="InvertXPanCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
+margin_top = 172.0
+margin_right = 962.0
+margin_bottom = 254.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource( 3 )
+text = "Invert X Panning"
+align = 1
+
+[node name="InvertYPanCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
+margin_top = 258.0
+margin_right = 962.0
+margin_bottom = 340.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource( 3 )
+text = "Invert Y Panning"
+align = 1
+
+[node name="InvertZoomCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
+margin_top = 344.0
+margin_right = 962.0
+margin_bottom = 426.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource( 3 )
+text = "Invert Zooming"
+align = 1
+
+[node name="BackButton" type="Button" parent="."]
+anchor_left = 0.35
+anchor_top = 0.881
+anchor_right = 0.65
+anchor_bottom = 0.98
+theme = ExtResource( 2 )
+text = "Main Menu"
+
+[connection signal="pressed" from="BackButton" to="." method="ReturnToMainMenu"]

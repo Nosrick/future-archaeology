@@ -1,12 +1,14 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scenes/ui/MenuBackground.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scripts/MainMenu.cs" type="Script" id=2]
 [ext_resource path="res://assets/fonts/KenneyPixelSquare-title.tres" type="DynamicFont" id=3]
 [ext_resource path="res://assets/themes/menu-theme.tres" type="Theme" id=4]
 
 [node name="MainMenu" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+script = ExtResource( 2 )
 
 [node name="MenuBackground" parent="." instance=ExtResource( 1 )]
 
@@ -56,3 +58,7 @@ margin_bottom = 300.0
 size_flags_vertical = 3
 theme = ExtResource( 4 )
 text = "Exit To Desktop"
+
+[connection signal="pressed" from="ButtonContainer/NewGameButton" to="." method="ChangeScreen" binds= [ "new-game" ]]
+[connection signal="pressed" from="ButtonContainer/OptionsButton" to="." method="ChangeScreen" binds= [ "options" ]]
+[connection signal="pressed" from="ButtonContainer/ExitGameButton" to="." method="ChangeScreen" binds= [ "exit" ]]
