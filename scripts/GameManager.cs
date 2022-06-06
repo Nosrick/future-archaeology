@@ -14,8 +14,10 @@ namespace DiggyDig.scripts
         public IDictionary<string, ITool> ToolBox { get; protected set; }
 
         protected PackedScene OptionsPackedScene { get; set; }
+        protected PackedScene LoanModalScene { get; set; }
 
         protected Options OptionsScreen { get; set; }
+        protected LoanModal LoanModal { get; set; }
         
         public int AccumulatedLoan { get; set; }
 
@@ -58,6 +60,7 @@ namespace DiggyDig.scripts
         public override void _Ready()
         {
             this.OptionsPackedScene = GD.Load<PackedScene>("scenes/ui/Options.tscn");
+            this.LoanModalScene = GD.Load<PackedScene>("scenes/ui/LoanModal.tscn");
 
             this.DiggingSpace = this.GetNode<DigMap>("DigMap");
 
@@ -97,7 +100,7 @@ namespace DiggyDig.scripts
                 {
                     if (this.OptionsScreen is null || IsInstanceValid(this.OptionsScreen) == false)
                     {
-                        this.OptionsScreen = (Options) this.OptionsPackedScene.Instance();
+                        this.OptionsScreen = this.OptionsPackedScene.Instance<Options>();
                         this.AddChild(this.OptionsScreen);
 
                         this.OptionsScreen.Connect("tree_exiting", this, "RefreshCameraOptions");
@@ -133,7 +136,11 @@ namespace DiggyDig.scripts
 
             if (this.Cash - this.CurrentTool.Cost < 0)
             {
-                GD.Print("Take out a loan!");
+                if (this.LoanModal is null || IsInstanceValid(this.LoanModal) == false)
+                {
+                    this.LoanModal = this.LoanModalScene.Instance<LoanModal>();
+                    this.AddChild(this.LoanModal);
+                }
                 return;
             }
 
