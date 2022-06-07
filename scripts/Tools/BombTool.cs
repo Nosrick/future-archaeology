@@ -19,6 +19,13 @@ namespace DiggyDig.scripts.Tools
         public AudioStreamRandomPitch AssociatedSound { get; protected set; }
 
         protected static readonly Random Random = new Random();
+
+        public BombTool()
+        {
+            this.AssociatedSound = new AudioStreamRandomPitch();
+            this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/bomb-1.wav");
+            this.AssociatedSound.RandomPitch = 1.2f;
+        }
         
         public int Execute(Vector3Int hit, Vector3Int previous)
         {
