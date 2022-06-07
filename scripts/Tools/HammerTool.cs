@@ -8,6 +8,13 @@ namespace DiggyDig.scripts.Tools
     {
         public string Name => "Hammer";
         public int Cost => 40;
+        
+        public int Damage { get; protected set; }
+
+        public HammerTool()
+        {
+            this.Damage = 3;
+        }
 
         public int Execute(Vector3Int hit, Vector3Int previous)
         {
@@ -41,7 +48,7 @@ namespace DiggyDig.scripts.Tools
                 {
                     for (int z = hit.z - zStep; z <= hit.z + zStep; z += zStep)
                     {
-                        digSite.DamageCell(x, y, z, 1);
+                        digSite.DamageCell(x, y, z, this.Damage);
                     }
                 }
             }
@@ -56,7 +63,7 @@ namespace DiggyDig.scripts.Tools
                 {
                     for (int z = hit.z - zStep; z <= hit.z + zStep; z += zStep)
                     {
-                        digSite.DamageCell(x, y, z, 1);
+                        digSite.DamageCell(x, y, z, this.Damage);
                     }
                 }
             }
@@ -71,7 +78,7 @@ namespace DiggyDig.scripts.Tools
                 {
                     for (int y = hit.y - yStep; y <= hit.y + yStep; y += yStep)
                     {
-                        digSite.DamageCell(x, y, z, 1);
+                        digSite.DamageCell(x, y, z, this.Damage);
                     }
                 }
             }
