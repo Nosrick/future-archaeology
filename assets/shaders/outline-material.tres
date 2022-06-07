@@ -5,8 +5,8 @@
 [resource]
 resource_local_to_scene = true
 shader = ExtResource( 1 )
-shader_param/outline_color = Color( 0.807843, 0.639216, 0.109804, 0.196078 )
-shader_param/luma_coef = 80.0
-shader_param/color_coef = 80.0
-shader_param/depth_coef = 15.0
-shader_param/cutoff = 0.1
+shader_param/outline_color = Color( 0.807843, 0.470588, 0.109804, 1 )
+shader_param/luma_coef = 2.0
+shader_param/color_coef = 2.0
+shader_param/depth_coef = 2.0
+shader_param/cutoff = 0.3
