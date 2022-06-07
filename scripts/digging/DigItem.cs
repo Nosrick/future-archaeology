@@ -2,11 +2,13 @@
 
 namespace DiggyDig.scripts.digging
 {
-    public class DigItem : StaticBody
+    public class DigItem : RigidBody
     {
-        protected MeshInstance ObjectMesh;
+        public MeshInstance ObjectMesh { get; protected set; }
 
-        protected CollisionShape CollisionShape;
+        public CollisionShape CollisionShape { get; protected set; }
+        
+        [Export] public int CashValue { get; protected set; }
 
         public override void _Ready()
         {
@@ -18,8 +20,9 @@ namespace DiggyDig.scripts.digging
             this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
         }
 
-        public void AssignObject(MeshInstance meshInstance)
+        public void AssignObject(MeshInstance meshInstance, int cashValue)
         {
+            this.CashValue = cashValue;
             this.ObjectMesh = meshInstance;
             this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
         }

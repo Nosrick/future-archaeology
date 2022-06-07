@@ -1,5 +1,6 @@
 using DiggyDig.scripts.utils;
 using Godot;
+using Godot.Collections;
 
 namespace DiggyDig.scripts.digging
 {
@@ -55,6 +56,21 @@ namespace DiggyDig.scripts.digging
             {
                 Vector3 origin = this.MyCamera.ProjectRayOrigin(this.MousePosition);
                 Vector3 direction = this.MyCamera.ProjectRayNormal(this.MousePosition).Normalized();
+
+                Vector3 destination = origin + (direction * RayLength);
+
+                var spaceState = this.GetWorld().DirectSpaceState;
+
+                var result = spaceState.IntersectRay(origin, destination, new Array {this.DigMap});
+                if (result.Contains("collider")
+                    && result["collider"] is DigItem digItem)
+                {
+                    if (this.DigMap.RemoveObject(digItem))
+                    {
+                        this.CastRay = false;
+                        return;
+                    }
+                }
 
                 Vector3Int current = new Vector3Int(origin);
                 Vector3Int previous = new Vector3Int(origin);

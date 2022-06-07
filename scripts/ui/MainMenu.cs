@@ -10,7 +10,7 @@ namespace DiggyDig.scripts.ui
         public override void _Ready()
         {
             this.OptionsScreen = GD.Load<PackedScene>("scenes/ui/Options.tscn");
-            this.GameScreen = GD.Load<PackedScene>("scenes/GameScene.tscn");
+            this.GameScreen = GD.Load<PackedScene>("scenes/game/GameScene.tscn");
         }
 
         public void ChangeScreen(string screen)
