@@ -65,11 +65,9 @@ namespace DiggyDig.scripts.digging
                 if (result.Contains("collider")
                     && result["collider"] is DigItem digItem)
                 {
-                    if (this.DigMap.RemoveObject(digItem))
-                    {
-                        this.CastRay = false;
-                        return;
-                    }
+                    this.DigMap.RemoveObject(digItem);
+                    this.CastRay = false;
+                    return;
                 }
 
                 Vector3Int current = new Vector3Int(origin);
@@ -212,12 +210,13 @@ namespace DiggyDig.scripts.digging
 
                     if (this.DigMap.IsValid(current))
                     {
+                        this.DigMap.CheckForUncovered();
                         break;
                     }
                 }
             
-                GD.Print(current);
-                GD.Print(current - previous);
+                //GD.Print(current);
+                //GD.Print(current - previous);
 
                 GlobalConstants.GameManager.ExecuteTool(current, previous);
 

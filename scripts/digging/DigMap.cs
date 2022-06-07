@@ -79,8 +79,18 @@ namespace DiggyDig.scripts.digging
 
                     loopBreak = true;
                 }
+            }
+        }
 
-                //item.Connect("body_exited", this, nameof(this.RemoveObject), new Array { item });
+        public void CheckForUncovered()
+        {
+            foreach (DigItem item in this.DigItems)
+            {
+                if (item.GetCollidingBodies().Contains(this))
+                {
+                    continue;
+                }
+                GD.Print("ITEM UNCOVERED! " + item.Name);
             }
         }
 

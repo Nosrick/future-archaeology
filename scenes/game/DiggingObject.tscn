@@ -7,7 +7,8 @@
 points = PoolVector3Array( -1.06681, -1.2, 0, -1.00019, -1.2, -0.32, -1.00019, -1.2, 0.32, -1.06681, 1.2, 0, 0.999981, -1.2, -0.32, -1.00019, 1.2, -0.32, 0.999981, -1.2, 0.32, -1.00019, 1.2, 0.32, 1.06681, -1.2, 0, 0.999981, 1.2, -0.32, 0.999981, 1.2, 0.32, 1.06681, 1.2, 0 )
 
 [node name="DiggingObject" type="RigidBody"]
-mode = 1
+mode = 3
+continuous_cd = true
 contacts_reported = 16
 contact_monitor = true
 can_sleep = false
