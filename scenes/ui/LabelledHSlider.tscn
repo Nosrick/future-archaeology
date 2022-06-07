@@ -8,21 +8,55 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
+MaxValue = 100.0
+Text = "Placeholder"
 
 [node name="Background" type="Panel" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="Slider" type="HSlider" parent="."]
-anchor_left = 0.7
-anchor_right = 1.0
-anchor_bottom = 1.0
-step = 0.0
-scrollable = false
-
 [node name="Name" type="Label" parent="."]
-anchor_right = 0.68
+anchor_right = 0.574219
 anchor_bottom = 1.0
 text = "Placeholder"
 align = 1
 valign = 1
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Slider" type="HSlider" parent="."]
+anchor_left = 0.637695
+anchor_right = 0.937695
+anchor_bottom = 1.0
+step = 0.0
+scrollable = false
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="MinValueLabel" type="Label" parent="."]
+anchor_left = 0.585938
+anchor_right = 0.626148
+anchor_bottom = 1.0
+margin_right = -0.176025
+margin_bottom = -3.05176e-05
+text = "Min"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="MaxValueLabel" type="Label" parent="."]
+anchor_left = 0.945313
+anchor_right = 0.985523
+anchor_bottom = 1.0
+margin_right = -0.176025
+margin_bottom = -3.05176e-05
+text = "Max"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": true
+}

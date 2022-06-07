@@ -38,7 +38,7 @@ size_flags_vertical = 3
 
 [node name="InvertXRotationCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
 margin_right = 962.0
-margin_bottom = 57.0
+margin_bottom = 49.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
@@ -46,9 +46,9 @@ text = "Invert X Rotation"
 align = 1
 
 [node name="InvertYRotationCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
-margin_top = 61.0
+margin_top = 53.0
 margin_right = 962.0
-margin_bottom = 118.0
+margin_bottom = 103.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
@@ -56,9 +56,9 @@ text = "Invert Y Rotation"
 align = 1
 
 [node name="InvertXPanCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
-margin_top = 122.0
+margin_top = 107.0
 margin_right = 962.0
-margin_bottom = 180.0
+margin_bottom = 157.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
@@ -66,9 +66,9 @@ text = "Invert X Panning"
 align = 1
 
 [node name="InvertYPanCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
-margin_top = 184.0
+margin_top = 161.0
 margin_right = 962.0
-margin_bottom = 241.0
+margin_bottom = 211.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
@@ -76,9 +76,9 @@ text = "Invert Y Panning"
 align = 1
 
 [node name="InvertZoomCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
-margin_top = 245.0
+margin_top = 215.0
 margin_right = 962.0
-margin_bottom = 303.0
+margin_bottom = 264.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
@@ -88,40 +88,66 @@ align = 1
 [node name="RotationSensitivitySlider" parent="ScrollContainer/OptionContainer" instance=ExtResource( 5 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 307.0
+margin_top = 268.0
 margin_right = 962.0
-margin_bottom = 364.0
+margin_bottom = 318.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+MinValue = 0.1
 MaxValue = 1.0
-Value = 0.1
+Value = 0.2
 Text = "Rotation Sensitivity"
 
-[node name="Slider" parent="ScrollContainer/OptionContainer/RotationSensitivitySlider" index="1"]
-max_value = 1.0
-value = 0.1
-
-[node name="Name" parent="ScrollContainer/OptionContainer/RotationSensitivitySlider" index="2"]
+[node name="Name" parent="ScrollContainer/OptionContainer/RotationSensitivitySlider" index="1"]
 text = "Rotation Sensitivity"
+
+[node name="Slider" parent="ScrollContainer/OptionContainer/RotationSensitivitySlider" index="2"]
+min_value = 0.1
+max_value = 1.0
+value = 0.2
+
+[node name="MinValueLabel" parent="ScrollContainer/OptionContainer/RotationSensitivitySlider" index="3"]
+text = "0.1"
+
+[node name="MaxValueLabel" parent="ScrollContainer/OptionContainer/RotationSensitivitySlider" index="4"]
+text = "1"
 
 [node name="PanningSensitivitySlider" parent="ScrollContainer/OptionContainer" instance=ExtResource( 5 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 368.0
+margin_top = 322.0
 margin_right = 962.0
-margin_bottom = 426.0
+margin_bottom = 372.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+MinValue = 1.0
 MaxValue = 10.0
 Value = 1.0
 Text = "Panning Sensitivity"
 
-[node name="Slider" parent="ScrollContainer/OptionContainer/PanningSensitivitySlider" index="1"]
+[node name="Name" parent="ScrollContainer/OptionContainer/PanningSensitivitySlider" index="1"]
+text = "Panning Sensitivity"
+
+[node name="Slider" parent="ScrollContainer/OptionContainer/PanningSensitivitySlider" index="2"]
+min_value = 1.0
 max_value = 10.0
 value = 1.0
 
-[node name="Name" parent="ScrollContainer/OptionContainer/PanningSensitivitySlider" index="2"]
-text = "Panning Sensitivity"
+[node name="MinValueLabel" parent="ScrollContainer/OptionContainer/PanningSensitivitySlider" index="3"]
+text = "1"
+
+[node name="MaxValueLabel" parent="ScrollContainer/OptionContainer/PanningSensitivitySlider" index="4"]
+text = "10"
+
+[node name="UseMoneyCheck" type="CheckButton" parent="ScrollContainer/OptionContainer"]
+margin_top = 376.0
+margin_right = 962.0
+margin_bottom = 426.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource( 3 )
+text = "Use Money"
+align = 1
 
 [node name="ResetButton" type="Button" parent="."]
 anchor_left = 0.15
@@ -146,6 +172,7 @@ text = "Back"
 [connection signal="toggled" from="ScrollContainer/OptionContainer/InvertZoomCheck" to="." method="SetOption" binds= [ "Invert Zooming" ]]
 [connection signal="ValueChanged" from="ScrollContainer/OptionContainer/RotationSensitivitySlider" to="." method="SetOption" binds= [ "Rotation Sensitivity" ]]
 [connection signal="ValueChanged" from="ScrollContainer/OptionContainer/PanningSensitivitySlider" to="." method="SetOption" binds= [ "Panning Sensitivity" ]]
+[connection signal="toggled" from="ScrollContainer/OptionContainer/UseMoneyCheck" to="." method="SetOption" binds= [ "Use Money" ]]
 [connection signal="pressed" from="ResetButton" to="." method="ResetOptions"]
 [connection signal="pressed" from="BackButton" to="." method="CloseMe"]
 

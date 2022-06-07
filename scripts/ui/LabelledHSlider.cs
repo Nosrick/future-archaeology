@@ -6,6 +6,8 @@ namespace DiggyDig.scripts.ui
     public class LabelledHSlider : Control
     {
         protected Label NameLabel;
+        protected Label MinValueLabel;
+        protected Label MaxValueLabel;
         protected HSlider Slider;
 
         [Export] public double MinValue
@@ -21,11 +23,12 @@ namespace DiggyDig.scripts.ui
             }
             set
             {
-                if (this.Slider is null)
+                if (this.Slider is null || this.MinValueLabel is null)
                 {
                     return;
                 }
                 this.Slider.MinValue = value;
+                this.MinValueLabel.Text = value.ToString("0.##");
             }
         }
 
@@ -42,11 +45,12 @@ namespace DiggyDig.scripts.ui
             }
             set
             {
-                if (this.Slider is null)
+                if (this.Slider is null || this.MaxValueLabel is null)
                 {
                     return;
                 }
                 this.Slider.MaxValue = value;
+                this.MaxValueLabel.Text = value.ToString("0.##");
             }
         }
 
@@ -90,6 +94,8 @@ namespace DiggyDig.scripts.ui
         public override void _EnterTree()
         {
             this.NameLabel = this.GetNode<Label>("Name");
+            this.MinValueLabel = this.GetNode<Label>("MinValueLabel");
+            this.MaxValueLabel = this.GetNode<Label>("MaxValueLabel");
             this.Slider = this.GetNode<HSlider>("Slider");
 
             this.Slider.Connect("value_changed", this, nameof(this.OnValueChange));
