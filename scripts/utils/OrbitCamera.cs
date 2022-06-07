@@ -122,8 +122,6 @@ namespace DiggyDig.scripts.utils
 
             this.RotationSensitivity = optionHandler.GetOption<float>(optionHandler.RotationSensitivity);
             this.PanSensitivity = optionHandler.GetOption<float>(optionHandler.PanningSensitivity);
-            
-            GD.Print("Refreshed camera option variables");
         }
 
         protected void SetRotation()

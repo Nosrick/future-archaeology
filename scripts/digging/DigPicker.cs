@@ -21,13 +21,13 @@ namespace DiggyDig.scripts.digging
         {
             if (this.CameraPath is null)
             {
-                GD.Print("CAMERA PATH IS NULL");
+                GD.PrintErr("CAMERA PATH IS NULL");
                 return;
             }
 
             if (this.GridPath is null)
             {
-                GD.Print("GRID PATH IS NULL");
+                GD.PrintErr("GRID PATH IS NULL");
                 return;
             }
 
@@ -214,9 +214,6 @@ namespace DiggyDig.scripts.digging
                         break;
                     }
                 }
-            
-                //GD.Print(current);
-                //GD.Print(current - previous);
 
                 GlobalConstants.GameManager.ExecuteTool(current, previous);
 

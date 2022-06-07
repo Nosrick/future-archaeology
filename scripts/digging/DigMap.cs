@@ -93,9 +93,7 @@ namespace DiggyDig.scripts.digging
                 {
                     continue;
                 }
-                //Make the item glow or some shit
                 item.MakeMeGlow();
-                GD.Print("ITEM UNCOVERED! " + item.Name);
             }
         }
 

@@ -56,11 +56,10 @@ namespace DiggyDig.scripts.options
                 optionsFile.StoreString(result);
                 optionsFile.Close();
                 
-                GD.Print("Saved options!");
                 return true;
             }
 
-            GD.Print("Failed to save options!");
+            GD.PrintErr("Failed to save options!");
             return false;
         }
 
@@ -74,17 +73,16 @@ namespace DiggyDig.scripts.options
                 JSONParseResult parseResult = JSON.Parse(result);
                 if (parseResult.Error != Error.Ok)
                 {
-                    GD.Print("Failed to load options!");
+                    GD.PrintErr("Failed to load options!");
                     return false;
                 }
 
                 this.m_Options = (Dictionary) parseResult.Result;
 
-                GD.Print("Loaded options!");
                 return true;
             }
 
-            GD.Print("Failed to load options!");
+            GD.PrintErr("Failed to load options!");
             return false;
         }
 
