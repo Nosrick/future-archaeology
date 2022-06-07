@@ -65,7 +65,8 @@ namespace DiggyDig.scripts.digging
                 this.AddChild(item);
 
                 bool loopBreak = false;
-                while (!loopBreak)
+                int tries = 0;
+                while (!loopBreak && tries < 100)
                 {
                     foreach (var obj in item.GetCollidingBodies())
                     {
@@ -76,6 +77,8 @@ namespace DiggyDig.scripts.digging
                             break;
                         }
                     }
+
+                    tries += 1;
 
                     loopBreak = true;
                 }
