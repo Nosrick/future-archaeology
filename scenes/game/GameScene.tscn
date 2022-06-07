@@ -1,15 +1,15 @@
 [gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://scripts/utils/OrbitCamera.cs" type="Script" id=1]
-[ext_resource path="res://scripts/digging/DigMap.cs" type="Script" id=2]
-[ext_resource path="res://scripts/digging/DigPicker.cs" type="Script" id=3]
-[ext_resource path="res://assets/digging-meshlibrary.tres" type="MeshLibrary" id=4]
-[ext_resource path="res://scripts/GameManager.cs" type="Script" id=5]
-[ext_resource path="res://assets/default_environment.tres" type="Environment" id=6]
-[ext_resource path="res://scenes/ui/GameUI.tscn" type="PackedScene" id=7]
+[ext_resource path="res://assets/default_environment.tres" type="Environment" id=1]
+[ext_resource path="res://scenes/ui/GameUI.tscn" type="PackedScene" id=2]
+[ext_resource path="res://assets/digging-meshlibrary.tres" type="MeshLibrary" id=3]
+[ext_resource path="res://scripts/utils/OrbitCamera.cs" type="Script" id=4]
+[ext_resource path="res://scripts/digging/DigPicker.cs" type="Script" id=5]
+[ext_resource path="res://scripts/digging/DigMap.cs" type="Script" id=6]
+[ext_resource path="res://scripts/GameManager.cs" type="Script" id=7]
 
 [node name="Root" type="Spatial"]
-script = ExtResource( 5 )
+script = ExtResource( 7 )
 CashLabelPath = NodePath("UIRoot/GameUI/GameplayMarginContainer/GameplayLabelContainer/CashLabel")
 ToolLabelPath = NodePath("UIRoot/GameUI/GameplayMarginContainer/GameplayLabelContainer/ToolLabel")
 CameraPath = NodePath("OrbitAnchor/Camera")
@@ -18,13 +18,13 @@ CameraPath = NodePath("OrbitAnchor/Camera")
 
 [node name="Camera" type="Camera" parent="OrbitAnchor"]
 transform = Transform( 1, 0, 0, 0, 0.951482, 0.307705, 0, -0.307705, 0.951482, 0, 4.88126, 15 )
-environment = ExtResource( 6 )
-script = ExtResource( 1 )
+environment = ExtResource( 1 )
+script = ExtResource( 4 )
 OrbitTargetPath = NodePath("..")
 
 [node name="RayCast" type="RayCast" parent="OrbitAnchor/Camera"]
 cast_to = Vector3( 0, 0, -30 )
-script = ExtResource( 3 )
+script = ExtResource( 5 )
 CameraPath = NodePath("..")
 GridPath = NodePath("../../../DigMap")
 
@@ -35,22 +35,22 @@ spot_range = 18.382
 spot_angle = 26.84
 
 [node name="DigMap" type="GridMap" parent="."]
-mesh_library = ExtResource( 4 )
+mesh_library = ExtResource( 3 )
 cell_size = Vector3( 1, 1, 1 )
 data = {
 "cells": PoolIntArray(  )
 }
-script = ExtResource( 2 )
+script = ExtResource( 6 )
 __meta__ = {
 "_editor_clip_": 0,
-"_editor_floor_": Vector3( 0, 0, 0 )
+"_editor_floor_": Vector3( 0, -1, 0 )
 }
 
 [node name="UIRoot" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="GameUI" parent="UIRoot" instance=ExtResource( 7 )]
+[node name="GameUI" parent="UIRoot" instance=ExtResource( 2 )]
 
 [connection signal="pressed" from="UIRoot/GameUI/MarginContainer/HBoxContainer/ToolContainer/BrushButton" to="." method="SetTool" binds= [ "brush" ]]
 [connection signal="pressed" from="UIRoot/GameUI/MarginContainer/HBoxContainer/ToolContainer/ChiselButton" to="." method="SetTool" binds= [ "chisel" ]]
