@@ -1,16 +1,24 @@
 ﻿using DiggyDig.scripts.utils;
+using Godot;
 
 namespace DiggyDig.scripts.Tools
 {
     public class ChiselTool : ITool
     {
         public int Cost => 10;
+        public AudioStreamRandomPitch AssociatedSound { get; protected set; }
         public string Name => "Chisel";
+
+        public ChiselTool()
+        {
+            this.AssociatedSound = new AudioStreamRandomPitch();
+            this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/dirt-crunch-2.wav");
+            this.AssociatedSound.RandomPitch = 1.2f;
+        }
         
         public int Execute(Vector3Int hit, Vector3Int previous)
         {
-            int cell = GlobalConstants.GameManager.DiggingSpace.GetCellItem(hit.x, hit.y, hit.z);
-            GlobalConstants.GameManager.DiggingSpace.SetCellItem(hit.x, hit.y, hit.z, cell + 3);
+            GlobalConstants.GameManager.DiggingSpace.DamageCell(hit, 3);
             return this.Cost;
         }
     }

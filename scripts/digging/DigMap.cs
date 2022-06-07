@@ -24,13 +24,17 @@ namespace DiggyDig.scripts.digging
         protected List<DigItem> DigItems;
 
         protected Random Random;
+        
+        protected AudioStreamPlayer3D AudioStreamPlayer { get; set; }
     
         public override void _Ready()
         {
             this.Random = new Random();
             this.DiggingObjectScene = GD.Load<PackedScene>("scenes/game/DiggingObject.tscn");
             this.DigItems = new List<DigItem>();
-            
+
+            this.AudioStreamPlayer = this.GetNode<AudioStreamPlayer3D>("ToolSounds");
+
             this.ValidCells = this.MeshLibrary.GetItemList();
             this.Width = 5;
             this.Height = 5;
@@ -169,6 +173,8 @@ namespace DiggyDig.scripts.digging
             if (this.ValidCells.Contains(cell))
             {
                 this.SetCellItem(x, y, z, cell + damage);
+                this.AudioStreamPlayer.Stream = GlobalConstants.GameManager.CurrentTool?.AssociatedSound;
+                this.AudioStreamPlayer.Play();
             }
 
             return this.IsValid(new Vector3Int(x, y, z));

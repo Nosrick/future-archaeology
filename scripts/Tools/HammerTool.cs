@@ -8,12 +8,16 @@ namespace DiggyDig.scripts.Tools
     {
         public string Name => "Hammer";
         public int Cost => 40;
-        
+        public AudioStreamRandomPitch AssociatedSound { get; protected set; }
+
         public int Damage { get; protected set; }
 
         public HammerTool()
         {
             this.Damage = 3;
+            this.AssociatedSound = new AudioStreamRandomPitch();
+            this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/hammer-hit-1.wav");
+            this.AssociatedSound.RandomPitch = 1.2f;
         }
 
         public int Execute(Vector3Int hit, Vector3Int previous)

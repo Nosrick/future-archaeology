@@ -16,6 +16,7 @@ namespace DiggyDig.scripts.Tools
         protected const int Tiles = 20;
 
         protected const int Damage = 3;
+        public AudioStreamRandomPitch AssociatedSound { get; protected set; }
 
         protected static readonly Random Random = new Random();
         
