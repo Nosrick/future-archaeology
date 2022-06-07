@@ -20,6 +20,8 @@ namespace DiggyDig.scripts.utils
 
         protected const float RADIAN = Mathf.Pi / 2;
 
+        protected const float MIN_DISTANCE = 2f;
+
         protected bool Rotating { get; set; }
         protected bool Panning { get; set; }
         protected bool Zooming { get; set; }
@@ -93,7 +95,10 @@ namespace DiggyDig.scripts.utils
             }
             else if (this.Zooming)
             {
-                this.Translate(Vector3.Forward * this.ZoomingDelta * this.ZoomingDirection);
+                if (this.Translation.DistanceTo(this.OrbitTarget.Translation) > MIN_DISTANCE || this.ZoomingDelta < 0)
+                {
+                    this.Translate(Vector3.Forward * this.ZoomingDelta * this.ZoomingDirection);
+                }
             }
 
             if (this.Zooming)
