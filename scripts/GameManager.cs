@@ -15,7 +15,6 @@ namespace DiggyDig.scripts
 
         protected PackedScene OptionsPackedScene { get; set; }
         protected PackedScene LoanModalScene { get; set; }
-
         protected Options OptionsScreen { get; set; }
         protected LoanModal LoanModal { get; set; }
         
@@ -51,6 +50,8 @@ namespace DiggyDig.scripts
 
         protected Label CashLabel { get; set; }
         protected Label ToolLabel { get; set; }
+        
+        protected bool UseMoney { get; set; }
 
         public OrbitCamera Camera { get; protected set; }
 
@@ -59,6 +60,8 @@ namespace DiggyDig.scripts
 
         public override void _Ready()
         {
+            this.UseMoney = GlobalConstants.AppManager.OptionHandler.GetOption<bool>(GlobalConstants.AppManager.OptionHandler.UseMoney); 
+            
             this.OptionsPackedScene = GD.Load<PackedScene>("scenes/ui/Options.tscn");
             this.LoanModalScene = GD.Load<PackedScene>("scenes/ui/LoanModal.tscn");
 
@@ -70,7 +73,7 @@ namespace DiggyDig.scripts
 
             if (this.CashLabel is null == false)
             {
-                this.CashLabel.Text = CashString + this.Cash;
+                this.RefreshCashLabel();
             }
 
             if (this.ToolLabel is null == false)
@@ -114,9 +117,24 @@ namespace DiggyDig.scripts
             }
         }
 
+        protected void RefreshCashLabel()
+        {
+            if (this.UseMoney)
+            {
+                this.CashLabel.Show();
+                this.CashLabel.Text = CashString + this.Cash;
+            }
+            else
+            {
+                this.CashLabel.Hide();
+            }
+        }
+
         public void RefreshCameraOptions()
         {
             this.Camera.RefreshOptions();
+            this.UseMoney = GlobalConstants.AppManager.OptionHandler.GetOption<bool>(GlobalConstants.AppManager.OptionHandler.UseMoney);
+            this.RefreshCashLabel();
         }
 
         public void SetTool(string tool)
@@ -134,17 +152,25 @@ namespace DiggyDig.scripts
                 return;
             }
 
-            if (this.Cash - this.CurrentTool.Cost < 0)
+            if (this.UseMoney)
             {
-                if (this.LoanModal is null || IsInstanceValid(this.LoanModal) == false)
+                if (this.Cash - this.CurrentTool.Cost < 0)
                 {
-                    this.LoanModal = this.LoanModalScene.Instance<LoanModal>();
-                    this.AddChild(this.LoanModal);
-                }
-                return;
-            }
+                    if (this.LoanModal is null || IsInstanceValid(this.LoanModal) == false)
+                    {
+                        this.LoanModal = this.LoanModalScene.Instance<LoanModal>();
+                        this.AddChild(this.LoanModal);
+                    }
 
-            this.Cash -= this.CurrentTool.Execute(hit, previous);
+                    return;
+                }
+
+                this.Cash -= this.CurrentTool.Execute(hit, previous);
+            }
+            else
+            {
+                this.CurrentTool.Execute(hit, previous);
+            }
         }
     }
 }

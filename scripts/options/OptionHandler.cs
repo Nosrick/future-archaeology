@@ -20,6 +20,7 @@ namespace DiggyDig.scripts.options
         public readonly string InvertZooming = "Invert Zooming";
         public readonly string RotationSensitivity = "Rotation Sensitivity";
         public readonly string PanningSensitivity = "Panning Sensitivity";
+        public readonly string UseMoney = "Use Money";
 
         public readonly string OptionsFile = "user://options.dat";
         
@@ -41,7 +42,8 @@ namespace DiggyDig.scripts.options
                 {InvertYPanning, false},
                 {InvertZooming, false},
                 {RotationSensitivity, 0.1f},
-                {PanningSensitivity, 1f}
+                {PanningSensitivity, 1f},
+                {UseMoney, true}
             };
         }
         

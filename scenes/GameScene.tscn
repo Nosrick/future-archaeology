@@ -10,8 +10,8 @@
 
 [node name="Root" type="Spatial"]
 script = ExtResource( 5 )
-CashLabelPath = NodePath("UIRoot/GameUI/CashLabel")
-ToolLabelPath = NodePath("UIRoot/GameUI/ToolLabel")
+CashLabelPath = NodePath("UIRoot/GameUI/GameplayMarginContainer/GameplayLabelContainer/CashLabel")
+ToolLabelPath = NodePath("UIRoot/GameUI/GameplayMarginContainer/GameplayLabelContainer/ToolLabel")
 CameraPath = NodePath("OrbitAnchor/Camera")
 
 [node name="OrbitAnchor" type="Spatial" parent="."]
