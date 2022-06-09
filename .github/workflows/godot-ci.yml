@@ -1,0 +1,28 @@
+name: "atgb export"
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  GODOT_VERSION: 3.4.4
+  EXPORT_NAME: aTimeGoneBy
+
+jobs:
+  export-windows:
+    name: Windows Export
+    runs-on: ubuntu-20.04
+    container:
+      image: barichello/godot-ci:mono-3.4.4
+    steps:
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/templates
+          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable.mono.official ~/.local/share/godot/templates/${GODOT_VERSION}.stable.mono.official
+      - name: Windows Build
+        run: |
+          mkdir -v -p build/windows
+          cd $EXPORT_NAME
+          godot -v --export "Windows Desktop" ../build/windows/$EXPORT_NAME.exe
