@@ -43,7 +43,7 @@ jobs:
     name: Web Export
     runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:mono-$GODOT_VERSION
+      image: barichello/godot-ci:mono-${{env.GODOT_VERSION}}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
