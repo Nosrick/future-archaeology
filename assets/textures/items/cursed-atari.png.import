@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/cursed-atari.png-f4575c66adccaae77a7ffd96f59c08cf.stex"
+path="res://.import/cursed-atari.png-d79f69fc463c16ddaa2bc96e8b70f098.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/items/cursed-atari.png"
-dest_files=[ "res://.import/cursed-atari.png-f4575c66adccaae77a7ffd96f59c08cf.stex" ]
+source_file="C:/Users/nosri/Projects/DiggyDig/assets/textures/items/cursed-atari.png"
+dest_files=[ "res://.import/cursed-atari.png-d79f69fc463c16ddaa2bc96e8b70f098.stex" ]
 
 [params]
 

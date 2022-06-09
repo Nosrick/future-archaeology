@@ -2,8 +2,8 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/full-cube.png-d5ddc58d6cd056807ec3417aef58fe04.s3tc.stex"
-path.etc2="res://.import/full-cube.png-d5ddc58d6cd056807ec3417aef58fe04.etc2.stex"
+path.s3tc="res://.import/full-cube.png-2ccdf730a19188b6195bbaa31a257e89.s3tc.stex"
+path.etc2="res://.import/full-cube.png-2ccdf730a19188b6195bbaa31a257e89.etc2.stex"
 metadata={
 "imported_formats": [ "s3tc", "etc2" ],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/digging/full-cube.png"
-dest_files=[ "res://.import/full-cube.png-d5ddc58d6cd056807ec3417aef58fe04.s3tc.stex", "res://.import/full-cube.png-d5ddc58d6cd056807ec3417aef58fe04.etc2.stex" ]
+source_file="C:/Users/nosri/Projects/DiggyDig/assets/textures/digging/full-cube.png"
+dest_files=[ "res://.import/full-cube.png-2ccdf730a19188b6195bbaa31a257e89.s3tc.stex", "res://.import/full-cube.png-2ccdf730a19188b6195bbaa31a257e89.etc2.stex" ]
 
 [params]
 
