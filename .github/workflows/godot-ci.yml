@@ -8,12 +8,12 @@ on:
 
 env:
   GODOT_VERSION: 3.4.4
-  EXPORT_NAME: aTimeGoneBy
+  EXPORT_NAME: ATimeGoneBy
 
 jobs:
   export-windows:
     name: Windows Export
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     container:
       image: barichello/godot-ci:mono-3.4.4
     steps:
@@ -30,6 +30,7 @@ jobs:
       - name: Windows Build
         run: |
           mkdir -v -p build/windows
+          cd $EXPORT_NAME
           godot -v --export "Windows Desktop" ../build/windows/$EXPORT_NAME.exe
           
       - name: Upload Artifact
