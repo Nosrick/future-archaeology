@@ -1,1 +1,3 @@
-﻿/.idea/.idea.DiggyDig/.idea/
+﻿/.idea/*
+/.mono/*
+/export/*
