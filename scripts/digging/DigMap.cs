@@ -29,6 +29,7 @@ namespace ATimeGoneBy.scripts.digging
     
         public override void _Ready()
         {
+            this.SetPhysicsProcess(false);
             this.Random = new Random();
             this.DiggingObjectScene = GD.Load<PackedScene>("scenes/game/DiggingObject.tscn");
             this.DigItems = new List<DigItem>();
@@ -52,6 +53,24 @@ namespace ATimeGoneBy.scripts.digging
             }
             
             this.PlaceObjects();
+            
+            this.BeginProcessing();
+        }
+
+        public override void _PhysicsProcess(float delta)
+        {
+            base._PhysicsProcess(delta);
+            
+            this.CheckForUncovered();
+        }
+
+        protected async void BeginProcessing()
+        {
+            SceneTreeTimer timer = this.GetTree().CreateTimer(1f);
+            
+            await this.ToSignal(timer, "timeout");
+            
+            this.SetPhysicsProcess(true);
         }
 
         protected void PlaceObjects()

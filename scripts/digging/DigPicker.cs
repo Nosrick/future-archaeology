@@ -210,7 +210,6 @@ namespace ATimeGoneBy.scripts.digging
 
                     if (this.DigMap.IsValid(current))
                     {
-                        this.DigMap.CheckForUncovered();
                         break;
                     }
                 }
