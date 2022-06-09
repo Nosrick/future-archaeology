@@ -63,5 +63,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: web
+          name: ATGB-web
           path: build/web
