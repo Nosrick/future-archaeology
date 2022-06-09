@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DiggyDig.scripts.utils;
+using ATimeGoneBy.scripts.utils;
 using Godot;
 using Array = Godot.Collections.Array;
 
-namespace DiggyDig.scripts.digging
+namespace ATimeGoneBy.scripts.digging
 {
     public class DigMap : GridMap
     {

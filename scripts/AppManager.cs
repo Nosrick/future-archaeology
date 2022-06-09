@@ -1,7 +1,7 @@
-using DiggyDig.scripts.options;
+using ATimeGoneBy.scripts.options;
 using Godot;
 
-namespace DiggyDig.scripts
+namespace ATimeGoneBy.scripts
 {
     public class AppManager : Spatial
     {

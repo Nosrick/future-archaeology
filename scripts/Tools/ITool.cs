@@ -1,7 +1,7 @@
-﻿using DiggyDig.scripts.utils;
+﻿using ATimeGoneBy.scripts.utils;
 using Godot;
 
-namespace DiggyDig.scripts.Tools
+namespace ATimeGoneBy.scripts.tools
 {
     public interface ITool
     {

@@ -1,4 +1,4 @@
-﻿namespace DiggyDig.scripts
+﻿namespace ATimeGoneBy.scripts
 {
     public class GlobalConstants
     {

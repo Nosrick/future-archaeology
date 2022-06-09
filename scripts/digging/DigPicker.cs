@@ -1,8 +1,8 @@
-using DiggyDig.scripts.utils;
+using ATimeGoneBy.scripts.utils;
 using Godot;
 using Godot.Collections;
 
-namespace DiggyDig.scripts.digging
+namespace ATimeGoneBy.scripts.digging
 {
     public class DigPicker : RayCast
     {

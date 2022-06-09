@@ -1,6 +1,6 @@
 ﻿using Godot;
 
-namespace DiggyDig.scripts.utils
+namespace ATimeGoneBy.scripts.utils
 {
     public struct Vector3Int
     {

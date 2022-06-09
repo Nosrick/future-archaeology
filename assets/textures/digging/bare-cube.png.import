@@ -2,8 +2,8 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/bare-cube.png-5524991d1ed3a2d2f03d656427848698.s3tc.stex"
-path.etc2="res://.import/bare-cube.png-5524991d1ed3a2d2f03d656427848698.etc2.stex"
+path.s3tc="res://.import/bare-cube.png-3fd9198714903e35707ceaa41a82918a.s3tc.stex"
+path.etc2="res://.import/bare-cube.png-3fd9198714903e35707ceaa41a82918a.etc2.stex"
 metadata={
 "imported_formats": [ "s3tc", "etc2" ],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="C:/Users/nosri/Projects/DiggyDig/assets/textures/digging/bare-cube.png"
-dest_files=[ "res://.import/bare-cube.png-5524991d1ed3a2d2f03d656427848698.s3tc.stex", "res://.import/bare-cube.png-5524991d1ed3a2d2f03d656427848698.etc2.stex" ]
+source_file="res://assets/textures/digging/bare-cube.png"
+dest_files=[ "res://.import/bare-cube.png-3fd9198714903e35707ceaa41a82918a.s3tc.stex", "res://.import/bare-cube.png-3fd9198714903e35707ceaa41a82918a.etc2.stex" ]
 
 [params]
 

@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiggyDig", "DiggyDig.csproj", "{A1EAB6E9-ABEF-4A36-ADD2-456766333E90}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATimeGoneBy", "ATimeGoneBy.csproj", "{A1EAB6E9-ABEF-4A36-ADD2-456766333E90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

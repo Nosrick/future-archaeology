@@ -1,6 +1,6 @@
 using Godot;
 
-namespace DiggyDig.scripts.ui
+namespace ATimeGoneBy.scripts.ui
 {
     [Tool]
     public class LabelledHSlider : Control

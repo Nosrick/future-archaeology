@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using DiggyDig.scripts.digging;
-using DiggyDig.scripts.Tools;
-using DiggyDig.scripts.ui;
-using DiggyDig.scripts.utils;
+using ATimeGoneBy.scripts.digging;
+using ATimeGoneBy.scripts.tools;
+using ATimeGoneBy.scripts.ui;
+using ATimeGoneBy.scripts.utils;
 using Godot;
 
-namespace DiggyDig.scripts
+namespace ATimeGoneBy.scripts
 {
     public class GameManager : Spatial
     {

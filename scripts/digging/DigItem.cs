@@ -1,6 +1,6 @@
 ﻿using Godot;
 
-namespace DiggyDig.scripts.digging
+namespace ATimeGoneBy.scripts.digging
 {
     public class DigItem : RigidBody
     {

@@ -1,8 +1,8 @@
-﻿using DiggyDig.scripts.digging;
-using DiggyDig.scripts.utils;
+﻿using ATimeGoneBy.scripts.digging;
+using ATimeGoneBy.scripts.utils;
 using Godot;
 
-namespace DiggyDig.scripts.Tools
+namespace ATimeGoneBy.scripts.tools
 {
     public class HammerTool : ITool
     {

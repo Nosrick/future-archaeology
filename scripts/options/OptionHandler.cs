@@ -1,7 +1,7 @@
 ﻿using Godot;
 using Godot.Collections;
 
-namespace DiggyDig.scripts.options
+namespace ATimeGoneBy.scripts.options
 {
     public class OptionHandler
     {

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DiggyDig.scripts.digging;
-using DiggyDig.scripts.utils;
+using ATimeGoneBy.scripts.digging;
+using ATimeGoneBy.scripts.utils;
 using Godot;
 using Array = Godot.Collections.Array;
 
-namespace DiggyDig.scripts.Tools
+namespace ATimeGoneBy.scripts.tools
 {
     public class BombTool : ITool
     {

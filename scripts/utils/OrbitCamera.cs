@@ -1,7 +1,7 @@
-using DiggyDig.scripts.options;
+using ATimeGoneBy.scripts.options;
 using Godot;
 
-namespace DiggyDig.scripts.utils
+namespace ATimeGoneBy.scripts.utils
 {
     public class OrbitCamera : Camera
     {
