@@ -36,5 +36,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: ${EXPORT_NAME}-Windows
+          name: $EXPORT_NAME-Windows
           path: build/windows
