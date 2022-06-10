@@ -10,6 +10,9 @@ namespace ATimeGoneBy.scripts.digging
         
         protected ShaderMaterial OutlineMaterial { get; set; }
         protected Material MyMaterial { get; set; }
+        protected AnimationPlayer MyAnimationPlayer { get; set; }
+
+        public const string PICKUP_ANIM = "PickupBounce";
         
         [Export] public int CashValue { get; protected set; }
 
@@ -19,6 +22,7 @@ namespace ATimeGoneBy.scripts.digging
 
             this.ObjectMesh = this.GetNode<MeshInstance>("ObjectMesh");
             this.CollisionShape = this.GetNode<CollisionShape>("CollisionShape");
+            this.MyAnimationPlayer = this.GetNode<AnimationPlayer>("AnimationPlayer");
 
             this.ObjectMesh = (MeshInstance) this.ObjectMesh.Duplicate();
             
@@ -32,6 +36,11 @@ namespace ATimeGoneBy.scripts.digging
         public void MakeMeGlow()
         {
             this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+        }
+
+        public void PlayPickupAnimation()
+        {
+            this.MyAnimationPlayer.Play(PICKUP_ANIM);
         }
 
         public void AssignObject(MeshInstance meshInstance, int cashValue)

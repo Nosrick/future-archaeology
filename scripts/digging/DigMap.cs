@@ -138,14 +138,21 @@ namespace ATimeGoneBy.scripts.digging
                 Array collisionObjects = removed.GetCollidingBodies();
                 if (collisionObjects.Contains(this) == false)
                 {
+                    removed.PlayPickupAnimation();
                     GlobalConstants.GameManager.Cash += removed.CashValue;
-                    this.RemoveChild(removed);
                     this.PickupAudioPlayer.Play();
+                    SceneTreeTimer timer = this.GetTree().CreateTimer(0.25f);
+                    timer.Connect("timeout", this, nameof(this.DelayedRemoval), new Array {removed});
                     return true;
                 }
             }
 
             return false;
+        }
+
+        protected void DelayedRemoval(Node removal)
+        {
+            this.RemoveChild(removal);
         }
 
         protected Vector3 RandomPosition()

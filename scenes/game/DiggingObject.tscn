@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://assets/textures/items/cursed-atari.png" type="Texture" id=1]
 [ext_resource path="res://scripts/digging/DigItem.cs" type="Script" id=2]
@@ -29,6 +29,37 @@ surfaces/0 = {
 [sub_resource type="ConvexPolygonShape" id=1]
 points = PoolVector3Array( -1.06681, -1.2, 0, -1.00019, -1.2, -0.32, -1.00019, -1.2, 0.32, -1.06681, 1.2, 0, 0.999981, -1.2, -0.32, -1.00019, 1.2, -0.32, 0.999981, -1.2, 0.32, -1.00019, 1.2, 0.32, 1.06681, -1.2, 0, 0.999981, 1.2, -0.32, 0.999981, 1.2, 0.32, 1.06681, 1.2, 0 )
 
+[sub_resource type="Animation" id=4]
+resource_name = "PickupBounce"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector3( 1, 1, 1 ), Vector3( 1.4, 1.4, 1.4 ), Vector3( 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=5]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 1, 1, 1 ) ]
+}
+
 [node name="DiggingObject" type="RigidBody"]
 mode = 3
 continuous_cd = true
@@ -45,3 +76,7 @@ material/0 = null
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 1 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/PickupBounce = SubResource( 4 )
+anims/RESET = SubResource( 5 )
