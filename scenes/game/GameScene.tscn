@@ -47,6 +47,11 @@ __meta__ = {
 }
 
 [node name="ToolSounds" type="AudioStreamPlayer3D" parent="DigMap"]
+bus = "Tool Sounds"
+
+[node name="PickupSounds" type="AudioStreamPlayer3D" parent="DigMap"]
+unit_db = 21.256
+bus = "Pickup Sounds"
 
 [node name="UIRoot" type="Control" parent="."]
 anchor_right = 1.0

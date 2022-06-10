@@ -18,15 +18,18 @@ namespace ATimeGoneBy.scripts.digging
         public const int HALF_CUBE = 1;
         public const int BARE_CUBE = 2;
         public const int EMPTY_CELL = -1;
-        
+
         protected PackedScene DiggingObjectScene { get; set; }
 
         protected List<DigItem> DigItems;
 
         protected Random Random;
-        
-        protected AudioStreamPlayer3D AudioStreamPlayer { get; set; }
-    
+
+        protected AudioStreamPlayer3D ToolAudioPlayer { get; set; }
+        protected AudioStreamPlayer3D PickupAudioPlayer { get; set; }
+
+        protected AudioStreamRandomPitch ItemPickUpSound { get; set; }
+
         public override void _Ready()
         {
             this.SetPhysicsProcess(false);
@@ -34,13 +37,20 @@ namespace ATimeGoneBy.scripts.digging
             this.DiggingObjectScene = GD.Load<PackedScene>("scenes/game/DiggingObject.tscn");
             this.DigItems = new List<DigItem>();
 
-            this.AudioStreamPlayer = this.GetNode<AudioStreamPlayer3D>("ToolSounds");
+            this.ItemPickUpSound = new AudioStreamRandomPitch();
+            this.ItemPickUpSound.AudioStream = GD.Load<AudioStream>("assets/sounds/money-get.wav");
+            this.ItemPickUpSound.RandomPitch = 1.1f;
+
+            this.ToolAudioPlayer = this.GetNode<AudioStreamPlayer3D>("ToolSounds");
+            this.PickupAudioPlayer = this.GetNode<AudioStreamPlayer3D>("PickupSounds");
+
+            this.PickupAudioPlayer.Stream = this.ItemPickUpSound;
 
             this.ValidCells = this.MeshLibrary.GetItemList();
             this.Width = 5;
             this.Height = 5;
             this.Depth = 5;
-        
+
             for (int x = -this.Width; x <= this.Width; x++)
             {
                 for (int y = -this.Height; y <= this.Height; y++)
@@ -51,25 +61,25 @@ namespace ATimeGoneBy.scripts.digging
                     }
                 }
             }
-            
+
             this.PlaceObjects();
-            
+
             this.BeginProcessing();
         }
 
         public override void _PhysicsProcess(float delta)
         {
             base._PhysicsProcess(delta);
-            
+
             this.CheckForUncovered();
         }
 
         protected async void BeginProcessing()
         {
             SceneTreeTimer timer = this.GetTree().CreateTimer(1f);
-            
+
             await this.ToSignal(timer, "timeout");
-            
+
             this.SetPhysicsProcess(true);
         }
 
@@ -116,6 +126,7 @@ namespace ATimeGoneBy.scripts.digging
                 {
                     continue;
                 }
+
                 item.MakeMeGlow();
             }
         }
@@ -129,6 +140,7 @@ namespace ATimeGoneBy.scripts.digging
                 {
                     GlobalConstants.GameManager.Cash += removed.CashValue;
                     this.RemoveChild(removed);
+                    this.PickupAudioPlayer.Play();
                     return true;
                 }
             }
@@ -192,8 +204,13 @@ namespace ATimeGoneBy.scripts.digging
             if (this.ValidCells.Contains(cell))
             {
                 this.SetCellItem(x, y, z, cell + damage);
-                this.AudioStreamPlayer.Stream = GlobalConstants.GameManager.CurrentTool?.AssociatedSound;
-                this.AudioStreamPlayer.Play();
+                var sound = GlobalConstants.GameManager.CurrentTool?.AssociatedSound;
+                if (this.ToolAudioPlayer.Stream != sound)
+                {
+                    this.ToolAudioPlayer.Stream = sound;
+                }
+
+                this.ToolAudioPlayer.Play();
             }
 
             return this.IsValid(new Vector3Int(x, y, z));

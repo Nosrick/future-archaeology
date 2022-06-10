@@ -13,7 +13,7 @@ namespace ATimeGoneBy.scripts.tools
         {
             this.AssociatedSound = new AudioStreamRandomPitch();
             this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/dirt-crunch-5.wav");
-            this.AssociatedSound.RandomPitch = 1.2f;
+            this.AssociatedSound.RandomPitch = 1.1f;
         }
         
         public int Execute(Vector3Int hit, Vector3Int previous)
