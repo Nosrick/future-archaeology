@@ -124,11 +124,12 @@ namespace ATimeGoneBy.scripts.digging
         {
             foreach (DigItem item in this.DigItems)
             {
-                if (item.GetCollidingBodies().Contains(this))
+                if (item.Uncovered || item.GetCollidingBodies().Contains(this))
                 {
                     continue;
                 }
 
+                item.MarkMeUncovered();
                 item.MakeMeGlow();
             }
         }

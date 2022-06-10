@@ -17,6 +17,8 @@ namespace ATimeGoneBy.scripts.digging
         protected AnimationPlayer MyAnimationPlayer { get; set; }
         
         protected bool PathsRetrieved { get; set; }
+        
+        public bool Uncovered { get; protected set; }
 
         public const string PICKUP_ANIM = "PickupBounce";
 
@@ -57,6 +59,11 @@ namespace ATimeGoneBy.scripts.digging
             this.ObjectMesh.Mesh = this.ObjectMesh.Mesh.Duplicate() as Mesh;
             this.MyMaterial = this.MyMaterial.Duplicate() as Material;
             this.ObjectMesh.Mesh?.SurfaceSetMaterial(0, this.MyMaterial);
+        }
+
+        public void MarkMeUncovered()
+        {
+            this.Uncovered = true;
         }
 
         public void MakeMeGlow()
