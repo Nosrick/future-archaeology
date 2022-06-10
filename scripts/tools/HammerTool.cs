@@ -16,7 +16,7 @@ namespace ATimeGoneBy.scripts.tools
         {
             this.Damage = 3;
             this.AssociatedSound = new AudioStreamRandomPitch();
-            this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/hammer-hit-1.wav");
+            this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/hammer-hit-2.wav");
             this.AssociatedSound.RandomPitch = 1.2f;
         }
 

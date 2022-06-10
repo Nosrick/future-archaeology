@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/paper-crumpling.wav-c5a90e7d500c02a7ce1b6f43d7aa41a8.sample"
+
+[deps]
+
+source_file="res://assets/sounds/drafts/paper-crumpling.wav"
+dest_files=[ "res://.import/paper-crumpling.wav-c5a90e7d500c02a7ce1b6f43d7aa41a8.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

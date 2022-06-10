@@ -12,7 +12,7 @@ namespace ATimeGoneBy.scripts.tools
         public ChiselTool()
         {
             this.AssociatedSound = new AudioStreamRandomPitch();
-            this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/dirt-crunch-2.wav");
+            this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/dirt-crunch-5.wav");
             this.AssociatedSound.RandomPitch = 1.2f;
         }
         

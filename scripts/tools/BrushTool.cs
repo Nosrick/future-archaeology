@@ -12,8 +12,8 @@ namespace ATimeGoneBy.scripts.tools
         public BrushTool()
         {
             this.AssociatedSound = new AudioStreamRandomPitch();
-            this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/brush-1.wav");
-            this.AssociatedSound.RandomPitch = 1.2f;
+            this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/brush-3.wav");
+            this.AssociatedSound.RandomPitch = 1.1f;
         }
         
         public int Execute(Vector3Int hit, Vector3Int previous)
