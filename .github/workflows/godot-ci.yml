@@ -3,12 +3,8 @@ name: "atgb export"
 on:
   push:
     branches: [ "master" ]
-    tags:
-      - "*"
   pull_request:
     branches: [ "master" ]
-    tags:
-      - "*"
 
 env:
   GODOT_VERSION: 3.4.4
@@ -43,5 +39,6 @@ jobs:
           name: ATGB-Windows
           path: build/windows
 
-      - name: Create Release
+      - name: Release
         uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'ref/tags/')
