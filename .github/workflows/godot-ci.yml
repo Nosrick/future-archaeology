@@ -38,3 +38,6 @@ jobs:
         with:
           name: ATGB-Windows
           path: build/windows
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
