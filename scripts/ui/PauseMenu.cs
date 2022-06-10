@@ -17,6 +17,7 @@ namespace ATimeGoneBy.scripts.ui
 
         public void Resume()
         {
+            GlobalConstants.GameManager.ProcessClicks = true;
             this.Hide();
         }
 
@@ -25,7 +26,7 @@ namespace ATimeGoneBy.scripts.ui
             File saveFile = new File();
             if (saveFile.Open("user://save.dat", File.ModeFlags.Write) == Error.Ok)
             {
-                saveFile.StoreVar(GlobalConstants.GameManager.DiggingSpace.Save());
+                saveFile.StoreVar(GlobalConstants.GameManager.Save());
                 saveFile.Close();
                 
                 GD.Print("Game saved!");

@@ -53,6 +53,13 @@ namespace ATimeGoneBy.scripts.digging
             this.Height = 5;
             this.Depth = 5;
 
+            this.GenerateDigSite();
+        }
+
+        public void GenerateDigSite()
+        {
+            this.Clear();
+            
             for (int x = -this.Width; x <= this.Width; x++)
             {
                 for (int y = -this.Height; y <= this.Height; y++)
@@ -65,7 +72,7 @@ namespace ATimeGoneBy.scripts.digging
             }
 
             this.PlaceObjects();
-
+            
             this.BeginProcessing();
         }
 
@@ -152,6 +159,11 @@ namespace ATimeGoneBy.scripts.digging
             }
 
             return false;
+        }
+
+        public bool LevelComplete()
+        {
+            return !this.DigItems.Any();
         }
 
         protected void DelayedRemoval(Node removal)

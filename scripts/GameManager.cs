@@ -4,6 +4,7 @@ using ATimeGoneBy.scripts.tools;
 using ATimeGoneBy.scripts.ui;
 using ATimeGoneBy.scripts.utils;
 using Godot;
+using Godot.Collections;
 
 namespace ATimeGoneBy.scripts
 {
@@ -41,7 +42,7 @@ namespace ATimeGoneBy.scripts
 
         public OrbitCamera Camera { get; protected set; }
         
-        public bool ProcessClicks { get; protected set; }
+        public bool ProcessClicks { get; set; }
 
         protected const string CurrentToolString = "Current Tool: ";
 
@@ -59,7 +60,7 @@ namespace ATimeGoneBy.scripts
                 this.ToolLabel.Text = CurrentToolString + "None";
             }
 
-            this.ToolBox = new Dictionary<string, ITool>
+            this.ToolBox = new System.Collections.Generic.Dictionary<string, ITool>
             {
                 {"brush", new BrushTool()},
                 {"chisel", new ChiselTool()},
@@ -73,7 +74,7 @@ namespace ATimeGoneBy.scripts
 
             if (GlobalConstants.AppManager.SaveState is null == false)
             {
-                this.DiggingSpace.Load(GlobalConstants.AppManager.SaveState);
+                this.Load(GlobalConstants.AppManager.SaveState);
             }
 
             GlobalConstants.GameManager = this;
@@ -110,6 +111,18 @@ namespace ATimeGoneBy.scripts
             }
         }
 
+        public override void _PhysicsProcess(float delta)
+        {
+            base._PhysicsProcess(delta);
+
+            if (this.DiggingSpace.LevelComplete())
+            {
+                this.DiggingSpace.SetPhysicsProcess(false);
+                GD.Print("LEVEL COMPLETE!");
+                this.DiggingSpace.GenerateDigSite();
+            }
+        }
+
         public void RefreshCameraOptions()
         {
             this.Camera.RefreshOptions();
@@ -126,6 +139,29 @@ namespace ATimeGoneBy.scripts
         public void ExecuteTool(Vector3Int hit, Vector3Int previous)
         {
             this.CurrentTool?.Execute(hit, previous);
+        }
+
+        public void GenerateLevel()
+        {
+            this.DiggingSpace.GenerateDigSite();
+        }
+
+        public Dictionary Save()
+        {
+            Dictionary saveDict = new Dictionary();
+            
+            saveDict.Add("cash", this.Cash);
+            saveDict.Add("dig-site", this.DiggingSpace.Save());
+
+            return saveDict;
+        }
+
+        public bool Load(Dictionary data)
+        {
+            this.Cash = (int) data["cash"];
+            this.DiggingSpace.Load(data["dig-site"] as Dictionary);
+
+            return true;
         }
     }
 }
