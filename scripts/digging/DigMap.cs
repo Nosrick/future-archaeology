@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ATimeGoneBy.scripts.utils;
 using Godot;
+using Godot.Collections;
 using Array = Godot.Collections.Array;
 
 namespace ATimeGoneBy.scripts.digging
@@ -143,6 +145,7 @@ namespace ATimeGoneBy.scripts.digging
                     this.PickupAudioPlayer.Play();
                     SceneTreeTimer timer = this.GetTree().CreateTimer(0.25f);
                     timer.Connect("timeout", this, nameof(this.DelayedRemoval), new Array {removed});
+                    this.DigItems.Remove(removed);
                     return true;
                 }
             }
@@ -221,6 +224,77 @@ namespace ATimeGoneBy.scripts.digging
             }
 
             return this.IsValid(new Vector3Int(x, y, z));
+        }
+
+        public Dictionary Save()
+        {
+            Dictionary saveDict = new Dictionary();
+
+            Dictionary tiles = new Dictionary();
+            foreach (Vector3 t in this.GetUsedCells())
+            {
+                Vector3Int tile = new Vector3Int(t);
+                int result = this.GetCellItem(tile.x, tile.y, tile.z);
+
+                tiles.Add(t, result);
+            }
+            
+            saveDict.Add("tiles", tiles);
+
+            Array objects = new Array();
+            foreach (DigItem item in this.DigItems)
+            {
+                objects.Add(item.Save());
+            }
+            
+            saveDict.Add("objects", objects);
+
+            return saveDict;
+        }
+
+        public bool Load(Dictionary data)
+        {
+            if (!data.Contains("tiles"))
+            {
+                return false;
+            }
+            
+            this.Clear();
+            
+            Dictionary tiles = data["tiles"] as Dictionary;
+            foreach (DictionaryEntry tile in tiles)
+            {
+                Vector3Int pos = new Vector3Int((Vector3) tile.Key);
+                int cell = (int) tile.Value;
+                
+                this.SetCellItem(pos.x, pos.y, pos.z, cell);
+            }
+
+            if (!data.Contains("objects"))
+            {
+                return false;
+            }
+
+            foreach (Node node in this.GetChildren())
+            {
+                if (node is DigItem digItem)
+                {
+                    this.DigItems.Remove(digItem);
+                    digItem.QueueFree();
+                }
+            }
+
+            Array objects = (Array) data["objects"];
+            PackedScene digItemPackedScene = GD.Load<PackedScene>(GlobalConstants.DigItemLocation);
+            foreach (Dictionary itemDict in objects)
+            {
+                DigItem digItem = digItemPackedScene.Instance<DigItem>();
+                digItem.Load(itemDict);
+                this.DigItems.Add(digItem);
+                this.AddChild(digItem);
+            }
+
+            return true;
         }
     }
 }

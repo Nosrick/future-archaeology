@@ -44,6 +44,7 @@ namespace ATimeGoneBy.scripts.ui
         public void CloseMe()
         {
             GlobalConstants.AppManager.OptionHandler.SaveOptions();
+            GlobalConstants.GameManager.RefreshCameraOptions();
             this.QueueFree();
         }
 

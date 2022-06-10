@@ -13,8 +13,8 @@ namespace ATimeGoneBy.scripts
 
         public IDictionary<string, ITool> ToolBox { get; protected set; }
 
-        protected PackedScene OptionsPackedScene { get; set; }
-        protected Options OptionsScreen { get; set; }
+        protected PackedScene PauseMenuPackedScene { get; set; }
+        protected PauseMenu PauseMenuScreen { get; set; }
 
         public ITool CurrentTool
         {
@@ -40,13 +40,14 @@ namespace ATimeGoneBy.scripts
         protected Label ToolLabel { get; set; }
 
         public OrbitCamera Camera { get; protected set; }
+        
+        public bool ProcessClicks { get; protected set; }
 
-        protected const string CashString = "BiggaBux: ";
         protected const string CurrentToolString = "Current Tool: ";
 
         public override void _Ready()
         {
-            this.OptionsPackedScene = GD.Load<PackedScene>("scenes/ui/Options.tscn");
+            this.PauseMenuPackedScene = GD.Load<PackedScene>(GlobalConstants.PauseMenuLocation);
 
             this.DiggingSpace = this.GetNode<DigMap>("DigMap");
 
@@ -68,6 +69,13 @@ namespace ATimeGoneBy.scripts
 
             this.Cash = 500;
 
+            this.ProcessClicks = true;
+
+            if (GlobalConstants.AppManager.SaveState is null == false)
+            {
+                this.DiggingSpace.Load(GlobalConstants.AppManager.SaveState);
+            }
+
             GlobalConstants.GameManager = this;
         }
 
@@ -78,17 +86,25 @@ namespace ATimeGoneBy.scripts
             {
                 if (eventKey.IsActionReleased("open_pause_menu"))
                 {
-                    if (this.OptionsScreen is null || IsInstanceValid(this.OptionsScreen) == false)
+                    if (this.PauseMenuScreen is null || IsInstanceValid(this.PauseMenuScreen) == false)
                     {
-                        this.OptionsScreen = this.OptionsPackedScene.Instance<Options>();
-                        this.AddChild(this.OptionsScreen);
+                        this.PauseMenuScreen = this.PauseMenuPackedScene.Instance<PauseMenu>();
+                        this.AddChild(this.PauseMenuScreen);
 
-                        this.OptionsScreen.Connect("tree_exiting", this, "RefreshCameraOptions");
+                        this.ProcessClicks = false;
                     }
-                    else if (IsInstanceValid(this.OptionsScreen))
+                    else if (IsInstanceValid(this.PauseMenuScreen))
                     {
-                        this.OptionsScreen?.CloseMe();
-                        this.Camera.RefreshOptions();
+                        if (this.PauseMenuScreen.Visible == false)
+                        {
+                            this.PauseMenuScreen.Show();
+                            this.ProcessClicks = false;
+                        }
+                        else
+                        {
+                            this.PauseMenuScreen.Hide();
+                            this.ProcessClicks = true;
+                        }
                     }
                 }
             }

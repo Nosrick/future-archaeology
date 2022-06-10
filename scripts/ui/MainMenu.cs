@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 
 namespace ATimeGoneBy.scripts.ui
 {
@@ -9,8 +10,8 @@ namespace ATimeGoneBy.scripts.ui
 
         public override void _Ready()
         {
-            this.OptionsScreen = GD.Load<PackedScene>("scenes/ui/Options.tscn");
-            this.GameScreen = GD.Load<PackedScene>("scenes/game/GameScene.tscn");
+            this.OptionsScreen = GD.Load<PackedScene>(GlobalConstants.OptionsMenuLocation);
+            this.GameScreen = GD.Load<PackedScene>(GlobalConstants.GameSceneLocation);
         }
 
         public void ChangeScreen(string screen)
@@ -19,8 +20,28 @@ namespace ATimeGoneBy.scripts.ui
             {
                 this.GetTree().ChangeSceneTo(this.GameScreen);
             }
+            else if (screen == "load-game")
+            {
+                File saveGame = new File();
+                if (saveGame.Open("user://save.dat", File.ModeFlags.Read) != Error.Ok)
+                {
+                    GD.PrintErr("COULD NOT OPEN SAVE FILE");
+                    return;
+                }
 
-            if (screen == "options")
+                var obj = saveGame.GetVar();
+                if (!(obj is Dictionary gameState))
+                {
+                    GD.PrintErr("COULD NOT PARSE SAVE TO NODE");
+                    return;
+                }
+
+                GlobalConstants.AppManager.SaveState = gameState;
+                
+                GD.Print("Seems legit?");
+                this.GetTree().ChangeScene(GlobalConstants.GameSceneLocation);
+            }
+            else if (screen == "options")
             {
                 this.AddChild(this.OptionsScreen.Instance());
             }
