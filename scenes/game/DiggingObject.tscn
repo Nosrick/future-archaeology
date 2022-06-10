@@ -31,7 +31,7 @@ points = PoolVector3Array( -1.06681, -1.2, 0, -1.00019, -1.2, -0.32, -1.00019, -
 
 [sub_resource type="Animation" id=4]
 resource_name = "PickupBounce"
-length = 0.25
+length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:scale")
 tracks/0/interp = 1
@@ -39,10 +39,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.2, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Vector3( 1, 1, 1 ), Vector3( 1.4, 1.4, 1.4 ), Vector3( 1, 1, 1 ) ]
+"values": [ Vector3( 1, 1, 1 ), Vector3( 1.4, 1.4, 1.4 ), Vector3( 1, 1, 1 ), Vector3( 0.1, 0.1, 0.1 ) ]
 }
 
 [sub_resource type="Animation" id=5]
@@ -78,5 +78,6 @@ material/0 = null
 shape = SubResource( 1 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+playback_speed = 2.0
 anims/PickupBounce = SubResource( 4 )
 anims/RESET = SubResource( 5 )
