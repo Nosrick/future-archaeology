@@ -14,11 +14,7 @@ namespace ATimeGoneBy.scripts
         public IDictionary<string, ITool> ToolBox { get; protected set; }
 
         protected PackedScene OptionsPackedScene { get; set; }
-        protected PackedScene LoanModalScene { get; set; }
         protected Options OptionsScreen { get; set; }
-        protected LoanModal LoanModal { get; set; }
-        
-        public int AccumulatedLoan { get; set; }
 
         public ITool CurrentTool
         {
@@ -34,24 +30,14 @@ namespace ATimeGoneBy.scripts
 
         public int Cash
         {
-            get => this.m_Cash;
-            set
-            {
-                this.m_Cash = value;
-                this.CashLabel.Text = CashString + this.m_Cash;
-            }
+            get;
+            set;
         }
 
-        protected int m_Cash;
-
-        [Export] protected NodePath CashLabelPath;
         [Export] protected NodePath ToolLabelPath;
         [Export] protected NodePath CameraPath;
 
-        protected Label CashLabel { get; set; }
         protected Label ToolLabel { get; set; }
-        
-        protected bool UseMoney { get; set; }
 
         public OrbitCamera Camera { get; protected set; }
 
@@ -60,21 +46,12 @@ namespace ATimeGoneBy.scripts
 
         public override void _Ready()
         {
-            this.UseMoney = GlobalConstants.AppManager.OptionHandler.GetOption<bool>(GlobalConstants.AppManager.OptionHandler.UseMoney); 
-            
             this.OptionsPackedScene = GD.Load<PackedScene>("scenes/ui/Options.tscn");
-            this.LoanModalScene = GD.Load<PackedScene>("scenes/ui/LoanModal.tscn");
 
             this.DiggingSpace = this.GetNode<DigMap>("DigMap");
 
-            this.CashLabel = this.GetNodeOrNull<Label>(this.CashLabelPath);
             this.ToolLabel = this.GetNodeOrNull<Label>(this.ToolLabelPath);
             this.Camera = this.GetNodeOrNull<OrbitCamera>(this.CameraPath);
-
-            if (this.CashLabel is null == false)
-            {
-                this.RefreshCashLabel();
-            }
 
             if (this.ToolLabel is null == false)
             {
@@ -117,24 +94,9 @@ namespace ATimeGoneBy.scripts
             }
         }
 
-        protected void RefreshCashLabel()
-        {
-            if (this.UseMoney)
-            {
-                this.CashLabel.Show();
-                this.CashLabel.Text = CashString + this.Cash;
-            }
-            else
-            {
-                this.CashLabel.Hide();
-            }
-        }
-
         public void RefreshCameraOptions()
         {
             this.Camera.RefreshOptions();
-            this.UseMoney = GlobalConstants.AppManager.OptionHandler.GetOption<bool>(GlobalConstants.AppManager.OptionHandler.UseMoney);
-            this.RefreshCashLabel();
         }
 
         public void SetTool(string tool)
@@ -147,30 +109,7 @@ namespace ATimeGoneBy.scripts
 
         public void ExecuteTool(Vector3Int hit, Vector3Int previous)
         {
-            if (this.CurrentTool is null)
-            {
-                return;
-            }
-
-            if (this.UseMoney)
-            {
-                if (this.Cash - this.CurrentTool.Cost < 0)
-                {
-                    if (this.LoanModal is null || IsInstanceValid(this.LoanModal) == false)
-                    {
-                        this.LoanModal = this.LoanModalScene.Instance<LoanModal>();
-                        this.AddChild(this.LoanModal);
-                    }
-
-                    return;
-                }
-
-                this.Cash -= this.CurrentTool.Execute(hit, previous);
-            }
-            else
-            {
-                this.CurrentTool.Execute(hit, previous);
-            }
+            this.CurrentTool?.Execute(hit, previous);
         }
     }
 }
