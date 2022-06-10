@@ -2,9 +2,9 @@ name: "atgb export"
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    tags:
+      - "v*"
+    
 
 env:
   GODOT_VERSION: 3.4.4
