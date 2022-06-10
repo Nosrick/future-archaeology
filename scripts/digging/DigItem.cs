@@ -10,8 +10,13 @@ namespace ATimeGoneBy.scripts.digging
         public CollisionShape CollisionShape { get; protected set; }
 
         protected ShaderMaterial OutlineMaterial { get; set; }
+        
+        protected string MeshPath { get; set; }
+        protected string MaterialPath { get; set; }
         protected Material MyMaterial { get; set; }
         protected AnimationPlayer MyAnimationPlayer { get; set; }
+        
+        protected bool PathsRetrieved { get; set; }
 
         public const string PICKUP_ANIM = "PickupBounce";
 
@@ -22,12 +27,8 @@ namespace ATimeGoneBy.scripts.digging
             base._Ready();
 
             this.GetStuff();
-
-            this.OutlineMaterial = GD.Load<ShaderMaterial>("assets/shaders/outline-material.tres");
-
-            this.MyMaterial = this.ObjectMesh.Mesh.SurfaceGetMaterial(0);
-
-            this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
+            this.GetPaths();
+            this.GetDuplicates();
         }
 
         protected void GetStuff()
@@ -35,6 +36,27 @@ namespace ATimeGoneBy.scripts.digging
             this.ObjectMesh = this.GetNode<MeshInstance>("ObjectMesh");
             this.CollisionShape = this.GetNode<CollisionShape>("CollisionShape");
             this.MyAnimationPlayer = this.GetNode<AnimationPlayer>("AnimationPlayer");
+
+            this.OutlineMaterial = GD.Load<ShaderMaterial>("assets/shaders/outline-material.tres");
+
+            this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
+            this.MyMaterial = this.ObjectMesh.Mesh.SurfaceGetMaterial(0);
+        }
+
+        protected void GetPaths()
+        {
+            if (this.PathsRetrieved == false)
+            {
+                this.MeshPath = this.ObjectMesh.Mesh.ResourcePath;
+                this.MaterialPath = this.MyMaterial.ResourcePath;
+            }
+        }
+
+        protected void GetDuplicates()
+        {
+            this.ObjectMesh.Mesh = this.ObjectMesh.Mesh.Duplicate() as Mesh;
+            this.MyMaterial = this.MyMaterial.Duplicate() as Material;
+            this.ObjectMesh.Mesh?.SurfaceSetMaterial(0, this.MyMaterial);
         }
 
         public void MakeMeGlow()
@@ -42,6 +64,7 @@ namespace ATimeGoneBy.scripts.digging
             if (this.MyMaterial is null == false)
             {
                 this.MyMaterial.NextPass = this.OutlineMaterial;
+                this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
             }
         }
 
@@ -61,8 +84,8 @@ namespace ATimeGoneBy.scripts.digging
         {
             Dictionary saveDict = new Dictionary();
 
-            saveDict.Add("mesh", this.ObjectMesh.Mesh.ResourcePath);
-            saveDict.Add("material", this.ObjectMesh.Mesh.SurfaceGetMaterial(0).ResourcePath);
+            saveDict.Add("mesh", this.MeshPath);
+            saveDict.Add("material", this.MaterialPath);
             saveDict.Add("value", this.CashValue);
             saveDict.Add("translation", this.Translation);
             saveDict.Add("rotation", this.Rotation);
@@ -79,14 +102,17 @@ namespace ATimeGoneBy.scripts.digging
             }
 
             this.GetStuff();
-            this.ObjectMesh.Mesh = GD.Load<Mesh>(data["mesh"] as string);
+            this.MeshPath = data["mesh"] as string;
+            this.ObjectMesh.Mesh = GD.Load<Mesh>(this.MeshPath).Duplicate() as Mesh;
 
             if (!data.Contains("material"))
             {
                 return false;
             }
 
-            this.ObjectMesh.Mesh.SurfaceSetMaterial(0, GD.Load<Material>(data["material"] as string));
+            this.MaterialPath = data["material"] as string;
+            this.MyMaterial = GD.Load<Material>(this.MaterialPath).Duplicate() as Material;
+            this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
 
             this.Scale = (Vector3) data["scale"];
             this.Rotation = (Vector3) data["rotation"];
@@ -98,6 +124,7 @@ namespace ATimeGoneBy.scripts.digging
             }
 
             this.CashValue = (int) data["value"];
+            this.PathsRetrieved = true;
 
             return true;
         }

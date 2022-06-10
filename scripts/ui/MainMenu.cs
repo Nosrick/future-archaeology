@@ -18,6 +18,7 @@ namespace ATimeGoneBy.scripts.ui
         {
             if (screen == "new-game")
             {
+                GlobalConstants.AppManager.SaveState = null;
                 this.GetTree().ChangeSceneTo(this.GameScreen);
             }
             else if (screen == "load-game")
