@@ -42,8 +42,7 @@ namespace ATimeGoneBy.scripts.options
                 {InvertYPanning, false},
                 {InvertZooming, false},
                 {RotationSensitivity, 0.1f},
-                {PanningSensitivity, 1f},
-                {UseMoney, true}
+                {PanningSensitivity, 1f}
             };
         }
         

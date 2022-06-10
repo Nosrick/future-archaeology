@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/hitting-box-of-fabric.wav-5de1a97afdc92123d5d16aada32e73b1.sample"
+
+[deps]
+
+source_file="res://assets/sounds/drafts/hitting-box-of-fabric.wav"
+dest_files=[ "res://.import/hitting-box-of-fabric.wav-5de1a97afdc92123d5d16aada32e73b1.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

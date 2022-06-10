@@ -4,6 +4,7 @@ using ATimeGoneBy.scripts.tools;
 using ATimeGoneBy.scripts.ui;
 using ATimeGoneBy.scripts.utils;
 using Godot;
+using Godot.Collections;
 
 namespace ATimeGoneBy.scripts
 {
@@ -13,12 +14,8 @@ namespace ATimeGoneBy.scripts
 
         public IDictionary<string, ITool> ToolBox { get; protected set; }
 
-        protected PackedScene OptionsPackedScene { get; set; }
-        protected PackedScene LoanModalScene { get; set; }
-        protected Options OptionsScreen { get; set; }
-        protected LoanModal LoanModal { get; set; }
-        
-        public int AccumulatedLoan { get; set; }
+        protected PackedScene PauseMenuPackedScene { get; set; }
+        protected PauseMenu PauseMenuScreen { get; set; }
 
         public ITool CurrentTool
         {
@@ -34,54 +31,36 @@ namespace ATimeGoneBy.scripts
 
         public int Cash
         {
-            get => this.m_Cash;
-            set
-            {
-                this.m_Cash = value;
-                this.CashLabel.Text = CashString + this.m_Cash;
-            }
+            get;
+            set;
         }
 
-        protected int m_Cash;
-
-        [Export] protected NodePath CashLabelPath;
         [Export] protected NodePath ToolLabelPath;
         [Export] protected NodePath CameraPath;
 
-        protected Label CashLabel { get; set; }
         protected Label ToolLabel { get; set; }
-        
-        protected bool UseMoney { get; set; }
 
         public OrbitCamera Camera { get; protected set; }
+        
+        public bool ProcessClicks { get; set; }
 
-        protected const string CashString = "BiggaBux: ";
         protected const string CurrentToolString = "Current Tool: ";
 
         public override void _Ready()
         {
-            this.UseMoney = GlobalConstants.AppManager.OptionHandler.GetOption<bool>(GlobalConstants.AppManager.OptionHandler.UseMoney); 
-            
-            this.OptionsPackedScene = GD.Load<PackedScene>("scenes/ui/Options.tscn");
-            this.LoanModalScene = GD.Load<PackedScene>("scenes/ui/LoanModal.tscn");
+            this.PauseMenuPackedScene = GD.Load<PackedScene>(GlobalConstants.PauseMenuLocation);
 
             this.DiggingSpace = this.GetNode<DigMap>("DigMap");
 
-            this.CashLabel = this.GetNodeOrNull<Label>(this.CashLabelPath);
             this.ToolLabel = this.GetNodeOrNull<Label>(this.ToolLabelPath);
             this.Camera = this.GetNodeOrNull<OrbitCamera>(this.CameraPath);
-
-            if (this.CashLabel is null == false)
-            {
-                this.RefreshCashLabel();
-            }
 
             if (this.ToolLabel is null == false)
             {
                 this.ToolLabel.Text = CurrentToolString + "None";
             }
 
-            this.ToolBox = new Dictionary<string, ITool>
+            this.ToolBox = new System.Collections.Generic.Dictionary<string, ITool>
             {
                 {"brush", new BrushTool()},
                 {"chisel", new ChiselTool()},
@@ -90,6 +69,13 @@ namespace ATimeGoneBy.scripts
             };
 
             this.Cash = 500;
+
+            this.ProcessClicks = true;
+
+            if (GlobalConstants.AppManager.SaveState is null == false)
+            {
+                this.Load(GlobalConstants.AppManager.SaveState);
+            }
 
             GlobalConstants.GameManager = this;
         }
@@ -101,40 +87,45 @@ namespace ATimeGoneBy.scripts
             {
                 if (eventKey.IsActionReleased("open_pause_menu"))
                 {
-                    if (this.OptionsScreen is null || IsInstanceValid(this.OptionsScreen) == false)
+                    if (this.PauseMenuScreen is null || IsInstanceValid(this.PauseMenuScreen) == false)
                     {
-                        this.OptionsScreen = this.OptionsPackedScene.Instance<Options>();
-                        this.AddChild(this.OptionsScreen);
+                        this.PauseMenuScreen = this.PauseMenuPackedScene.Instance<PauseMenu>();
+                        this.AddChild(this.PauseMenuScreen);
 
-                        this.OptionsScreen.Connect("tree_exiting", this, "RefreshCameraOptions");
+                        this.ProcessClicks = false;
                     }
-                    else if (IsInstanceValid(this.OptionsScreen))
+                    else if (IsInstanceValid(this.PauseMenuScreen))
                     {
-                        this.OptionsScreen?.CloseMe();
-                        this.Camera.RefreshOptions();
+                        if (this.PauseMenuScreen.Visible == false)
+                        {
+                            this.PauseMenuScreen.Show();
+                            this.ProcessClicks = false;
+                        }
+                        else
+                        {
+                            this.PauseMenuScreen.Hide();
+                            this.ProcessClicks = true;
+                        }
                     }
                 }
             }
         }
 
-        protected void RefreshCashLabel()
+        public override void _PhysicsProcess(float delta)
         {
-            if (this.UseMoney)
+            base._PhysicsProcess(delta);
+
+            if (this.DiggingSpace.LevelComplete())
             {
-                this.CashLabel.Show();
-                this.CashLabel.Text = CashString + this.Cash;
-            }
-            else
-            {
-                this.CashLabel.Hide();
+                this.DiggingSpace.SetPhysicsProcess(false);
+                GD.Print("LEVEL COMPLETE!");
+                this.DiggingSpace.GenerateDigSite();
             }
         }
 
         public void RefreshCameraOptions()
         {
             this.Camera.RefreshOptions();
-            this.UseMoney = GlobalConstants.AppManager.OptionHandler.GetOption<bool>(GlobalConstants.AppManager.OptionHandler.UseMoney);
-            this.RefreshCashLabel();
         }
 
         public void SetTool(string tool)
@@ -147,30 +138,30 @@ namespace ATimeGoneBy.scripts
 
         public void ExecuteTool(Vector3Int hit, Vector3Int previous)
         {
-            if (this.CurrentTool is null)
-            {
-                return;
-            }
+            this.CurrentTool?.Execute(hit, previous);
+        }
 
-            if (this.UseMoney)
-            {
-                if (this.Cash - this.CurrentTool.Cost < 0)
-                {
-                    if (this.LoanModal is null || IsInstanceValid(this.LoanModal) == false)
-                    {
-                        this.LoanModal = this.LoanModalScene.Instance<LoanModal>();
-                        this.AddChild(this.LoanModal);
-                    }
+        public void GenerateLevel()
+        {
+            this.DiggingSpace.GenerateDigSite();
+        }
 
-                    return;
-                }
+        public Dictionary Save()
+        {
+            Dictionary saveDict = new Dictionary();
+            
+            saveDict.Add("cash", this.Cash);
+            saveDict.Add("dig-site", this.DiggingSpace.Save());
 
-                this.Cash -= this.CurrentTool.Execute(hit, previous);
-            }
-            else
-            {
-                this.CurrentTool.Execute(hit, previous);
-            }
+            return saveDict;
+        }
+
+        public bool Load(Dictionary data)
+        {
+            this.Cash = (int) data["cash"];
+            this.DiggingSpace.Load(data["dig-site"] as Dictionary);
+
+            return true;
         }
     }
 }

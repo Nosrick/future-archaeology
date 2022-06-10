@@ -39,6 +39,11 @@ namespace ATimeGoneBy.scripts.digging
         {
             base._Input(@event);
 
+            if (!GlobalConstants.GameManager.ProcessClicks)
+            {
+                return;
+            }
+
             if (@event is InputEventMouseButton mouseButton
                 && mouseButton.Pressed
                 && mouseButton.ButtonIndex == (int) ButtonList.Left)

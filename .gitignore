@@ -1,1 +1,11 @@
-﻿/.idea/.idea.DiggyDig/.idea/
+﻿/.idea/*
+/.mono/*
+/export/*### Godot template
+
+# Imported translations (automatically generated from CSV files)
+*.translation
+
+# Mono-specific ignores
+.mono/
+data_*/
+

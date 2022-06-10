@@ -1,5 +1,6 @@
 using ATimeGoneBy.scripts.options;
 using Godot;
+using Godot.Collections;
 
 namespace ATimeGoneBy.scripts
 {
@@ -9,6 +10,8 @@ namespace ATimeGoneBy.scripts
         protected PackedScene GameScene;
 
         public OptionHandler OptionHandler { get; protected set; }
+        
+        public Dictionary SaveState { get; set; }
 
         public override void _Ready()
         {

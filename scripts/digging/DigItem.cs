@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Godot.Collections;
 
 namespace ATimeGoneBy.scripts.digging
 {
@@ -7,31 +8,76 @@ namespace ATimeGoneBy.scripts.digging
         public MeshInstance ObjectMesh { get; protected set; }
 
         public CollisionShape CollisionShape { get; protected set; }
-        
+
         protected ShaderMaterial OutlineMaterial { get; set; }
-        protected Material MyMaterial { get; set; }
         
+        protected string MeshPath { get; set; }
+        protected string MaterialPath { get; set; }
+        protected Material MyMaterial { get; set; }
+        protected AnimationPlayer MyAnimationPlayer { get; set; }
+        
+        protected bool PathsRetrieved { get; set; }
+        
+        public bool Uncovered { get; protected set; }
+
+        public const string PICKUP_ANIM = "PickupBounce";
+
         [Export] public int CashValue { get; protected set; }
 
         public override void _Ready()
         {
             base._Ready();
 
+            this.GetStuff();
+            this.GetPaths();
+            this.GetDuplicates();
+        }
+
+        protected void GetStuff()
+        {
             this.ObjectMesh = this.GetNode<MeshInstance>("ObjectMesh");
             this.CollisionShape = this.GetNode<CollisionShape>("CollisionShape");
+            this.MyAnimationPlayer = this.GetNode<AnimationPlayer>("AnimationPlayer");
 
-            this.ObjectMesh = (MeshInstance) this.ObjectMesh.Duplicate();
-            
             this.OutlineMaterial = GD.Load<ShaderMaterial>("assets/shaders/outline-material.tres");
-            
-            this.MyMaterial = (Material) this.ObjectMesh.Mesh.SurfaceGetMaterial(0).Duplicate(true);
-            this.MyMaterial.NextPass = this.OutlineMaterial;
+
             this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
+            this.MyMaterial = this.ObjectMesh.Mesh.SurfaceGetMaterial(0);
+        }
+
+        protected void GetPaths()
+        {
+            if (this.PathsRetrieved == false)
+            {
+                this.MeshPath = this.ObjectMesh.Mesh.ResourcePath;
+                this.MaterialPath = this.MyMaterial.ResourcePath;
+            }
+        }
+
+        protected void GetDuplicates()
+        {
+            this.ObjectMesh.Mesh = this.ObjectMesh.Mesh.Duplicate() as Mesh;
+            this.MyMaterial = this.MyMaterial.Duplicate() as Material;
+            this.ObjectMesh.Mesh?.SurfaceSetMaterial(0, this.MyMaterial);
+        }
+
+        public void MarkMeUncovered()
+        {
+            this.Uncovered = true;
         }
 
         public void MakeMeGlow()
         {
-            this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+            if (this.MyMaterial is null == false)
+            {
+                this.MyMaterial.NextPass = this.OutlineMaterial;
+                this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+            }
+        }
+
+        public void PlayPickupAnimation()
+        {
+            this.MyAnimationPlayer.Play(PICKUP_ANIM);
         }
 
         public void AssignObject(MeshInstance meshInstance, int cashValue)
@@ -39,6 +85,55 @@ namespace ATimeGoneBy.scripts.digging
             this.CashValue = cashValue;
             this.ObjectMesh = meshInstance;
             this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
+        }
+
+        public Dictionary Save()
+        {
+            Dictionary saveDict = new Dictionary();
+
+            saveDict.Add("mesh", this.MeshPath);
+            saveDict.Add("material", this.MaterialPath);
+            saveDict.Add("value", this.CashValue);
+            saveDict.Add("translation", this.Translation);
+            saveDict.Add("rotation", this.Rotation);
+            saveDict.Add("scale", this.Scale);
+
+            return saveDict;
+        }
+
+        public bool Load(Dictionary data)
+        {
+            if (!data.Contains("mesh"))
+            {
+                return false;
+            }
+
+            this.GetStuff();
+            this.MeshPath = data["mesh"] as string;
+            this.ObjectMesh.Mesh = GD.Load<Mesh>(this.MeshPath).Duplicate() as Mesh;
+
+            if (!data.Contains("material"))
+            {
+                return false;
+            }
+
+            this.MaterialPath = data["material"] as string;
+            this.MyMaterial = GD.Load<Material>(this.MaterialPath).Duplicate() as Material;
+            this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+
+            this.Scale = (Vector3) data["scale"];
+            this.Rotation = (Vector3) data["rotation"];
+            this.Translation = (Vector3) data["translation"];
+
+            if (!data.Contains("value"))
+            {
+                return false;
+            }
+
+            this.CashValue = (int) data["value"];
+            this.PathsRetrieved = true;
+
+            return true;
         }
     }
 }
