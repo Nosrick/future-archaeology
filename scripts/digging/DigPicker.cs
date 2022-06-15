@@ -35,10 +35,8 @@ namespace ATimeGoneBy.scripts.digging
             this.DigMap = this.GetNodeOrNull<DigMap>(this.GridPath);
         }
 
-        public override void _Input(InputEvent @event)
+        public override void _UnhandledInput(InputEvent @event)
         {
-            base._Input(@event);
-
             if (!GlobalConstants.GameManager.ProcessClicks)
             {
                 return;
