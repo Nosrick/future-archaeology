@@ -10,7 +10,7 @@ namespace ATimeGoneBy.scripts.tools
 {
     public class BombTool : ITool
     {
-        public string Name => "Bomb";
+        public string TranslationKey => "tools.bomb.name";
         public int Cost => 75;
         
         protected const int Tiles = 20;

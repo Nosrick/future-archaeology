@@ -17,7 +17,7 @@ anchor_right = 1.0
 anchor_bottom = 0.2
 theme = ExtResource( 2 )
 custom_fonts/font = ExtResource( 3 )
-text = "Paused"
+text = "pause.title.label"
 align = 1
 valign = 1
 
@@ -33,7 +33,7 @@ margin_bottom = 74.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 2 )
-text = "Resume"
+text = "resume.button"
 
 [node name="SaveButton" type="Button" parent="VBoxContainer"]
 margin_top = 78.0
@@ -42,7 +42,7 @@ margin_bottom = 153.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 2 )
-text = "Save Game"
+text = "save.button"
 
 [node name="OptionsButton" type="Button" parent="VBoxContainer"]
 margin_top = 157.0
@@ -51,7 +51,7 @@ margin_bottom = 232.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 2 )
-text = "Options"
+text = "options.button"
 
 [node name="ToMenuButton" type="Button" parent="VBoxContainer"]
 margin_top = 236.0
@@ -60,7 +60,7 @@ margin_bottom = 311.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 2 )
-text = "Exit To Menu"
+text = "to_menu.button"
 
 [node name="ExitButton" type="Button" parent="VBoxContainer"]
 margin_top = 315.0
@@ -69,7 +69,7 @@ margin_bottom = 390.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 2 )
-text = "Exit to Desktop"
+text = "exit.button"
 
 [connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="Resume"]
 [connection signal="pressed" from="VBoxContainer/SaveButton" to="." method="SaveGame"]

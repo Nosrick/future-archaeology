@@ -23,7 +23,7 @@ namespace ATimeGoneBy.scripts
             protected set
             {
                 this.m_CurrentTool = value;
-                this.ToolLabel.Text = CurrentToolString + this.m_CurrentTool.Name;
+                this.ToolLabel.Text = this.Tr(CurrentToolString) + this.Tr(this.m_CurrentTool.TranslationKey);
             }
         }
 
@@ -44,7 +44,7 @@ namespace ATimeGoneBy.scripts
         
         public bool ProcessClicks { get; set; }
 
-        protected const string CurrentToolString = "Current Tool: ";
+        protected const string CurrentToolString = "tools.current.label";
 
         public override void _Ready()
         {
@@ -57,7 +57,7 @@ namespace ATimeGoneBy.scripts
 
             if (this.ToolLabel is null == false)
             {
-                this.ToolLabel.Text = CurrentToolString + "None";
+                this.ToolLabel.Text = this.Tr(CurrentToolString) + this.Tr("tools.none.name");
             }
 
             this.ToolBox = new System.Collections.Generic.Dictionary<string, ITool>

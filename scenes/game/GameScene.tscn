@@ -60,9 +60,9 @@ mouse_filter = 2
 
 [node name="GameUI" parent="UIRoot" instance=ExtResource( 2 )]
 
-[connection signal="pressed" from="UIRoot/GameUI/MarginContainer/HBoxContainer/ToolContainer/BrushButton" to="." method="SetTool" binds= [ "brush" ]]
-[connection signal="pressed" from="UIRoot/GameUI/MarginContainer/HBoxContainer/ToolContainer/ChiselButton" to="." method="SetTool" binds= [ "chisel" ]]
-[connection signal="pressed" from="UIRoot/GameUI/MarginContainer/HBoxContainer/ToolContainer/HammerButton" to="." method="SetTool" binds= [ "hammer" ]]
-[connection signal="pressed" from="UIRoot/GameUI/MarginContainer/HBoxContainer/ToolContainer/BombButton" to="." method="SetTool" binds= [ "bomb" ]]
+[connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/BrushButton" to="." method="SetTool" binds= [ "brush" ]]
+[connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/ChiselButton" to="." method="SetTool" binds= [ "chisel" ]]
+[connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/HammerButton" to="." method="SetTool" binds= [ "hammer" ]]
+[connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/BombButton" to="." method="SetTool" binds= [ "bomb" ]]
 
 [editable path="UIRoot/GameUI"]

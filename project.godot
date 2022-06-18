@@ -57,6 +57,10 @@ camera_zoom_out={
  ]
 }
 
+[locale]
+
+translations=PoolStringArray( "res://assets/translations/atgb_text.en.translation" )
+
 [physics]
 
 common/enable_pause_aware_picking=true

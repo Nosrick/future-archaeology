@@ -5,7 +5,7 @@ namespace ATimeGoneBy.scripts.tools
 {
     public interface ITool
     {
-        string Name { get; }
+        string TranslationKey { get; }
         int Cost { get; }
         AudioStreamRandomPitch AssociatedSound { get; }
         int Execute(Vector3Int hit, Vector3Int previous);

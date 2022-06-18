@@ -1,0 +1,31 @@
+keys,en
+tools.hammer.name,hammer
+tools.chisel.name,chisel
+tools.brush.name,brush
+tools.bomb.name,bomb
+tools.none.name,none
+tools.current.label,Current Tool: 
+cash.label,Biggabux: 
+,
+options.title.label,Options Menu
+options.invert_x_rotation.label,Invert X Rotation
+options.invert_y_rotation.label,Invert Y Rotation
+options.invert_x_panning.label,Invert X Panning
+options.invert_y_panning.label,Invert Y Panning
+options.invert_zooming.label,Invert Zooming
+options.rotation_sensitivity.label,Rotation Sensitivity
+options.zoom_sensitivity.label,Zoom Sensitivity
+options.panning_sensitivity.label,Panning Sensitivity
+options.default.button,Defaults
+back.button,Back
+,
+pause.title.label,Paused
+new_game.button,New Game
+options.button,Options
+resume.button,Resume
+load.button,Load Game
+save.button,Save Game
+to_menu.button,Exit to Menu
+exit.button,Exit to Desktop
+,
+atgb.title,A Time Gone By

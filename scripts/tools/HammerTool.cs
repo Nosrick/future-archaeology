@@ -6,7 +6,7 @@ namespace ATimeGoneBy.scripts.tools
 {
     public class HammerTool : ITool
     {
-        public string Name => "Hammer";
+        public string TranslationKey => "tools.hammer.name";
         public int Cost => 40;
         public AudioStreamRandomPitch AssociatedSound { get; protected set; }
 

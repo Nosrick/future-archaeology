@@ -44,7 +44,7 @@ namespace ATimeGoneBy.scripts.ui
         public void CloseMe()
         {
             GlobalConstants.AppManager.OptionHandler.SaveOptions();
-            GlobalConstants.GameManager.RefreshCameraOptions();
+            GlobalConstants.GameManager?.RefreshCameraOptions();
             this.QueueFree();
         }
 
@@ -71,6 +71,16 @@ namespace ATimeGoneBy.scripts.ui
             {
                 this.SetOption(option.Value, option.Key.ToString());
             }
+        }
+
+        public void SetResetButtonTranslation()
+        {
+            if (!(this.FindNode("ResetButton") is Button resetButton))
+            {
+                return;
+            }
+
+            resetButton.Text = this.Tr("options.default.button");
         }
     }
 }

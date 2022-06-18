@@ -7,7 +7,7 @@ namespace ATimeGoneBy.scripts.tools
     {
         public int Cost => 10;
         public AudioStreamRandomPitch AssociatedSound { get; protected set; }
-        public string Name => "Chisel";
+        public string TranslationKey => "tools.chisel.name";
 
         public ChiselTool()
         {

@@ -6,7 +6,7 @@ namespace ATimeGoneBy.scripts.tools
     public class BrushTool : ITool
     {
         public int Cost => 5;
-        public string Name => "Brush";
+        public string TranslationKey => "tools.brush.name";
         public AudioStreamRandomPitch AssociatedSound { get; protected set; }
 
         public BrushTool()
