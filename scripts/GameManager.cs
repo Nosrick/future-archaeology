@@ -37,8 +37,12 @@ namespace ATimeGoneBy.scripts
 
         [Export] protected NodePath ToolLabelPath;
         [Export] protected NodePath CameraPath;
+        [Export] protected NodePath CameraIconContainerPath;
 
         protected Label ToolLabel { get; set; }
+        
+        protected HBoxContainer CameraIconContainer { get; set; }
+        protected List<Control> CameraIcons { get; set; }
 
         public OrbitCamera Camera { get; protected set; }
         
@@ -54,6 +58,7 @@ namespace ATimeGoneBy.scripts
 
             this.ToolLabel = this.GetNodeOrNull<Label>(this.ToolLabelPath);
             this.Camera = this.GetNodeOrNull<OrbitCamera>(this.CameraPath);
+            this.CameraIconContainer = this.GetNodeOrNull<HBoxContainer>(this.CameraIconContainerPath);
 
             if (this.ToolLabel is null == false)
             {
@@ -67,6 +72,13 @@ namespace ATimeGoneBy.scripts
                 {"hammer", new HammerTool()},
                 {"bomb", new BombTool()}
             };
+
+            this.CameraIcons = new List<Control>();
+            foreach (Control child in this.CameraIconContainer.GetChildren())
+            {
+                child.Hide();
+                this.CameraIcons.Add(child);
+            }
 
             this.Cash = 500;
 
@@ -83,6 +95,34 @@ namespace ATimeGoneBy.scripts
         public override void _Input(InputEvent @event)
         {
             base._Input(@event);
+
+            if (this.Camera.Rotating && !this.CameraIcons[0].Visible)
+            {
+                this.CameraIcons[0].Show();
+            }
+            else if(!this.Camera.Rotating && this.CameraIcons[0].Visible)
+            {
+                this.CameraIcons[0].Hide();
+            }
+
+            if (this.Camera.Panning && !this.CameraIcons[1].Visible)
+            {
+                this.CameraIcons[1].Show();
+            }
+            else if(!this.Camera.Panning && this.CameraIcons[1].Visible)
+            {
+                this.CameraIcons[1].Hide();
+            }
+
+            if (this.Camera.Zooming && !this.CameraIcons[2].Visible)
+            {
+                this.CameraIcons[2].Show();
+            }
+            else if(!this.Camera.Zooming && this.CameraIcons[2].Visible)
+            {
+                this.CameraIcons[2].Hide();
+            }
+            
             if (@event is InputEventKey eventKey)
             {
                 if (eventKey.IsActionReleased("open_pause_menu"))

@@ -22,9 +22,9 @@ namespace ATimeGoneBy.scripts.utils
 
         protected const float MIN_DISTANCE = 2f;
 
-        protected bool Rotating { get; set; }
-        protected bool Panning { get; set; }
-        protected bool Zooming { get; set; }
+        public bool Rotating { get; protected set; }
+        public bool Panning { get; protected set; }
+        public bool Zooming { get; protected set; }
 
         protected int XRotationDirection = 1;
         protected int YRotationDirection = 1;
@@ -138,6 +138,7 @@ namespace ATimeGoneBy.scripts.utils
 
             if (@event is InputEventMouseMotion mouseMotion)
             {
+                this.Zooming = false;
                 this.MoveSpeed = mouseMotion.Relative;
             }
             else if (@event.IsActionPressed("camera_zoom_in"))

@@ -23,7 +23,7 @@ __meta__ = {
 "_edit_use_anchors_": true
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CameraMarginContainer"]
+[node name="CameraIconContainer" type="HBoxContainer" parent="CameraMarginContainer"]
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 204.0
@@ -31,7 +31,7 @@ margin_bottom = 66.0
 custom_constants/separation = 5
 alignment = 2
 
-[node name="RotationIcon" type="TextureRect" parent="CameraMarginContainer/HBoxContainer"]
+[node name="RotationIcon" type="TextureRect" parent="CameraMarginContainer/CameraIconContainer"]
 margin_right = 64.0
 margin_bottom = 64.0
 rect_min_size = Vector2( 64, 64 )
@@ -39,7 +39,7 @@ texture = ExtResource( 2 )
 expand = true
 stretch_mode = 1
 
-[node name="PanIcon" type="TextureRect" parent="CameraMarginContainer/HBoxContainer"]
+[node name="PanIcon" type="TextureRect" parent="CameraMarginContainer/CameraIconContainer"]
 margin_left = 69.0
 margin_right = 133.0
 margin_bottom = 64.0
@@ -47,7 +47,7 @@ rect_min_size = Vector2( 64, 64 )
 texture = ExtResource( 3 )
 expand = true
 
-[node name="ZoomIcon" type="TextureRect" parent="CameraMarginContainer/HBoxContainer"]
+[node name="ZoomIcon" type="TextureRect" parent="CameraMarginContainer/CameraIconContainer"]
 margin_left = 138.0
 margin_right = 202.0
 margin_bottom = 64.0
