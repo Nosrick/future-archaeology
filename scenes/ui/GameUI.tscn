@@ -1,11 +1,59 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://assets/themes/basic-theme.tres" type="Theme" id=1]
+[ext_resource path="res://assets/textures/ui/camera-rotate-icon.png" type="Texture" id=2]
+[ext_resource path="res://assets/textures/ui/camera-pan-icon.png" type="Texture" id=3]
+[ext_resource path="res://assets/textures/ui/camera-zoom-icon.png" type="Texture" id=4]
 
 [node name="GameUI" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+
+[node name="CameraMarginContainer" type="MarginContainer" parent="."]
+anchor_left = 0.793945
+anchor_top = 0.01
+anchor_right = 0.995117
+anchor_bottom = 0.123333
+custom_constants/margin_right = 2
+custom_constants/margin_top = 2
+custom_constants/margin_left = 2
+custom_constants/margin_bottom = 2
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CameraMarginContainer"]
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 204.0
+margin_bottom = 66.0
+custom_constants/separation = 5
+alignment = 2
+
+[node name="RotationIcon" type="TextureRect" parent="CameraMarginContainer/HBoxContainer"]
+margin_right = 64.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 64, 64 )
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 1
+
+[node name="PanIcon" type="TextureRect" parent="CameraMarginContainer/HBoxContainer"]
+margin_left = 69.0
+margin_right = 133.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 64, 64 )
+texture = ExtResource( 3 )
+expand = true
+
+[node name="ZoomIcon" type="TextureRect" parent="CameraMarginContainer/HBoxContainer"]
+margin_left = 138.0
+margin_right = 202.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 64, 64 )
+texture = ExtResource( 4 )
+expand = true
 
 [node name="GameplayMarginContainer" type="MarginContainer" parent="."]
 anchor_right = 0.292969
@@ -43,7 +91,7 @@ theme = ExtResource( 1 )
 text = "Current Tool:"
 valign = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="ToolMarginContainer" type="MarginContainer" parent="."]
 anchor_top = 0.76
 anchor_right = 0.284
 anchor_bottom = 1.0
@@ -53,7 +101,7 @@ custom_constants/margin_top = 5
 custom_constants/margin_left = 5
 custom_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ToolMarginContainer"]
 margin_left = 5.0
 margin_top = 5.0
 margin_right = 285.0
@@ -61,13 +109,14 @@ margin_bottom = 139.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+[node name="PriceMarginContainer" type="MarginContainer" parent="ToolMarginContainer/HBoxContainer"]
+visible = false
 margin_right = 5.0
 margin_bottom = 134.0
 size_flags_vertical = 3
 custom_constants/margin_left = 5
 
-[node name="PriceContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MarginContainer"]
+[node name="PriceContainer" type="VBoxContainer" parent="ToolMarginContainer/HBoxContainer/PriceMarginContainer"]
 visible = false
 margin_left = 5.0
 margin_right = 41.0
@@ -76,7 +125,7 @@ rect_min_size = Vector2( 35, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 11
 
-[node name="BrushLabel" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/PriceContainer"]
+[node name="BrushLabel" type="Label" parent="ToolMarginContainer/HBoxContainer/PriceMarginContainer/PriceContainer"]
 margin_right = 36.0
 margin_bottom = 30.0
 rect_min_size = Vector2( 30, 30 )
@@ -86,7 +135,7 @@ text = "$5"
 align = 1
 valign = 1
 
-[node name="ChiselLabel" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/PriceContainer"]
+[node name="ChiselLabel" type="Label" parent="ToolMarginContainer/HBoxContainer/PriceMarginContainer/PriceContainer"]
 margin_top = 34.0
 margin_right = 36.0
 margin_bottom = 64.0
@@ -97,7 +146,7 @@ text = "$10"
 align = 1
 valign = 1
 
-[node name="HammerLabel" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/PriceContainer"]
+[node name="HammerLabel" type="Label" parent="ToolMarginContainer/HBoxContainer/PriceMarginContainer/PriceContainer"]
 margin_top = 68.0
 margin_right = 36.0
 margin_bottom = 98.0
@@ -108,7 +157,7 @@ text = "$40"
 align = 1
 valign = 1
 
-[node name="BombLabel" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/PriceContainer"]
+[node name="BombLabel" type="Label" parent="ToolMarginContainer/HBoxContainer/PriceMarginContainer/PriceContainer"]
 margin_top = 102.0
 margin_right = 36.0
 margin_bottom = 132.0
@@ -119,39 +168,38 @@ text = "$75"
 align = 1
 valign = 1
 
-[node name="ToolContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
-margin_left = 9.0
+[node name="ToolContainer" type="VBoxContainer" parent="ToolMarginContainer/HBoxContainer"]
 margin_right = 280.0
 margin_bottom = 134.0
 size_flags_horizontal = 3
 size_flags_vertical = 11
 
-[node name="BrushButton" type="Button" parent="MarginContainer/HBoxContainer/ToolContainer"]
-margin_right = 271.0
+[node name="BrushButton" type="Button" parent="ToolMarginContainer/HBoxContainer/ToolContainer"]
+margin_right = 280.0
 margin_bottom = 30.0
 rect_min_size = Vector2( 0, 30 )
 theme = ExtResource( 1 )
 text = "Brush"
 
-[node name="ChiselButton" type="Button" parent="MarginContainer/HBoxContainer/ToolContainer"]
+[node name="ChiselButton" type="Button" parent="ToolMarginContainer/HBoxContainer/ToolContainer"]
 margin_top = 34.0
-margin_right = 271.0
+margin_right = 280.0
 margin_bottom = 64.0
 rect_min_size = Vector2( 0, 30 )
 theme = ExtResource( 1 )
 text = "Chisel"
 
-[node name="HammerButton" type="Button" parent="MarginContainer/HBoxContainer/ToolContainer"]
+[node name="HammerButton" type="Button" parent="ToolMarginContainer/HBoxContainer/ToolContainer"]
 margin_top = 68.0
-margin_right = 271.0
+margin_right = 280.0
 margin_bottom = 98.0
 rect_min_size = Vector2( 0, 30 )
 theme = ExtResource( 1 )
 text = "Hammer"
 
-[node name="BombButton" type="Button" parent="MarginContainer/HBoxContainer/ToolContainer"]
+[node name="BombButton" type="Button" parent="ToolMarginContainer/HBoxContainer/ToolContainer"]
 margin_top = 102.0
-margin_right = 271.0
+margin_right = 280.0
 margin_bottom = 132.0
 rect_min_size = Vector2( 0, 30 )
 theme = ExtResource( 1 )
