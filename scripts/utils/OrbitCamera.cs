@@ -38,7 +38,7 @@ namespace ATimeGoneBy.scripts.utils
 
             this.RotationDelta = this.Transform.basis.GetEuler();
             this.PanningDelta = Vector3.Zero;
-        
+
             if (target is Spatial spatial)
             {
                 this.OrbitTarget = spatial;
@@ -48,31 +48,13 @@ namespace ATimeGoneBy.scripts.utils
             {
                 GD.PrintErr("OrbitTargetPath is not of type Spatial!");
             }
-            
+
             this.RefreshOptions();
         }
 
         public override void _Process(float delta)
         {
             base._Process(delta);
-
-            if (!this.Rotating && Input.IsMouseButtonPressed((int) ButtonList.Right))
-            {
-                this.Rotating = true;
-            }
-            else if (this.Rotating)
-            {
-                this.Rotating = false;
-            }
-
-            if (!this.Panning && Input.IsMouseButtonPressed((int) ButtonList.Middle))
-            {
-                this.Panning = true;
-            }
-            else if (this.Panning)
-            {
-                this.Panning = false;
-            }
 
             if (this.Rotating)
             {
@@ -89,7 +71,7 @@ namespace ATimeGoneBy.scripts.utils
 
                 this.MoveSpeed = Vector2.Zero;
                 this.OrbitTarget.TranslateObjectLocal(this.PanningDelta);
-                
+
                 this.LookAt(this.OrbitTarget.GlobalTransform.origin, this.GlobalTransform.basis.y);
                 this.PanningDelta = Vector3.Zero;
             }
@@ -136,23 +118,37 @@ namespace ATimeGoneBy.scripts.utils
         {
             base._Input(@event);
 
-            if ((this.Rotating || this.Panning)
-                && @event is InputEventMouseMotion mouseMotion)
+            if (!this.Rotating && @event.IsActionPressed("camera_rotate_modifier"))
+            {
+                this.Rotating = true;
+            }
+            else if (this.Rotating && @event.IsActionReleased("camera_rotate_modifier"))
+            {
+                this.Rotating = false;
+            }
+
+            if (!this.Panning && @event.IsActionPressed("camera_pan_modifier"))
+            {
+                this.Panning = true;
+            }
+            else if (this.Panning && @event.IsActionReleased("camera_pan_modifier"))
+            {
+                this.Panning = false;
+            }
+
+            if (@event is InputEventMouseMotion mouseMotion)
             {
                 this.MoveSpeed = mouseMotion.Relative;
             }
-            else if (@event is InputEventMouseButton mouseButton)
+            else if (@event.IsActionPressed("camera_zoom_in"))
             {
-                if (mouseButton.ButtonIndex == (int) ButtonList.WheelUp)
-                {
-                    this.Zooming = true;
-                    this.ZoomingDelta = ZoomSensitivity;
-                }
-                else if (mouseButton.ButtonIndex == (int) ButtonList.WheelDown)
-                {
-                    this.Zooming = true;
-                    this.ZoomingDelta = -ZoomSensitivity;
-                }
+                this.Zooming = true;
+                this.ZoomingDelta = ZoomSensitivity;
+            }
+            else if (@event.IsActionPressed("camera_zoom_out"))
+            {
+                this.Zooming = true;
+                this.ZoomingDelta = -ZoomSensitivity;
             }
         }
     }
