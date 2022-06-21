@@ -54,6 +54,8 @@ attenuation_model = 3
 max_db = 1.0
 bus = "Pickup Sounds"
 
+[node name="Timer" type="Timer" parent="DigMap"]
+
 [node name="UIRoot" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0

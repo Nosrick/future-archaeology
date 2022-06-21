@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ATimeGoneBy.scripts.digging;
 using ATimeGoneBy.scripts.tools;
@@ -13,6 +14,8 @@ namespace ATimeGoneBy.scripts
         public DigMap DiggingSpace { get; protected set; }
 
         public IDictionary<string, ITool> ToolBox { get; protected set; }
+
+        public List<Tuple<ArrayMesh, Material>> Items { get; protected set; }
 
         protected PackedScene PauseMenuPackedScene { get; set; }
         protected PauseMenu PauseMenuScreen { get; set; }
@@ -50,8 +53,41 @@ namespace ATimeGoneBy.scripts
 
         protected const string CurrentToolString = "tools.current.label";
 
+        protected const string ItemMeshPaths = "res://scenes/game/items";
+        protected const string ItemMaterialPaths = "res://assets/materials/items";
+
         public override void _Ready()
         {
+            this.Items = new List<Tuple<ArrayMesh, Material>>();
+
+            List<string> files = new List<string>();
+            Directory itemDir = new Directory();
+            if (itemDir.Open(ItemMeshPaths) == Error.Ok)
+            {
+                itemDir.ListDirBegin(true, true);
+                string file = itemDir.GetNext();
+                while (file != string.Empty)
+                {
+                    if (file.EndsWith(".tres"))
+                    {
+                        files.Add(file);
+                    }
+
+                    file = itemDir.GetNext();
+                }
+
+                foreach (string f in files)
+                {
+                    ArrayMesh mesh = GD.Load(ItemMeshPaths + "/" + f) as ArrayMesh;
+                    Material material = GD.Load(ItemMaterialPaths + "/" + f) as Material;
+                    if (mesh is null == false
+                        && material is null == false)
+                    {
+                        this.Items.Add(new Tuple<ArrayMesh, Material>(mesh, material));
+                    }
+                }
+            }
+
             this.PauseMenuPackedScene = GD.Load<PackedScene>(GlobalConstants.PauseMenuLocation);
 
             this.DiggingSpace = this.GetNode<DigMap>("DigMap");

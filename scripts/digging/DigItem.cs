@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using System;
+using Godot;
 using Godot.Collections;
 
 namespace ATimeGoneBy.scripts.digging
@@ -80,11 +81,28 @@ namespace ATimeGoneBy.scripts.digging
             this.MyAnimationPlayer.Play(PICKUP_ANIM);
         }
 
-        public void AssignObject(MeshInstance meshInstance, int cashValue)
+        public void AssignObject(ArrayMesh mesh, Material material, int cashValue, bool deferred = false)
         {
             this.CashValue = cashValue;
-            this.ObjectMesh = meshInstance;
-            this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
+
+            if (this.IsInsideTree())
+            {
+                this.ObjectMesh.Mesh = (ArrayMesh) mesh.Duplicate();
+                this.MyMaterial = (Material) material.Duplicate();
+                this.ObjectMesh.SetSurfaceMaterial(0, this.MyMaterial);
+                this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
+                return;
+            }
+
+            if (!deferred)
+            {
+                this.CallDeferred(nameof(this.AssignObject), mesh, cashValue, true);
+            }
+        }
+
+        public void AssignObject(Tuple<ArrayMesh, Material> itemTuple, int cashValue, bool deferred = false)
+        {
+            this.AssignObject(itemTuple.Item1, itemTuple.Item2, cashValue, deferred);
         }
 
         public Dictionary Save()

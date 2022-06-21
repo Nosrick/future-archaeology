@@ -29,6 +29,7 @@ namespace ATimeGoneBy.scripts.digging
 
         protected AudioStreamPlayer3D ToolAudioPlayer { get; set; }
         protected AudioStreamPlayer3D PickupAudioPlayer { get; set; }
+        protected Timer Timer { get; set; }
 
         protected AudioStreamRandomPitch ItemPickUpSound { get; set; }
 
@@ -45,6 +46,7 @@ namespace ATimeGoneBy.scripts.digging
 
             this.ToolAudioPlayer = this.GetNode<AudioStreamPlayer3D>("ToolSounds");
             this.PickupAudioPlayer = this.GetNode<AudioStreamPlayer3D>("PickupSounds");
+            this.Timer = this.GetNode<Timer>("Timer");
 
             this.PickupAudioPlayer.Stream = this.ItemPickUpSound;
 
@@ -70,8 +72,6 @@ namespace ATimeGoneBy.scripts.digging
                     }
                 }
             }
-
-            this.PlaceObjects();
             
             this.BeginProcessing();
         }
@@ -85,14 +85,37 @@ namespace ATimeGoneBy.scripts.digging
 
         protected async void BeginProcessing()
         {
-            SceneTreeTimer timer = this.GetTree().CreateTimer(1f);
+            this.Timer.Start(1f);
+            await this.ToSignal(this.Timer, "timeout");
 
-            await this.ToSignal(timer, "timeout");
+            this.PlaceObjects();
+
+            bool loop = true;
+            while (loop)
+            {
+                loop = false;
+                foreach (DigItem item in this.DigItems)
+                {
+                    if (!item.IsInsideTree())
+                    {
+                        loop = true;
+                    }
+                }
+
+                if (loop)
+                {
+                    this.Timer.Start(1f);
+                    await this.ToSignal(this.Timer, "timeout");
+                }
+            }
+
+            this.Timer.Start(1f);
+            await this.ToSignal(this.Timer, "timeout");
 
             this.SetPhysicsProcess(true);
         }
 
-        protected void PlaceObjects()
+        protected async void PlaceObjects()
         {
             int numObjects = 5;
 
@@ -105,6 +128,11 @@ namespace ATimeGoneBy.scripts.digging
 
                 this.DigItems.Add(item);
                 this.AddChild(item);
+
+                var signals = item.GetSignalList();
+                GD.Print(item.IsInsideTree());
+                
+                item.AssignObject(GlobalConstants.GameManager.Items.GetRandom(), 100);
 
                 bool loopBreak = false;
                 int tries = 0;
@@ -131,7 +159,8 @@ namespace ATimeGoneBy.scripts.digging
         {
             foreach (DigItem item in this.DigItems)
             {
-                if (item.Uncovered || item.GetCollidingBodies().Contains(this))
+                var collidingBodies = item.GetCollidingBodies();
+                if (item.Uncovered || collidingBodies.Contains(this))
                 {
                     continue;
                 }
@@ -163,6 +192,11 @@ namespace ATimeGoneBy.scripts.digging
 
         public bool LevelComplete()
         {
+            if (this.IsPhysicsProcessing() == false)
+            {
+                return false;
+            }
+            
             return !this.DigItems.Any();
         }
 
