@@ -88,7 +88,7 @@ namespace ATimeGoneBy.scripts.digging
             this.Timer.Start(1f);
             await this.ToSignal(this.Timer, "timeout");
 
-            this.PlaceObjects();
+            this.CreateObjects();
 
             bool loop = true;
             while (loop)
@@ -108,14 +108,18 @@ namespace ATimeGoneBy.scripts.digging
                     await this.ToSignal(this.Timer, "timeout");
                 }
             }
+            
+            this.PlaceObjects();
 
             this.Timer.Start(1f);
             await this.ToSignal(this.Timer, "timeout");
+            
+            this.RemoveOccludedTiles();
 
             this.SetPhysicsProcess(true);
         }
 
-        protected async void PlaceObjects()
+        protected void CreateObjects()
         {
             int numObjects = 5;
 
@@ -129,18 +133,21 @@ namespace ATimeGoneBy.scripts.digging
                 this.DigItems.Add(item);
                 this.AddChild(item);
 
-                var signals = item.GetSignalList();
-                GD.Print(item.IsInsideTree());
-                
                 item.AssignObject(GlobalConstants.GameManager.Items.GetRandom(), 100);
+            }
+        }
 
+        protected void PlaceObjects()
+        {
+            foreach (DigItem item in this.DigItems)
+            {
                 bool loopBreak = false;
                 int tries = 0;
                 while (!loopBreak && tries < 100)
                 {
                     foreach (var obj in item.GetCollidingBodies())
                     {
-                        if (obj is DigItem otherItem)
+                        if (obj is DigItem)
                         {
                             item.Translation = this.RandomPosition();
                             item.RotationDegrees = this.RandomRotation();
@@ -151,6 +158,28 @@ namespace ATimeGoneBy.scripts.digging
                     tries += 1;
 
                     loopBreak = true;
+                }
+            }
+        }
+
+        protected void RemoveOccludedTiles()
+        {
+            foreach (DigItem item in this.DigItems)
+            {
+                AABB aabb = item.ObjectMesh.GetTransformedAabb();
+                Vector3Int begin, end;
+                begin = new Vector3Int(aabb.Position);
+                end = new Vector3Int(aabb.End);
+
+                for (int x = begin.x + 1; x < end.x - 1; x++)
+                {
+                    for (int y = begin.y + 1; y < end.y - 1; y++)
+                    {
+                        for (int z = begin.z + 1; z < end.z - 1; z++)
+                        {
+                            this.SetCellItem(x, y, z, EMPTY_CELL);
+                        }
+                    }
                 }
             }
         }
