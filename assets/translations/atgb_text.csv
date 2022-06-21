@@ -14,7 +14,7 @@ options.invert_x_panning.label,Invert X Panning
 options.invert_y_panning.label,Invert Y Panning
 options.invert_zooming.label,Invert Zooming
 options.rotation_sensitivity.label,Rotation Sensitivity
-options.zoom_sensitivity.label,Zoom Sensitivity
+options.zooming_sensitivity.label,Zoom Sensitivity
 options.panning_sensitivity.label,Panning Sensitivity
 options.default.button,Defaults
 back.button,Back

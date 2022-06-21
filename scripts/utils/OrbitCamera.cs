@@ -104,6 +104,7 @@ namespace ATimeGoneBy.scripts.utils
 
             this.RotationSensitivity = optionHandler.GetOption<float>(optionHandler.RotationSensitivity);
             this.PanSensitivity = optionHandler.GetOption<float>(optionHandler.PanningSensitivity);
+            this.ZoomSensitivity = optionHandler.GetOption<float>(optionHandler.ZoomingSensitivity);
         }
 
         protected void SetRotation()
