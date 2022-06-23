@@ -21,6 +21,9 @@ namespace ATimeGoneBy.scripts.digging
         protected bool PathsRetrieved { get; set; }
         
         public bool Uncovered { get; protected set; }
+        
+        public bool Flashing { get; protected set; }
+        public bool Glowing { get; protected set; }
 
         public const string PICKUP_ANIM = "PickupBounce";
 
@@ -71,8 +74,9 @@ namespace ATimeGoneBy.scripts.digging
 
         public void MakeMeGlow()
         {
-            if (this.MyMaterial is null == false)
+            if (!this.Glowing && this.MyMaterial is null == false)
             {
+                this.Glowing = true;
                 this.MyMaterial.NextPass = this.OutlineMaterial;
                 this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
             }
@@ -80,8 +84,9 @@ namespace ATimeGoneBy.scripts.digging
 
         public void MakeMeFlash()
         {
-            if (this.MyMaterial is null == false)
+            if (!this.Flashing && this.MyMaterial is null == false)
             {
+                this.Flashing = true;
                 this.MyMaterial.NextPass = this.FlashMaterial;
                 this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
             }
