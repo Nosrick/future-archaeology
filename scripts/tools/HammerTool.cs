@@ -8,6 +8,13 @@ namespace ATimeGoneBy.scripts.tools
     {
         public string TranslationKey => "tools.hammer.name";
         public int Cost => 40;
+        public int UsageCooldown => 3;
+        public int CooldownTimer { get; protected set; }
+        public bool IsUsable()
+        {
+            return this.CooldownTimer == 0;
+        }
+
         public AudioStreamRandomPitch AssociatedSound { get; protected set; }
 
         public int Damage { get; protected set; }
@@ -87,6 +94,7 @@ namespace ATimeGoneBy.scripts.tools
                 }
             }
 
+            this.CooldownTimer = this.UsageCooldown;
             return this.Cost;
         }
     }

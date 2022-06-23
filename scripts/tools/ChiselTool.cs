@@ -6,6 +6,13 @@ namespace ATimeGoneBy.scripts.tools
     public class ChiselTool : ITool
     {
         public int Cost => 10;
+        public int UsageCooldown => 0;
+        public int CooldownTimer => 0;
+        public bool IsUsable()
+        {
+            return true;
+        }
+
         public AudioStreamRandomPitch AssociatedSound { get; protected set; }
         public string TranslationKey => "tools.chisel.name";
 

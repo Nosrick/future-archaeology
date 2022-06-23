@@ -12,10 +12,17 @@ namespace ATimeGoneBy.scripts.tools
     {
         public string TranslationKey => "tools.bomb.name";
         public int Cost => 75;
-        
+        public int UsageCooldown => 20;
+        public int CooldownTimer { get; protected set; }
+
         protected const int Tiles = 20;
 
         protected const int Damage = 3;
+        public bool IsUsable()
+        {
+            return this.CooldownTimer == 0;
+        }
+
         public AudioStreamRandomPitch AssociatedSound { get; protected set; }
 
         protected static readonly Random Random = new Random();
@@ -69,6 +76,7 @@ namespace ATimeGoneBy.scripts.tools
                 digSite.DamageCell(tile, Damage);
             }
 
+            this.CooldownTimer = this.UsageCooldown;
             return this.Cost;
         }
     }

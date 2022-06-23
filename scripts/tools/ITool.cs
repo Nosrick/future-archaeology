@@ -7,6 +7,11 @@ namespace ATimeGoneBy.scripts.tools
     {
         string TranslationKey { get; }
         int Cost { get; }
+        int UsageCooldown { get; }
+        int CooldownTimer { get; }
+
+        bool IsUsable();
+        
         AudioStreamRandomPitch AssociatedSound { get; }
         int Execute(Vector3Int hit, Vector3Int previous);
     }
