@@ -67,5 +67,6 @@ mouse_filter = 2
 [connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/ChiselButton" to="." method="SetTool" binds= [ "chisel" ]]
 [connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/HammerButton" to="." method="SetTool" binds= [ "hammer" ]]
 [connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/BombButton" to="." method="SetTool" binds= [ "bomb" ]]
+[connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/SurveyButton" to="." method="SetTool" binds= [ "survey" ]]
 
 [editable path="UIRoot/GameUI"]

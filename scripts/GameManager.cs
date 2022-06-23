@@ -106,7 +106,8 @@ namespace ATimeGoneBy.scripts
                 {"brush", new BrushTool()},
                 {"chisel", new ChiselTool()},
                 {"hammer", new HammerTool()},
-                {"bomb", new BombTool()}
+                {"bomb", new BombTool()},
+                {"survey", new SurveyTool()}
             };
 
             this.CameraIcons = new List<Control>();
