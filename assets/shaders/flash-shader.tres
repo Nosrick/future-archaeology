@@ -2,7 +2,7 @@
 
 [resource]
 code = "shader_type spatial;
-render_mode unshaded, depth_draw_never;
+render_mode unshaded;
 
 uniform vec4 shine_color : hint_color = vec4( 1.0, 1.0, 1.0, 1.0 );
 uniform float cycle_interval : hint_range(0.5, 5.0) = 1.0;
@@ -16,4 +16,5 @@ void fragment( )
 	float frequency = floor(sin(vertex.z * cycle_interval + TIME * shine_speed * cycle_interval) + width);
 	ALBEDO = shine_color.rgb;
 	ALPHA = clamp((1.0 - dot(NORMAL, VIEW)) * frequency * shine_color.a, 0.0, 1.0);
+	DEPTH = 0.0;
 }"
