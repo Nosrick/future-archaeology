@@ -5,6 +5,6 @@
 [resource]
 shader = ExtResource( 1 )
 shader_param/shine_color = Color( 0.917647, 0.882353, 0.0235294, 1 )
-shader_param/cycle_interval = 1.0
-shader_param/shine_speed = 2.06
-shader_param/shine_width = 80.478
+shader_param/cycle_interval = 1.138
+shader_param/shine_speed = 2.079
+shader_param/shine_width = 100.0
