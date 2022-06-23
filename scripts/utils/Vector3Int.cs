@@ -38,6 +38,11 @@ namespace ATimeGoneBy.scripts.utils
         {
             return "{ " + this.x + ", " + this.y + ", " + this.z + " }";
         }
+
+        public Vector3 ToVector3()
+        {
+            return new Vector3(this.x, this.y, this.z);
+        }
         
         public static Vector3Int operator -(Vector3Int left, Vector3Int right)
         {
