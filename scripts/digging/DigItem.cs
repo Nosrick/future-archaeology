@@ -11,6 +11,7 @@ namespace ATimeGoneBy.scripts.digging
         public CollisionShape CollisionShape { get; protected set; }
 
         protected ShaderMaterial OutlineMaterial { get; set; }
+        protected ShaderMaterial FlashMaterial { get; set; }
         
         protected string MeshPath { get; set; }
         protected string MaterialPath { get; set; }
@@ -41,6 +42,7 @@ namespace ATimeGoneBy.scripts.digging
             this.MyAnimationPlayer = this.GetNode<AnimationPlayer>("AnimationPlayer");
 
             this.OutlineMaterial = GD.Load<ShaderMaterial>("assets/shaders/outline-material.tres");
+            this.FlashMaterial = GD.Load<ShaderMaterial>("assets/shaders/flash-material.tres");
 
             this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
             this.MyMaterial = this.ObjectMesh.Mesh.SurfaceGetMaterial(0);
@@ -72,6 +74,15 @@ namespace ATimeGoneBy.scripts.digging
             if (this.MyMaterial is null == false)
             {
                 this.MyMaterial.NextPass = this.OutlineMaterial;
+                this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+            }
+        }
+
+        public void MakeMeFlash()
+        {
+            if (this.MyMaterial is null == false)
+            {
+                this.MyMaterial.NextPass = this.FlashMaterial;
                 this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
             }
         }
