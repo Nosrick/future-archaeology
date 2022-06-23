@@ -250,6 +250,36 @@ namespace ATimeGoneBy.scripts.digging
             return new Vector3(xRot, yRot, zRot);
         }
 
+        public bool IsObjectAt(Vector3Int pos)
+        {
+            Vector3 point = pos.ToVector3();
+            foreach (DigItem item in this.DigItems)
+            {
+                AABB aabb = item.ObjectMesh.GetTransformedAabb();
+                if (aabb.HasPoint(point))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public DigItem GetObjectAt(Vector3Int pos)
+        {
+            Vector3 point = pos.ToVector3();
+            foreach (DigItem item in this.DigItems)
+            {
+                AABB aabb = item.ObjectMesh.GetTransformedAabb();
+                if (aabb.HasPoint(point))
+                {
+                    return item;
+                }
+            }
+            
+            return null;
+        }
+
         public bool IsValid(Vector3Int pos)
         {
             return this.ValidCells.Contains(this.GetCellItem(pos.x, pos.y, pos.z));
