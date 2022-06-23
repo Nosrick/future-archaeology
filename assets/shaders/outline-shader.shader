@@ -92,5 +92,5 @@ void fragment( )
 	,	0.0
 	,	1.0
 	);
-	DEPTH = 0.0;
+	//DEPTH = 0.0;
 }
