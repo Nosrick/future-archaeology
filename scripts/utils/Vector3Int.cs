@@ -1,10 +1,21 @@
-﻿using Godot;
+﻿using System;
+using Godot;
 
 namespace ATimeGoneBy.scripts.utils
 {
     public struct Vector3Int
     {
         public int x, y, z;
+
+        public static Vector3Int Left => new(-1, 0, 0);
+        public static Vector3Int Right => new(1, 0, 0);
+        public static Vector3Int Up => new(0, 1, 0);
+        public static Vector3Int Down => new(0, -1, 0);
+        public static Vector3Int Forward => new(0, 0, -1);
+        public static Vector3Int Back => new(0, 0, 1);
+        public static Vector3Int Zero => new(0, 0, 0);
+        public static Vector3Int Unit => new(1, 1, 1);
+        public static Vector3Int NegativeUnit => new(-1, -1, -1); 
 
         public Vector3Int(int x, int y, int z)
         {
@@ -43,7 +54,7 @@ namespace ATimeGoneBy.scripts.utils
         {
             return new Vector3(this.x, this.y, this.z);
         }
-        
+
         public static Vector3Int operator -(Vector3Int left, Vector3Int right)
         {
             return new Vector3Int(left.x - right.x, left.y - right.y, left.z - right.z);
@@ -57,6 +68,11 @@ namespace ATimeGoneBy.scripts.utils
         public static Vector3Int operator *(Vector3Int left, Vector3Int right)
         {
             return new Vector3Int(left.x * right.x, left.y * right.y, left.z * right.z);
+        }
+
+        public static Vector3Int operator *(Vector3Int left, int right)
+        {
+            return new Vector3Int(left.x * right, left.y * right, left.z * right);
         }
 
         public static bool operator ==(Vector3Int left, Vector3Int right)
@@ -81,6 +97,41 @@ namespace ATimeGoneBy.scripts.utils
             }
             
             return false;
+        }
+
+        public int this[int index]
+        {
+            get
+            {
+                return index switch
+                {
+                    0 => this.x,
+                    1 => this.y,
+                    2 => this.z,
+                    _ => throw new IndexOutOfRangeException()
+                };
+            }
+        }
+        
+        public bool Equals(Vector3Int other)
+        {
+            return x == other.x && y == other.y && z == other.z;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Vector3Int other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = x;
+                hashCode = (hashCode * 397) ^ y;
+                hashCode = (hashCode * 397) ^ z;
+                return hashCode;
+            }
         }
     }
 }
