@@ -58,5 +58,29 @@ namespace ATimeGoneBy.scripts.utils
         {
             return new Vector3Int(left.x * right.x, left.y * right.y, left.z * right.z);
         }
+
+        public static bool operator ==(Vector3Int left, Vector3Int right)
+        {
+            if (left.x != right.x
+                || left.y != right.y
+                || left.z != right.z)
+            {
+                return false;
+            }
+            
+            return true;
+        }
+
+        public static bool operator !=(Vector3Int left, Vector3Int right)
+        {
+            if (left.x != right.x 
+                || left.y != right.y 
+                || left.z != right.z)
+            {
+                return true;
+            }
+            
+            return false;
+        }
     }
 }
