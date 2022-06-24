@@ -1,0 +1,8 @@
+[gd_resource type="SpatialMaterial" load_steps=3 format=2]
+
+[ext_resource path="res://assets/textures/digging/bare-cube.png" type="Texture" id=1]
+[ext_resource path="res://assets/shaders/flash-material.tres" type="Material" id=2]
+
+[resource]
+next_pass = ExtResource( 2 )
+albedo_texture = ExtResource( 1 )
