@@ -48,49 +48,58 @@ namespace ATimeGoneBy.scripts.tools
             int yStep = 0;
             int zStep = 0;
 
-            if (hitAxis == Vector3.Axis.X)
+            switch (hitAxis)
             {
-                yStep = 1;
-                zStep = 1;
-
-                int x = hit.x;
-
-                for (int y = hit.y - yStep; y <= hit.y + yStep; y += yStep)
+                case Vector3.Axis.X:
                 {
-                    for (int z = hit.z - zStep; z <= hit.z + zStep; z += zStep)
-                    {
-                        digSite.DamageCell(x, y, z, this.Damage);
-                    }
-                }
-            }
-            else if (hitAxis == Vector3.Axis.Y)
-            {
-                xStep = 1;
-                zStep = 1;
+                    yStep = 1;
+                    zStep = 1;
 
-                int y = hit.y;
+                    int x = hit.x;
 
-                for (int x = hit.x - xStep; x <= hit.x + xStep; x += xStep)
-                {
-                    for (int z = hit.z - zStep; z <= hit.z + zStep; z += zStep)
-                    {
-                        digSite.DamageCell(x, y, z, this.Damage);
-                    }
-                }
-            }
-            else
-            {
-                xStep = 1;
-                yStep = 1;
-
-                int z = hit.z;
-
-                for (int x = hit.x - xStep; x <= hit.x + xStep; x += xStep)
-                {
                     for (int y = hit.y - yStep; y <= hit.y + yStep; y += yStep)
                     {
-                        digSite.DamageCell(x, y, z, this.Damage);
+                        for (int z = hit.z - zStep; z <= hit.z + zStep; z += zStep)
+                        {
+                            digSite.DamageCell(x, y, z, this.Damage);
+                        }
                     }
+
+                    break;
+                }
+                case Vector3.Axis.Y:
+                {
+                    xStep = 1;
+                    zStep = 1;
+
+                    int y = hit.y;
+
+                    for (int x = hit.x - xStep; x <= hit.x + xStep; x += xStep)
+                    {
+                        for (int z = hit.z - zStep; z <= hit.z + zStep; z += zStep)
+                        {
+                            digSite.DamageCell(x, y, z, this.Damage);
+                        }
+                    }
+
+                    break;
+                }
+                default:
+                {
+                    xStep = 1;
+                    yStep = 1;
+
+                    int z = hit.z;
+
+                    for (int x = hit.x - xStep; x <= hit.x + xStep; x += xStep)
+                    {
+                        for (int y = hit.y - yStep; y <= hit.y + yStep; y += yStep)
+                        {
+                            digSite.DamageCell(x, y, z, this.Damage);
+                        }
+                    }
+
+                    break;
                 }
             }
 
