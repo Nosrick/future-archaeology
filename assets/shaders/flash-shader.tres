@@ -1,20 +1,51 @@
 [gd_resource type="Shader" format=2]
 
 [resource]
+resource_local_to_scene = true
 code = "shader_type spatial;
 render_mode unshaded;
 
-uniform vec4 shine_color : hint_color = vec4( 1.0, 1.0, 1.0, 1.0 );
-uniform float cycle_interval : hint_range(0.5, 5.0) = 1.0;
+uniform vec4 shine_color : hint_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform float cycle_interval : hint_range(0.1, 5.0) = 1.0;
 uniform float shine_speed : hint_range(1.0, 5.0) = 3.0;
 uniform float shine_width : hint_range(1.0, 100.0) = 3.0;
+
+uniform int axisIndex : hint_range(0, 2) = 0;
+uniform int axisDir : hint_range(-1, 1) = 1;
+
+uniform float startTime = 0.0;
 
 void fragment( )
 {
 	vec3 vertex = (CAMERA_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	float width = shine_width * 0.001 * cycle_interval;
-	float frequency = floor(sin(vertex.z * cycle_interval + TIME * shine_speed * cycle_interval) + width);
+	
+	float axis = 0.0;
+	switch(axisIndex)
+	{
+		case 0:
+			axis = vertex.x;
+			break;
+			
+		case 1:
+			axis = vertex.y;
+			break;
+			
+		case 2:
+			axis = vertex.z;
+			break;
+			
+		default:
+			axis = 0.0;
+			break;
+	}
+	
+	float currentTime = TIME - startTime;
+	
+	axis = axis * float(axisDir);
+	
+	float frequency = floor(sin(axis * cycle_interval + currentTime * shine_speed * cycle_interval) + width);
 	ALBEDO = shine_color.rgb;
-	ALPHA = clamp((1.0 - dot(NORMAL, VIEW)) * frequency * shine_color.a, 0.0, 1.0);
+	ALPHA = clamp((1.0 - dot(NORMAL, VIEW)) * frequency * shine_color.a, 0.0, 0.6);
 	DEPTH = 0.0;
 }"
