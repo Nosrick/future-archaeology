@@ -1,4 +1,5 @@
 ﻿using System;
+using ATimeGoneBy.scripts.utils;
 using Godot;
 using Godot.Collections;
 
@@ -45,7 +46,7 @@ namespace ATimeGoneBy.scripts.digging
             this.MyAnimationPlayer = this.GetNode<AnimationPlayer>("AnimationPlayer");
 
             this.OutlineMaterial = GD.Load<ShaderMaterial>("assets/shaders/outline-material.tres");
-            this.FlashMaterial = GD.Load<ShaderMaterial>("assets/shaders/flash-material.tres");
+            this.FlashMaterial = GD.Load<ShaderMaterial>("assets/shaders/flash-item-material.tres");
 
             this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
             this.MyMaterial = this.ObjectMesh.Mesh.SurfaceGetMaterial(0);
@@ -87,6 +88,9 @@ namespace ATimeGoneBy.scripts.digging
             if (!this.Flashing && this.MyMaterial is null == false)
             {
                 this.Flashing = true;
+                
+                this.FlashMaterial.SetShaderParam("axisIndex", GD.Randi() % 3);
+                this.FlashMaterial.SetShaderParam("axisDir", RandomUtil.PosNegCoinFlip());
                 this.MyMaterial.NextPass = this.FlashMaterial;
                 this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
             }

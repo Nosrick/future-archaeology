@@ -16,9 +16,11 @@ namespace ATimeGoneBy.scripts.digging
         protected int Depth { get; set; }
 
         public int[] ValidCells { get; protected set; }
-        public const int FULL_CUBE = 0;
+        public const int BARE_CUBE = 0;
         public const int HALF_CUBE = 1;
-        public const int BARE_CUBE = 2;
+        public const int FULL_CUBE = 2;
+
+        public const int FLASH_MODIFIER = 3;
         public const int EMPTY_CELL = -1;
 
         protected PackedScene DiggingObjectScene { get; set; }
@@ -32,6 +34,8 @@ namespace ATimeGoneBy.scripts.digging
         protected Timer Timer { get; set; }
 
         protected AudioStreamRandomPitch ItemPickUpSound { get; set; }
+
+        protected ShaderMaterial FlashMaterial;
 
         public override void _Ready()
         {
@@ -47,6 +51,8 @@ namespace ATimeGoneBy.scripts.digging
             this.ToolAudioPlayer = this.GetNode<AudioStreamPlayer3D>("ToolSounds");
             this.PickupAudioPlayer = this.GetNode<AudioStreamPlayer3D>("PickupSounds");
             this.Timer = this.GetNode<Timer>("Timer");
+
+            this.FlashMaterial = GD.Load<ShaderMaterial>("assets/shaders/flash-material.tres");
 
             this.PickupAudioPlayer.Stream = this.ItemPickUpSound;
 
@@ -282,7 +288,12 @@ namespace ATimeGoneBy.scripts.digging
 
         public bool IsValid(Vector3Int pos)
         {
-            return this.ValidCells.Contains(this.GetCellItem(pos.x, pos.y, pos.z));
+            return this.IsValid(pos.x, pos.y, pos.z);
+        }
+
+        public bool IsValid(int x, int y, int z)
+        {
+            return this.ValidCells.Contains(this.GetCellItem(x, y, z));
         }
 
         public bool IsOuterCell(Vector3Int pos)
@@ -319,7 +330,7 @@ namespace ATimeGoneBy.scripts.digging
             int cell = this.GetCellItem(x, y, z);
             if (this.ValidCells.Contains(cell))
             {
-                this.SetCellItem(x, y, z, cell + damage);
+                this.SetCellItem(x, y, z, Mathf.Max(cell - damage, EMPTY_CELL));
                 var sound = GlobalConstants.GameManager.CurrentTool?.AssociatedSound;
                 if (this.ToolAudioPlayer.Stream != sound)
                 {
@@ -330,6 +341,84 @@ namespace ATimeGoneBy.scripts.digging
             }
 
             return this.IsValid(new Vector3Int(x, y, z));
+        }
+
+        public void MakeCellFlash(Vector3Int pos, int axis, int axisDir)
+        {
+            this.MakeCellFlash(pos.x, pos.y, pos.z, axis, axisDir);
+        }
+
+        public void MakeAreaFlash(Vector3Int start, Vector3Int end, int axisIndex, int axisDir)
+        {
+            this.FlashMaterial.SetShaderParam("axisIndex", axisIndex);
+            this.FlashMaterial.SetShaderParam("axisDir", axisDir);
+            ulong ticks = OS.GetTicksMsec()/1000;
+            this.FlashMaterial.SetShaderParam("startTime", ticks);
+            
+            for (int x = start.x; x <= end.x; x++)
+            {
+                for (int y = start.y; y <= end.y; y++)
+                {
+                    for (int z = start.z; z <= end.z; z++)
+                    {
+                        this.MakeCellFlash(x, y, z);
+                    }
+                }
+            }
+        }
+
+        protected void MakeCellFlash(int x, int y, int z)
+        {
+            int cell = this.GetCellItem(x, y, z);
+            if (cell >= FLASH_MODIFIER || !this.IsValid(x, y, z))
+            {
+                return;
+            }
+            
+            this.SetCellItem(x, y, z, cell + FLASH_MODIFIER);
+        }
+
+        public void MakeCellFlash(int x, int y, int z, int axisIndex, int axisDir)
+        {
+            this.FlashMaterial.SetShaderParam("axisIndex", axisIndex);
+            this.FlashMaterial.SetShaderParam("axisDir", axisDir);
+            ulong ticks = OS.GetTicksMsec()/1000;
+            this.FlashMaterial.SetShaderParam("startTime", ticks);
+            
+            this.MakeCellFlash(x, y, z);
+        }
+
+        public void EndAreaFlash(Vector3Int begin, Vector3Int end)
+        {
+            this.FlashMaterial.SetShaderParam("axisDir", 0);
+            this.FlashMaterial.SetShaderParam("startTime", 0);
+            
+            for (int x = begin.x; x <= end.x; x++)
+            {
+                for (int y = begin.y; y <= end.y; y++)
+                {
+                    for (int z = begin.z; z <= end.z; z++)
+                    {
+                        this.EndCellFlash(x, y, z);
+                    }
+                }
+            }
+        }
+
+        public void EndCellFlash(Vector3Int pos)
+        {
+            this.EndCellFlash(pos.x, pos.y, pos.z);
+        }
+
+        public void EndCellFlash(int x, int y, int z)
+        {
+            int cell = this.GetCellItem(x, y, z);
+            if (cell < FLASH_MODIFIER || !this.IsValid(x, y, z))
+            {
+                return;
+            }
+            
+            this.SetCellItem(x, y, z, cell - FLASH_MODIFIER);
         }
 
         public Dictionary Save()
