@@ -7,9 +7,10 @@ namespace ATimeGoneBy.scripts.utils
     {
         private static readonly Random RANDOM = new Random();
 
-        private static readonly ulong START_TIME = OS.GetUnixTime();
+        private static readonly ulong START_TIME = OS.GetTicksMsec();
 
-        public static int Ticks => (int) (OS.GetUnixTime() - START_TIME);
+        public static int RunningTicks => (int) (OS.GetTicksMsec() - START_TIME) / 1000;
+        public static int SystemTicks => (int) (OS.GetTicksMsec() / 1000);
 
         public static int PosNegCoinFlip()
         {
