@@ -96,6 +96,19 @@ namespace ATimeGoneBy.scripts.digging
             }
         }
 
+        public void EndMyFlash()
+        {
+            if (this.Flashing && this.MyMaterial is null == false)
+            {
+                this.Flashing = false;
+                
+                this.FlashMaterial.SetShaderParam("axisIndex", 0);
+                this.FlashMaterial.SetShaderParam("axisDir", 0);
+                this.MyMaterial.NextPass = null;
+                this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+            }
+        }
+
         public void PlayPickupAnimation()
         {
             this.MyAnimationPlayer.Play(PICKUP_ANIM);
