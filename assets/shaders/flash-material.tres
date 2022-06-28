@@ -4,10 +4,10 @@
 
 [resource]
 shader = ExtResource( 1 )
-shader_param/shine_color = Color( 0.917647, 0.882353, 0.0235294, 1 )
-shader_param/cycle_interval = 1.0
-shader_param/shine_speed = 4.0
-shader_param/shine_width = 50.0
-shader_param/axisIndex = 0
+shader_param/shineColour = Color( 0.105882, 0.592157, 0.615686, 1 )
+shader_param/shineLengthInUnits = 5.0
+shader_param/durationInSeconds = 0.5
+shader_param/shineWidth = 100.0
+shader_param/axisIndex = 2
 shader_param/axisDir = 1
 shader_param/startTime = 0.0
