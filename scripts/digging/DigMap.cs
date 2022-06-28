@@ -6,6 +6,7 @@ using ATimeGoneBy.scripts.utils;
 using Godot;
 using Godot.Collections;
 using Array = Godot.Collections.Array;
+using Timer = Godot.Timer;
 
 namespace ATimeGoneBy.scripts.digging
 {
@@ -67,7 +68,7 @@ namespace ATimeGoneBy.scripts.digging
         public void GenerateDigSite()
         {
             this.Clear();
-            
+
             for (int x = -this.Width; x <= this.Width; x++)
             {
                 for (int y = -this.Height; y <= this.Height; y++)
@@ -78,7 +79,7 @@ namespace ATimeGoneBy.scripts.digging
                     }
                 }
             }
-            
+
             this.BeginProcessing();
         }
 
@@ -114,12 +115,12 @@ namespace ATimeGoneBy.scripts.digging
                     await this.ToSignal(this.Timer, "timeout");
                 }
             }
-            
+
             this.PlaceObjects();
 
             this.Timer.Start(1f);
             await this.ToSignal(this.Timer, "timeout");
-            
+
             this.RemoveOccludedTiles();
 
             this.SetPhysicsProcess(true);
@@ -231,7 +232,7 @@ namespace ATimeGoneBy.scripts.digging
             {
                 return false;
             }
-            
+
             return !this.DigItems.Any();
         }
 
@@ -282,7 +283,7 @@ namespace ATimeGoneBy.scripts.digging
                     return item;
                 }
             }
-            
+
             return null;
         }
 
@@ -343,18 +344,24 @@ namespace ATimeGoneBy.scripts.digging
             return this.IsValid(new Vector3Int(x, y, z));
         }
 
-        public void MakeCellFlash(Vector3Int pos, int axis, int axisDir)
+        public void MakeCellFlash(Vector3Int pos, Vector3Int.Axis axis, int axisDir)
         {
             this.MakeCellFlash(pos.x, pos.y, pos.z, axis, axisDir);
         }
 
-        public void MakeAreaFlash(Vector3Int start, Vector3Int end, int axisIndex, int axisDir)
+        public async void MakeAreaFlash(
+            Vector3Int start,
+            Vector3Int end,
+            Vector3Int.Axis axisIndex,
+            int axisDir,
+            int lengthInUnits,
+            float duration,
+            bool autoEnd = true,
+            bool includeItems = false,
+            bool stopItemFlashing = false)
         {
-            this.FlashMaterial.SetShaderParam("axisIndex", axisIndex);
-            this.FlashMaterial.SetShaderParam("axisDir", axisDir);
-            ulong ticks = OS.GetTicksMsec()/1000;
-            this.FlashMaterial.SetShaderParam("startTime", ticks);
-            
+            this.SetShaderParams(axisIndex, axisDir, lengthInUnits, duration);
+
             for (int x = start.x; x <= end.x; x++)
             {
                 for (int y = start.y; y <= end.y; y++)
@@ -365,34 +372,156 @@ namespace ATimeGoneBy.scripts.digging
                     }
                 }
             }
+
+            if (includeItems)
+            {
+                AABB box = new AABB
+                {
+                    Position = start.ToVector3(),
+                    End = end.ToVector3()
+                };
+
+                var items = this.DigItems.Where(item => box.Intersects(item.ObjectMesh.GetTransformedAabb(), true));
+                foreach (DigItem item in items)
+                {
+                    item.MakeMeFlash();
+                }
+            }
+
+            if (autoEnd)
+            {
+                this.Timer.Start(duration);
+                await this.ToSignal(this.Timer, "timeout");
+                this.EndAreaFlash(start, end, stopItemFlashing);
+            }
         }
 
-        protected void MakeCellFlash(int x, int y, int z)
+        public async void MakeAreaFlashAsync(
+            Vector3Int start,
+            Vector3Int end,
+            Vector3Int.Axis axisIndex,
+            int axisDir,
+            int lengthInUnits,
+            float duration,
+            bool includeItems = false,
+            bool autoEnd = true)
         {
-            int cell = this.GetCellItem(x, y, z);
-            if (cell >= FLASH_MODIFIER || !this.IsValid(x, y, z))
+            this.SetShaderParams(axisIndex, axisDir, lengthInUnits, duration);
+
+            Vector3Int layerEnd = new Vector3Int();
+
+            switch (axisIndex)
+            {
+                case Vector3Int.Axis.X:
+                    layerEnd = new Vector3Int(start.x, end.y, end.z);
+                    break;
+
+                case Vector3Int.Axis.Y:
+                    layerEnd = new Vector3Int(end.x, start.y, end.z);
+                    break;
+
+                case Vector3Int.Axis.Z:
+                    layerEnd = new Vector3Int(end.x, end.y, start.z);
+                    break;
+            }
+
+            this.MakeAreaFlash(start, layerEnd, axisIndex, axisDir, lengthInUnits, includeItems);
+
+            if (autoEnd)
+            {
+                this.Timer.Start(duration);
+                await this.ToSignal(this.Timer, "timeout");
+
+                this.FlashMaterial.SetShaderParam("axisDir", 0);
+                this.FlashMaterial.SetShaderParam("startTime", 0);
+
+                this.EndAreaFlashAsync(start, end, axisIndex, axisDir, lengthInUnits, true);
+            }
+        }
+
+        protected async void MakeAreaFlash(
+            Vector3Int start,
+            Vector3Int end,
+            Vector3Int.Axis stepAxis,
+            int stepDir,
+            int remaining,
+            bool includeItems = false)
+        {
+            for (int x = start.x; x <= end.x; x++)
+            {
+                for (int y = start.y; y <= end.y; y++)
+                {
+                    for (int z = start.z; z <= end.z; z++)
+                    {
+                        this.MakeCellFlash(x, y, z);
+                    }
+                }
+            }
+
+            if (includeItems)
+            {
+                AABB bounds = new AABB(start.ToVector3(), (end - start).ToVector3());
+
+                var toFlash = this.DigItems.Where(
+                    item => item.Flashing == false
+                            && bounds.Intersects(item.ObjectMesh.GetTransformedAabb(), true));
+                foreach (DigItem item in toFlash)
+                {
+                    item.MakeMeFlash();
+                }
+            }
+
+            if (remaining == 0)
             {
                 return;
             }
-            
-            this.SetCellItem(x, y, z, cell + FLASH_MODIFIER);
+
+            Vector3Int nextStart = start;
+            Vector3Int nextEnd = end;
+
+            switch (stepAxis)
+            {
+                case Vector3Int.Axis.X:
+                    nextStart += (Vector3Int.Right * stepDir);
+                    nextEnd += (Vector3Int.Right * stepDir);
+                    break;
+
+                case Vector3Int.Axis.Y:
+                    nextStart += (Vector3Int.Up * stepDir);
+                    nextEnd += (Vector3Int.Up * stepDir);
+                    break;
+
+                case Vector3Int.Axis.Z:
+                    nextStart += (Vector3Int.Back * stepDir);
+                    nextEnd += (Vector3Int.Back * stepDir);
+                    break;
+                default:
+                    return;
+            }
+
+            this.Timer.Start(0.1f);
+            await this.ToSignal(this.Timer, "timeout");
+            this.MakeAreaFlash(nextStart, nextEnd, stepAxis, stepDir, remaining - 1, includeItems);
         }
 
-        public void MakeCellFlash(int x, int y, int z, int axisIndex, int axisDir)
+        protected void SetShaderParams(
+            Vector3Int.Axis axisIndex,
+            int axisDir,
+            int lengthInUnits = 1,
+            float duration = 0.5f)
         {
-            this.FlashMaterial.SetShaderParam("axisIndex", axisIndex);
+            this.FlashMaterial.SetShaderParam("shineLengthInUnits", lengthInUnits);
+            this.FlashMaterial.SetShaderParam("durationInSeconds", duration);
+            this.FlashMaterial.SetShaderParam("axisIndex", (int) axisIndex);
             this.FlashMaterial.SetShaderParam("axisDir", axisDir);
-            ulong ticks = OS.GetTicksMsec()/1000;
-            this.FlashMaterial.SetShaderParam("startTime", ticks);
-            
-            this.MakeCellFlash(x, y, z);
+            this.FlashMaterial.SetShaderParam("startTime", OS.GetTicksMsec());
         }
 
-        public void EndAreaFlash(Vector3Int begin, Vector3Int end)
+        public void EndAreaFlash(
+            Vector3Int begin,
+            Vector3Int end,
+            bool includeItems = false)
         {
-            this.FlashMaterial.SetShaderParam("axisDir", 0);
-            this.FlashMaterial.SetShaderParam("startTime", 0);
-            
             for (int x = begin.x; x <= end.x; x++)
             {
                 for (int y = begin.y; y <= end.y; y++)
@@ -403,6 +532,102 @@ namespace ATimeGoneBy.scripts.digging
                     }
                 }
             }
+
+            if (includeItems)
+            {
+                AABB box = new AABB();
+                box.Position = begin.ToVector3();
+                box.End = end.ToVector3();
+
+                var items = this.DigItems.Where(
+                    item => item.Flashing
+                            && box.Intersects(item.ObjectMesh.GetTransformedAabb(), true));
+
+                foreach (DigItem item in items)
+                {
+                    item.EndMyFlash();
+                }
+            }
+        }
+
+        protected async void EndAreaFlashAsync(
+            Vector3Int start,
+            Vector3Int end,
+            Vector3Int.Axis stepAxis,
+            int stepDir,
+            int remaining,
+            bool includeItems = false)
+        {
+            for (int x = start.x; x <= end.x; x++)
+            {
+                for (int y = start.y; y <= end.y; y++)
+                {
+                    for (int z = start.z; z <= end.z; z++)
+                    {
+                        this.EndCellFlash(x, y, z);
+                    }
+                }
+            }
+
+            if (includeItems)
+            {
+                AABB bounds = new AABB(start.ToVector3(), (end - start).ToVector3());
+
+                var toFlash =
+                    this.DigItems.Where(item => bounds.Intersects(item.ObjectMesh.GetTransformedAabb(), true));
+                foreach (DigItem item in toFlash)
+                {
+                    item.EndMyFlash();
+                }
+            }
+
+            if (remaining == 0)
+            {
+                return;
+            }
+
+            Vector3Int nextStart = start;
+            Vector3Int nextEnd = end;
+
+            switch (stepAxis)
+            {
+                case Vector3Int.Axis.X:
+                    nextStart += (Vector3Int.Right * stepDir);
+                    nextEnd += (Vector3Int.Right * stepDir);
+                    break;
+
+                case Vector3Int.Axis.Y:
+                    nextStart += (Vector3Int.Up * stepDir);
+                    nextEnd += (Vector3Int.Up * stepDir);
+                    break;
+
+                case Vector3Int.Axis.Z:
+                    nextStart += (Vector3Int.Back * stepDir);
+                    nextEnd += (Vector3Int.Back * stepDir);
+                    break;
+                default:
+                    return;
+            }
+
+            await this.ToSignal(this.GetTree(), "idle_frame");
+            this.EndAreaFlashAsync(nextStart, nextEnd, stepAxis, stepDir, remaining - 1, includeItems);
+        }
+
+        protected void MakeCellFlash(int x, int y, int z)
+        {
+            int cell = this.GetCellItem(x, y, z);
+            if (cell >= FLASH_MODIFIER || !this.IsValid(x, y, z))
+            {
+                return;
+            }
+
+            this.SetCellItem(x, y, z, cell + FLASH_MODIFIER);
+        }
+
+        public void MakeCellFlash(int x, int y, int z, Vector3Int.Axis axisIndex, int axisDir)
+        {
+            this.SetShaderParams(axisIndex, axisDir);
+            this.MakeCellFlash(x, y, z);
         }
 
         public void EndCellFlash(Vector3Int pos)
@@ -417,7 +642,7 @@ namespace ATimeGoneBy.scripts.digging
             {
                 return;
             }
-            
+
             this.SetCellItem(x, y, z, cell - FLASH_MODIFIER);
         }
 
@@ -433,7 +658,7 @@ namespace ATimeGoneBy.scripts.digging
 
                 tiles.Add(t, result);
             }
-            
+
             saveDict.Add("tiles", tiles);
 
             Array objects = new Array();
@@ -441,7 +666,7 @@ namespace ATimeGoneBy.scripts.digging
             {
                 objects.Add(item.Save());
             }
-            
+
             saveDict.Add("objects", objects);
 
             return saveDict;
@@ -453,15 +678,15 @@ namespace ATimeGoneBy.scripts.digging
             {
                 return false;
             }
-            
+
             this.Clear();
-            
+
             Dictionary tiles = data["tiles"] as Dictionary;
             foreach (DictionaryEntry tile in tiles)
             {
                 Vector3Int pos = new Vector3Int((Vector3) tile.Key);
                 int cell = (int) tile.Value;
-                
+
                 this.SetCellItem(pos.x, pos.y, pos.z, cell);
             }
 
