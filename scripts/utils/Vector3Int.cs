@@ -3,6 +3,7 @@ using Godot;
 
 namespace ATimeGoneBy.scripts.utils
 {
+    [Serializable]
     public struct Vector3Int
     {
         public int x, y, z;
@@ -132,6 +133,13 @@ namespace ATimeGoneBy.scripts.utils
                 hashCode = (hashCode * 397) ^ z;
                 return hashCode;
             }
+        }
+
+        public enum Axis
+        {
+            X = 0,
+            Y = 1,
+            Z = 2
         }
     }
 }
