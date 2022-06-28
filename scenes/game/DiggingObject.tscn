@@ -39,8 +39,7 @@ tracks/0/keys = {
 
 [node name="DiggingObject" type="RigidBody"]
 mode = 3
-continuous_cd = true
-contacts_reported = 48
+contacts_reported = 4
 contact_monitor = true
 can_sleep = false
 script = ExtResource( 2 )
