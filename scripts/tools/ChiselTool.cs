@@ -23,10 +23,14 @@ namespace ATimeGoneBy.scripts.tools
             this.AssociatedSound.RandomPitch = 1.1f;
         }
         
-        public int Execute(Vector3Int hit, Vector3Int previous)
+        public AABB Execute(Vector3Int hit, Vector3Int previous)
         {
             GlobalConstants.GameManager.DiggingSpace.DamageCell(hit, 3);
-            return this.Cost;
+            return new AABB
+            {
+                Position = hit.ToVector3(),
+                Size = Vector3.One
+            };
         }
     }
 }

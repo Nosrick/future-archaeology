@@ -13,6 +13,6 @@ namespace ATimeGoneBy.scripts.tools
         bool IsUsable();
         
         AudioStreamRandomPitch AssociatedSound { get; }
-        int Execute(Vector3Int hit, Vector3Int previous);
+        AABB Execute(Vector3Int hit, Vector3Int previous);
     }
 }

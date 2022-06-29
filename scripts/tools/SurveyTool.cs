@@ -37,7 +37,7 @@ namespace ATimeGoneBy.scripts.tools
             */
         }
 
-        public int Execute(Vector3Int hit, Vector3Int previous)
+        public AABB Execute(Vector3Int hit, Vector3Int previous)
         {
             DigMap digSite = GlobalConstants.GameManager.DiggingSpace;
 
@@ -120,7 +120,12 @@ namespace ATimeGoneBy.scripts.tools
                 true);
 
             this.CooldownTimer = this.UsageCooldown;
-            return this.Cost;
+            AABB area = new AABB
+            {
+                Position = begin.ToVector3(),
+                End = end.ToVector3()
+            };
+            return area;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace ATimeGoneBy.scripts.tools
             this.AssociatedSound.RandomPitch = 1.2f;
         }
         
-        public int Execute(Vector3Int hit, Vector3Int previous)
+        public AABB Execute(Vector3Int hit, Vector3Int previous)
         {
             DigMap digSite = GlobalConstants.GameManager.DiggingSpace;
 
@@ -54,7 +54,7 @@ namespace ATimeGoneBy.scripts.tools
                     digSite.DamageCell(pos.x, pos.y, pos.z, Damage);
                 }
 
-                return this.Cost;
+                return digSite.Area;
             }
 
             HashSet<int> tilesToHit = new HashSet<int>();
@@ -77,7 +77,7 @@ namespace ATimeGoneBy.scripts.tools
             }
 
             this.CooldownTimer = this.UsageCooldown;
-            return this.Cost;
+            return digSite.Area;
         }
     }
 }

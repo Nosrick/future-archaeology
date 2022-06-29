@@ -53,6 +53,7 @@ namespace ATimeGoneBy.scripts
 
         protected bool CheckForUncovered;
         protected int CheckDelay;
+        protected AABB UncoverArea;
 
         protected const string CurrentToolString = "tools.current.label";
 
@@ -204,7 +205,7 @@ namespace ATimeGoneBy.scripts
 
                 if (this.CheckDelay == 0)
                 {
-                    this.DiggingSpace.CheckForUncovered();
+                    this.DiggingSpace.CheckForUncovered(this.UncoverArea);
                     this.CheckForUncovered = false;
                 }
             }
@@ -232,7 +233,12 @@ namespace ATimeGoneBy.scripts
 
         public void ExecuteTool(Vector3Int hit, Vector3Int previous)
         {
-            this.CurrentTool?.Execute(hit, previous);
+            if (this.CurrentTool is null)
+            {
+                return;
+            }
+            
+            this.UncoverArea = this.CurrentTool.Execute(hit, previous);
             this.CheckDelay = 5;
             this.CheckForUncovered = true;
         }

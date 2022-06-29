@@ -15,6 +15,8 @@ namespace ATimeGoneBy.scripts.digging
         protected int Width { get; set; }
         protected int Height { get; set; }
         protected int Depth { get; set; }
+        
+        public AABB Area { get; protected set; }
 
         public int[] ValidCells { get; protected set; }
         public const int BARE_CUBE = 0;
@@ -67,6 +69,12 @@ namespace ATimeGoneBy.scripts.digging
             this.Width = 5;
             this.Height = 5;
             this.Depth = 5;
+
+            this.Area = new AABB
+            {
+                Position = new Vector3(-this.Width, -this.Height, -this.Depth),
+                End = new Vector3(this.Width, this.Height, this.Depth)
+            };
 
             this.GenerateDigSite();
         }
@@ -216,11 +224,14 @@ namespace ATimeGoneBy.scripts.digging
             }
         }
 
-        public void CheckForUncovered()
+        public void CheckForUncovered(AABB area)
         {
             foreach (DigItem item in this.DigItems)
             {
-                this.CheckObject(item);
+                if (area.Intersects(item.ObjectMesh.GetTransformedAabb()))
+                {
+                    this.CheckObject(item);
+                }
             }
         }
 
@@ -228,30 +239,11 @@ namespace ATimeGoneBy.scripts.digging
         {
             if (item.GetCollidingBodies().Contains(this))
             {
-                return;
-            }
-
-            AABB box = item.ObjectMesh.GetTransformedAabb();
-
-            Vector3Int position = new Vector3Int(box.Position);
-            Vector3Int end = new Vector3Int(box.End);
-                
-            for (int x = position.x; x <= end.x; x++)
-            {
-                for (int y = position.y; y <= end.y; y++)
+                if (item.Uncovered)
                 {
-                    for (int z = position.z; z <= end.z; z++)
-                    {
-                        if (this.IsValid(x, y, z))
-                        {
-                            if (item.Uncovered)
-                            {
-                                item.MarkMeCovered();
-                            }
-                            return;
-                        }
-                    }
+                    item.MarkMeCovered();
                 }
+                return;
             }
             
             item.MarkMeUncovered();

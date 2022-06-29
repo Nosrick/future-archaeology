@@ -27,7 +27,7 @@ namespace ATimeGoneBy.scripts.tools
             this.AssociatedSound.RandomPitch = 1.1f;
         }
 
-        public int Execute(Vector3Int hit, Vector3Int previous)
+        public AABB Execute(Vector3Int hit, Vector3Int previous)
         {
             DigMap digSite = GlobalConstants.GameManager.DiggingSpace;
 
@@ -104,7 +104,13 @@ namespace ATimeGoneBy.scripts.tools
             }
 
             this.CooldownTimer = this.UsageCooldown;
-            return this.Cost;
+            AABB area = new AABB
+            {
+                Position = new Vector3(hit.x - xStep, hit.y - yStep, hit.z - zStep),
+                End = new Vector3(hit.x + xStep, hit.y + yStep, hit.z + zStep)
+            };
+            
+            return area;
         }
     }
 }
