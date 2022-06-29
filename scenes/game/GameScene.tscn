@@ -13,6 +13,7 @@ script = ExtResource( 7 )
 ToolLabelPath = NodePath("UIRoot/GameUI/GameplayMarginContainer/GameplayLabelContainer/ToolLabel")
 CameraPath = NodePath("OrbitAnchor/Camera")
 CameraIconContainerPath = NodePath("UIRoot/GameUI/CameraMarginContainer/CameraIconContainer")
+ToolButtonContainerPath = NodePath("UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer")
 
 [node name="OrbitAnchor" type="Spatial" parent="."]
 

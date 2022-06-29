@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://assets/themes/basic-theme.tres" type="Theme" id=1]
 [ext_resource path="res://assets/textures/ui/camera-rotate-icon.png" type="Texture" id=2]
 [ext_resource path="res://assets/textures/ui/camera-pan-icon.png" type="Texture" id=3]
 [ext_resource path="res://assets/textures/ui/camera-zoom-icon.png" type="Texture" id=4]
+[ext_resource path="res://scenes/ui/ToolButton.tscn" type="PackedScene" id=5]
 
 [node name="GameUI" type="Control"]
 anchor_right = 1.0
@@ -187,42 +188,25 @@ size_flags_horizontal = 3
 size_flags_vertical = 11
 alignment = 2
 
-[node name="BrushButton" type="Button" parent="ToolMarginContainer/HBoxContainer/ToolContainer"]
-margin_top = 260.0
-margin_right = 280.0
-margin_bottom = 290.0
-rect_min_size = Vector2( 0, 30 )
-theme = ExtResource( 1 )
-text = "tools.brush.name"
+[node name="BrushButton" parent="ToolMarginContainer/HBoxContainer/ToolContainer" instance=ExtResource( 5 )]
 
-[node name="ChiselButton" type="Button" parent="ToolMarginContainer/HBoxContainer/ToolContainer"]
-margin_top = 294.0
-margin_right = 280.0
-margin_bottom = 324.0
-rect_min_size = Vector2( 0, 30 )
-theme = ExtResource( 1 )
+[node name="ChiselButton" parent="ToolMarginContainer/HBoxContainer/ToolContainer" instance=ExtResource( 5 )]
+margin_top = 328.0
+margin_bottom = 358.0
 text = "tools.chisel.name"
 
-[node name="HammerButton" type="Button" parent="ToolMarginContainer/HBoxContainer/ToolContainer"]
-margin_top = 328.0
-margin_right = 280.0
-margin_bottom = 358.0
-rect_min_size = Vector2( 0, 30 )
-theme = ExtResource( 1 )
+[node name="HammerButton" parent="ToolMarginContainer/HBoxContainer/ToolContainer" instance=ExtResource( 5 )]
+margin_top = 362.0
+margin_bottom = 392.0
 text = "tools.hammer.name"
 
-[node name="BombButton" type="Button" parent="ToolMarginContainer/HBoxContainer/ToolContainer"]
+[node name="BombButton" parent="ToolMarginContainer/HBoxContainer/ToolContainer" instance=ExtResource( 5 )]
+visible = false
 margin_top = 362.0
-margin_right = 280.0
 margin_bottom = 392.0
-rect_min_size = Vector2( 0, 30 )
-theme = ExtResource( 1 )
 text = "tools.bomb.name"
 
-[node name="SurveyButton" type="Button" parent="ToolMarginContainer/HBoxContainer/ToolContainer"]
+[node name="SurveyButton" parent="ToolMarginContainer/HBoxContainer/ToolContainer" instance=ExtResource( 5 )]
 margin_top = 396.0
-margin_right = 280.0
 margin_bottom = 426.0
-rect_min_size = Vector2( 0, 30 )
-theme = ExtResource( 1 )
 text = "tools.survey.name"
