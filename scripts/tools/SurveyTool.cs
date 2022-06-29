@@ -65,12 +65,12 @@ namespace ATimeGoneBy.scripts.tools
                     {
                         xMin = 0;
                         xMax = this.PingSize * 2 + 1;
+                        step = -1;
                     }
                     else
                     {
                         xMin = this.PingSize * 2 + 1;
                         xMax = 0;
-                        step = -1;
                     }
                     break;
 
@@ -79,12 +79,12 @@ namespace ATimeGoneBy.scripts.tools
                     {
                         yMin = 0;
                         yMax = this.PingSize * 2 + 1;
+                        step = -1;
                     }
                     else
                     {
                         yMin = this.PingSize * 2 + 1;
                         yMax = 0;
-                        step = -1;
                     }
                     break;
                 
@@ -93,12 +93,12 @@ namespace ATimeGoneBy.scripts.tools
                     {
                         zMin = 0;
                         zMax = this.PingSize * 2 + 1;
+                        step = -1;
                     }
                     else
                     {
                         zMin = this.PingSize * 2 + 1;
                         zMax = 0;
-                        step = -1;
                     }
                     break;
                 
@@ -109,7 +109,15 @@ namespace ATimeGoneBy.scripts.tools
             Vector3Int begin = new Vector3Int(hit.x - xMin, hit.y - yMin, hit.z - zMin);
             Vector3Int end = new Vector3Int(hit.x + xMax, hit.y + yMax, hit.z + zMax);
             
-            digSite.MakeAreaFlash(begin, end, hitAxis, -step, (this.PingSize * 2 + 1), this.PingDuration, true, true);
+            digSite.MakeAreaFlash(
+                begin, 
+                end, 
+                hitAxis, 
+                step, 
+                (this.PingSize * 2 + 1), 
+                this.PingDuration, 
+                true, 
+                true);
 
             this.CooldownTimer = this.UsageCooldown;
             return this.Cost;
