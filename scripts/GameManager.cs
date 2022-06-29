@@ -47,6 +47,8 @@ namespace ATimeGoneBy.scripts
         protected HBoxContainer CameraIconContainer { get; set; }
         protected List<Control> CameraIcons { get; set; }
 
+        protected AudioStreamPlayer3D ToolAudioPlayer { get; set; }
+
         public OrbitCamera Camera { get; protected set; }
         
         public bool ProcessClicks { get; set; }
@@ -95,6 +97,7 @@ namespace ATimeGoneBy.scripts
             this.PauseMenuPackedScene = GD.Load<PackedScene>(GlobalConstants.PauseMenuLocation);
 
             this.DiggingSpace = this.GetNode<DigMap>("DigMap");
+            this.ToolAudioPlayer = this.DiggingSpace.GetNode<AudioStreamPlayer3D>("ToolSounds");
 
             this.ToolLabel = this.GetNodeOrNull<Label>(this.ToolLabelPath);
             this.Camera = this.GetNodeOrNull<OrbitCamera>(this.CameraPath);
@@ -239,6 +242,15 @@ namespace ATimeGoneBy.scripts
             }
             
             this.UncoverArea = this.CurrentTool.Execute(hit, previous);
+            
+            var sound = GlobalConstants.GameManager.CurrentTool?.AssociatedSound;
+            if (this.ToolAudioPlayer.Stream != sound)
+            {
+                this.ToolAudioPlayer.Stream = sound;
+            }
+            this.ToolAudioPlayer.Play();
+            
+            
             this.CheckDelay = 5;
             this.CheckForUncovered = true;
         }

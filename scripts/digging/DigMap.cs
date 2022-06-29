@@ -31,8 +31,6 @@ namespace ATimeGoneBy.scripts.digging
         protected List<DigItem> DigItems;
 
         protected Random Random;
-
-        protected AudioStreamPlayer3D ToolAudioPlayer { get; set; }
         protected AudioStreamPlayer3D PickupAudioPlayer { get; set; }
         protected Timer Timer { get; set; }
 
@@ -58,7 +56,6 @@ namespace ATimeGoneBy.scripts.digging
             this.ItemPickUpSound.AudioStream = GD.Load<AudioStream>("assets/sounds/money-get.wav");
             this.ItemPickUpSound.RandomPitch = 1.1f;
 
-            this.ToolAudioPlayer = this.GetNode<AudioStreamPlayer3D>("ToolSounds");
             this.PickupAudioPlayer = this.GetNode<AudioStreamPlayer3D>("PickupSounds");
             this.Timer = this.GetNode<Timer>("Timer");
 
@@ -387,13 +384,6 @@ namespace ATimeGoneBy.scripts.digging
                     cell = Mathf.Max(cell - damage, EMPTY_CELL);
                 }
                 this.SetCellItem(x, y, z, cell);
-                var sound = GlobalConstants.GameManager.CurrentTool?.AssociatedSound;
-                if (this.ToolAudioPlayer.Stream != sound)
-                {
-                    this.ToolAudioPlayer.Stream = sound;
-                }
-
-                this.ToolAudioPlayer.Play();
             }
 
             return this.IsValid(new Vector3Int(x, y, z));
