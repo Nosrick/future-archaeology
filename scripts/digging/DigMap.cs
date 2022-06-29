@@ -47,6 +47,7 @@ namespace ATimeGoneBy.scripts.digging
 
         public override void _Ready()
         {
+            this.SetProcess(false);
             this.SetPhysicsProcess(false);
             this.Random = new Random();
             this.AreaQueue = new Queue<Vector3Int>();
@@ -156,6 +157,7 @@ namespace ATimeGoneBy.scripts.digging
 
             this.RemoveOccludedTiles();
 
+            this.SetProcess(true);
             this.SetPhysicsProcess(true);
         }
 
@@ -183,7 +185,7 @@ namespace ATimeGoneBy.scripts.digging
             {
                 bool loopBreak = false;
                 int tries = 0;
-                while (!loopBreak && tries < 100)
+                while (!loopBreak && tries < 20)
                 {
                     foreach (var obj in item.GetCollidingBodies())
                     {
