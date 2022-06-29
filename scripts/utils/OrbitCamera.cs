@@ -13,6 +13,9 @@ namespace ATimeGoneBy.scripts.utils
 
         protected Spatial OrbitTarget;
 
+        protected Transform OriginalTarget;
+        protected Transform OriginalTransform;
+
         protected Vector2 MoveSpeed;
         protected Vector3 RotationDelta;
         protected Vector3 PanningDelta;
@@ -42,6 +45,8 @@ namespace ATimeGoneBy.scripts.utils
             if (target is Spatial spatial)
             {
                 this.OrbitTarget = spatial;
+                this.OriginalTarget = new Transform(this.OrbitTarget.Transform.basis, this.OrbitTarget.Transform.origin);
+                this.OriginalTransform = new Transform(this.Transform.basis, this.Transform.origin);
                 this.SetRotation();
             }
             else
@@ -115,9 +120,28 @@ namespace ATimeGoneBy.scripts.utils
             this.OrbitTarget.Transform = orbitTargetTransform;
         }
 
+        protected void ResetCamera()
+        {
+            this.Transform = this.OriginalTransform;
+            this.OrbitTarget.Transform = this.OriginalTarget;
+
+            this.MoveSpeed = Vector2.Zero;
+
+            this.PanningDelta = Vector3.Zero;
+            this.ZoomingDelta = 0;
+            
+            this.RotationDelta = Vector3.Zero;
+            this.SetRotation();
+        }
+
         public override void _Input(InputEvent @event)
         {
             base._Input(@event);
+
+            if (@event.IsActionReleased("reset_camera"))
+            {
+                this.ResetCamera();
+            }
 
             if (!this.Rotating && @event.IsActionPressed("camera_rotate_modifier"))
             {
