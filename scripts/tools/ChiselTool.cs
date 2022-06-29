@@ -3,27 +3,23 @@ using Godot;
 
 namespace ATimeGoneBy.scripts.tools
 {
-    public class ChiselTool : ITool
+    public class ChiselTool : AbstractTool
     {
-        public int Cost => 10;
-        public int UsageCooldown => 0;
-        public int CooldownTimer => 0;
-        public bool IsUsable()
-        {
-            return true;
-        }
-
-        public AudioStreamRandomPitch AssociatedSound { get; protected set; }
-        public string TranslationKey => "tools.chisel.name";
+        public const int DEFAULT_COST = 10;
+        public const int DEFAULT_COOLDOWN = 0;
+        public override string TranslationKey => "tools.chisel.name";
 
         public ChiselTool()
         {
+            this.Cost = DEFAULT_COST;
+            this.UsageCooldown = DEFAULT_COOLDOWN;
+            
             this.AssociatedSound = new AudioStreamRandomPitch();
             this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/dirt-crunch-5.wav");
             this.AssociatedSound.RandomPitch = 1.1f;
         }
         
-        public AABB Execute(Vector3Int hit, Vector3Int previous)
+        public override AABB Execute(Vector3Int hit, Vector3Int previous)
         {
             GlobalConstants.GameManager.DiggingSpace.DamageCell(hit, 3);
             return new AABB

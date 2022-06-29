@@ -4,30 +4,27 @@ using Godot;
 
 namespace ATimeGoneBy.scripts.tools
 {
-    public class HammerTool : ITool
+    public class HammerTool : AbstractTool
     {
-        public string TranslationKey => "tools.hammer.name";
-        public int Cost => 40;
-        public int UsageCooldown => 3;
-        public int CooldownTimer { get; protected set; }
-        public bool IsUsable()
-        {
-            return this.CooldownTimer == 0;
-        }
+        public override string TranslationKey => "tools.hammer.name";
 
-        public AudioStreamRandomPitch AssociatedSound { get; protected set; }
+        public const int DEFAULT_COST = 40;
+        public const int DEFAULT_COOLDOWN = 3;
 
         public int Damage { get; protected set; }
 
         public HammerTool()
         {
+            this.Cost = DEFAULT_COST;
+            this.UsageCooldown = DEFAULT_COOLDOWN;
+            
             this.Damage = 3;
             this.AssociatedSound = new AudioStreamRandomPitch();
             this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/hammer-hit-2.wav");
             this.AssociatedSound.RandomPitch = 1.1f;
         }
 
-        public AABB Execute(Vector3Int hit, Vector3Int previous)
+        public override AABB Execute(Vector3Int hit, Vector3Int previous)
         {
             DigMap digSite = GlobalConstants.GameManager.DiggingSpace;
 

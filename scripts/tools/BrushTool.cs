@@ -3,27 +3,24 @@ using Godot;
 
 namespace ATimeGoneBy.scripts.tools
 {
-    public class BrushTool : ITool
+    public class BrushTool : AbstractTool
     {
-        public int Cost => 5;
-        public int UsageCooldown => 0;
-        public int CooldownTimer => 0;
-        public string TranslationKey => "tools.brush.name";
-        public bool IsUsable()
-        {
-            return true;
-        }
+        public override string TranslationKey => "tools.brush.name";
 
-        public AudioStreamRandomPitch AssociatedSound { get; protected set; }
+        public const int DEFAULT_COST = 5;
+        public const int DEFAULT_COOLDOWN = 0;
 
         public BrushTool()
         {
+            this.Cost = DEFAULT_COST;
+            this.UsageCooldown = DEFAULT_COOLDOWN;
+            
             this.AssociatedSound = new AudioStreamRandomPitch();
             this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/brush-3.wav");
             this.AssociatedSound.RandomPitch = 1.1f;
         }
         
-        public AABB Execute(Vector3Int hit, Vector3Int previous)
+        public override AABB Execute(Vector3Int hit, Vector3Int previous)
         {
             GlobalConstants.GameManager.DiggingSpace.DamageCell(hit, 1);
 

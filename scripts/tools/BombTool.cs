@@ -8,33 +8,30 @@ using Array = Godot.Collections.Array;
 
 namespace ATimeGoneBy.scripts.tools
 {
-    public class BombTool : ITool
+    public class BombTool : AbstractTool
     {
-        public string TranslationKey => "tools.bomb.name";
-        public int Cost => 75;
-        public int UsageCooldown => 20;
-        public int CooldownTimer { get; protected set; }
+        public override string TranslationKey => "tools.bomb.name";
 
         protected const int Tiles = 20;
 
         protected const int Damage = 3;
-        public bool IsUsable()
-        {
-            return this.CooldownTimer == 0;
-        }
-
-        public AudioStreamRandomPitch AssociatedSound { get; protected set; }
 
         protected static readonly Random Random = new Random();
 
+        public const int DEFAULT_COST = 75;
+        public const int DEFAULT_COOLDOWN = 20;
+
         public BombTool()
         {
+            this.Cost = DEFAULT_COST;
+            this.UsageCooldown = DEFAULT_COOLDOWN;
+            
             this.AssociatedSound = new AudioStreamRandomPitch();
             this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/bomb-1.wav");
             this.AssociatedSound.RandomPitch = 1.2f;
         }
         
-        public AABB Execute(Vector3Int hit, Vector3Int previous)
+        public override AABB Execute(Vector3Int hit, Vector3Int previous)
         {
             DigMap digSite = GlobalConstants.GameManager.DiggingSpace;
 

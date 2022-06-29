@@ -11,6 +11,8 @@ namespace ATimeGoneBy.scripts.tools
         int CooldownTimer { get; }
 
         bool IsUsable();
+
+        void TickCooldown(int value = 1);
         
         AudioStreamRandomPitch AssociatedSound { get; }
         AABB Execute(Vector3Int hit, Vector3Int previous);

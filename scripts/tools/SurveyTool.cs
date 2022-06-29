@@ -6,27 +6,20 @@ using Godot;
 
 namespace ATimeGoneBy.scripts.tools
 {
-    public class SurveyTool : ITool
+    public class SurveyTool : AbstractTool
     {
-        public string TranslationKey => "tools.survey.name";
-        public int Cost => 30;
-
-        public int UsageCooldown => 10;
-
-        public int CooldownTimer { get; protected set; }
-
+        public override string TranslationKey => "tools.survey.name";
         public int PingSize { get; protected set; }
         public float PingDuration { get; protected set; }
 
-        public bool IsUsable()
-        {
-            return this.CooldownTimer == 0;
-        }
-
-        public AudioStreamRandomPitch AssociatedSound { get; protected set; }
+        public const int DEFAULT_COST = 30;
+        public const int DEFAULT_COOLDOWN = 16;
 
         public SurveyTool()
         {
+            this.Cost = DEFAULT_COST;
+            this.UsageCooldown = DEFAULT_COOLDOWN;
+            
             this.PingSize = 2;
             this.PingDuration = 1f;
 
@@ -35,7 +28,7 @@ namespace ATimeGoneBy.scripts.tools
             this.AssociatedSound.RandomPitch = 1.1f;
         }
 
-        public AABB Execute(Vector3Int hit, Vector3Int previous)
+        public override AABB Execute(Vector3Int hit, Vector3Int previous)
         {
             DigMap digSite = GlobalConstants.GameManager.DiggingSpace;
 
