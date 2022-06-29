@@ -385,8 +385,14 @@ namespace ATimeGoneBy.scripts.digging
                 }
                 this.SetCellItem(x, y, z, cell);
             }
+            
+            bool valid = this.IsValid(new Vector3Int(x, y, z));
+            if (!valid)
+            {
+                GlobalConstants.GameManager.TickCooldowns();
+            }
 
-            return this.IsValid(new Vector3Int(x, y, z));
+            return valid;
         }
 
         public void MakeCellFlash(Vector3Int pos, Vector3Int.Axis axis, int axisDir)

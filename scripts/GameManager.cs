@@ -6,6 +6,7 @@ using ATimeGoneBy.scripts.ui;
 using ATimeGoneBy.scripts.utils;
 using Godot;
 using Godot.Collections;
+using Array = Godot.Collections.Array;
 
 namespace ATimeGoneBy.scripts
 {
@@ -41,6 +42,9 @@ namespace ATimeGoneBy.scripts
         [Export] protected NodePath ToolLabelPath;
         [Export] protected NodePath CameraPath;
         [Export] protected NodePath CameraIconContainerPath;
+        [Export] protected NodePath ToolButtonContainerPath;
+        
+        protected Dictionary ToolButtons;
 
         protected Label ToolLabel { get; set; }
         
@@ -116,6 +120,26 @@ namespace ATimeGoneBy.scripts
                 {"bomb", new BombTool()},
                 {"survey", new SurveyTool()}
             };
+
+            this.ToolButtons = new Dictionary();
+            foreach (ToolCooldownButton toolButton in this.GetNode(this.ToolButtonContainerPath).GetChildren())
+            {
+                if (toolButton.Visible == false)
+                {
+                    continue;
+                }
+                
+                string toolName = this.Tr(toolButton.Text.ToLower());
+                this.ToolButtons.Add(toolName, toolButton);
+                if (!this.ToolBox.ContainsKey(toolName))
+                {
+                    continue;
+                }
+                
+                ITool tool = this.ToolBox[toolName];
+                toolButton.SetMax(tool.UsageCooldown);
+                toolButton.SetValue(0);
+            }
 
             this.CameraIcons = new List<Control>();
             foreach (Control child in this.CameraIconContainer.GetChildren())
@@ -243,16 +267,40 @@ namespace ATimeGoneBy.scripts
             
             this.UncoverArea = this.CurrentTool.Execute(hit, previous);
             
-            var sound = GlobalConstants.GameManager.CurrentTool?.AssociatedSound;
+            var sound = GlobalConstants.GameManager.CurrentTool.AssociatedSound;
             if (this.ToolAudioPlayer.Stream != sound)
             {
                 this.ToolAudioPlayer.Stream = sound;
             }
             this.ToolAudioPlayer.Play();
-            
-            
+
+            string name = this.Tr(GlobalConstants.GameManager.CurrentTool.TranslationKey);
+            ToolCooldownButton toolCooldownButton = this.ToolButtons[name] as ToolCooldownButton;
+            toolCooldownButton?.SetValue(GlobalConstants.GameManager.CurrentTool.UsageCooldown);
+
             this.CheckDelay = 5;
             this.CheckForUncovered = true;
+        }
+
+        public void TickCooldowns()
+        {
+            foreach (ITool tool in this.ToolBox.Values)
+            {
+                if (tool.IsUsable())
+                {
+                    continue;
+                }
+
+                string toolName = this.Tr(tool.TranslationKey);
+                ToolCooldownButton button = this.ToolButtons[toolName] as ToolCooldownButton;
+                if (button is null)
+                {
+                    continue;
+                }
+                
+                tool.TickCooldown();
+                button.SetValue(tool.CooldownTimer);
+            }
         }
 
         public void GenerateLevel()

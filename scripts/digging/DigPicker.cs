@@ -55,7 +55,8 @@ namespace ATimeGoneBy.scripts.digging
         {
             base._PhysicsProcess(delta);
 
-            if (this.CastRay)
+            if (this.CastRay
+                && GlobalConstants.GameManager.CurrentTool?.IsUsable() == true)
             {
                 Vector3 origin = this.MyCamera.ProjectRayOrigin(this.MousePosition);
                 Vector3 direction = this.MyCamera.ProjectRayNormal(this.MousePosition).Normalized();
