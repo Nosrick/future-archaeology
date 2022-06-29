@@ -38,10 +38,16 @@ namespace ATimeGoneBy.scripts.digging
 
         protected ShaderMaterial FlashMaterial;
 
+        protected Queue<Vector3Int> AreaQueue;
+        protected bool Flashing;
+        
+        [Export] protected int PointsPerFrame = 500;
+
         public override void _Ready()
         {
             this.SetPhysicsProcess(false);
             this.Random = new Random();
+            this.AreaQueue = new Queue<Vector3Int>();
             this.DiggingObjectScene = GD.Load<PackedScene>("scenes/game/DiggingObject.tscn");
             this.DigItems = new List<DigItem>();
 
@@ -81,6 +87,32 @@ namespace ATimeGoneBy.scripts.digging
             }
 
             this.BeginProcessing();
+        }
+
+        public override void _Process(float delta)
+        {
+            base._Process(delta);
+
+            if (this.AreaQueue.Any())
+            {
+                for (int i = 0; i < this.PointsPerFrame; i++)
+                {
+                    if (this.AreaQueue.Any() == false)
+                    {
+                        break;
+                    }
+                    
+                    Vector3Int point = this.AreaQueue.Dequeue();
+                    if (this.Flashing)
+                    {
+                        this.MakeCellFlash(point.x, point.y, point.z);
+                    }
+                    else
+                    {
+                        this.EndCellFlash(point.x, point.y, point.z);
+                    }
+                }
+            }
         }
 
         public override void _PhysicsProcess(float delta)
@@ -331,7 +363,16 @@ namespace ATimeGoneBy.scripts.digging
             int cell = this.GetCellItem(x, y, z);
             if (this.ValidCells.Contains(cell))
             {
-                this.SetCellItem(x, y, z, Mathf.Max(cell - damage, EMPTY_CELL));
+                if (cell >= FLASH_MODIFIER
+                    && cell - damage < FLASH_MODIFIER)
+                {
+                    cell = EMPTY_CELL;
+                }
+                else
+                {
+                    cell = Mathf.Max(cell - damage, EMPTY_CELL);
+                }
+                this.SetCellItem(x, y, z, cell);
                 var sound = GlobalConstants.GameManager.CurrentTool?.AssociatedSound;
                 if (this.ToolAudioPlayer.Stream != sound)
                 {
@@ -352,7 +393,7 @@ namespace ATimeGoneBy.scripts.digging
         public async void MakeAreaFlash(
             Vector3Int start,
             Vector3Int end,
-            Vector3Int.Axis axisIndex,
+            Vector3Int.Axis axis,
             int axisDir,
             int lengthInUnits,
             float duration,
@@ -360,18 +401,28 @@ namespace ATimeGoneBy.scripts.digging
             bool includeItems = false,
             bool stopItemFlashing = false)
         {
-            this.SetShaderParams(axisIndex, axisDir, lengthInUnits, duration);
+            this.SetShaderParams(axis, axisDir, lengthInUnits, duration);
 
-            for (int x = start.x; x <= end.x; x++)
+            this.Flashing = true;
+            
+            Vector3Int layerEnd = new Vector3Int();
+
+            switch (axis)
             {
-                for (int y = start.y; y <= end.y; y++)
-                {
-                    for (int z = start.z; z <= end.z; z++)
-                    {
-                        this.MakeCellFlash(x, y, z);
-                    }
-                }
+                case Vector3Int.Axis.X:
+                    layerEnd = new Vector3Int(start.x, end.y, end.z);
+                    break;
+
+                case Vector3Int.Axis.Y:
+                    layerEnd = new Vector3Int(end.x, start.y, end.z);
+                    break;
+
+                case Vector3Int.Axis.Z:
+                    layerEnd = new Vector3Int(end.x, end.y, start.z);
+                    break;
             }
+            
+            this.QueueAreaForProcessing(start, layerEnd, axis, axisDir, lengthInUnits, includeItems);
 
             if (includeItems)
             {
@@ -392,129 +443,65 @@ namespace ATimeGoneBy.scripts.digging
             {
                 this.Timer.Start(duration);
                 await this.ToSignal(this.Timer, "timeout");
-                this.EndAreaFlash(start, end, stopItemFlashing);
+
+                this.Flashing = false;
+                this.QueueAreaForProcessing(start, end, axis, axisDir, lengthInUnits, stopItemFlashing);
             }
         }
 
-        public async void MakeAreaFlashAsync(
-            Vector3Int start,
-            Vector3Int end,
-            Vector3Int.Axis axisIndex,
-            int axisDir,
-            int lengthInUnits,
-            float duration,
-            bool includeItems = false,
-            bool autoEnd = true)
-        {
-            this.SetShaderParams(axisIndex, axisDir, lengthInUnits, duration);
-
-            Vector3Int layerEnd = new Vector3Int();
-
-            switch (axisIndex)
-            {
-                case Vector3Int.Axis.X:
-                    layerEnd = new Vector3Int(start.x, end.y, end.z);
-                    break;
-
-                case Vector3Int.Axis.Y:
-                    layerEnd = new Vector3Int(end.x, start.y, end.z);
-                    break;
-
-                case Vector3Int.Axis.Z:
-                    layerEnd = new Vector3Int(end.x, end.y, start.z);
-                    break;
-            }
-
-            this.MakeAreaFlash(start, layerEnd, axisIndex, axisDir, lengthInUnits, includeItems);
-
-            if (autoEnd)
-            {
-                this.Timer.Start(duration);
-                await this.ToSignal(this.Timer, "timeout");
-
-                this.FlashMaterial.SetShaderParam("axisDir", 0);
-                this.FlashMaterial.SetShaderParam("startTime", 0);
-
-                this.EndAreaFlashAsync(start, end, axisIndex, axisDir, lengthInUnits, true);
-            }
-        }
-
-        protected async void MakeAreaFlash(
-            Vector3Int start,
-            Vector3Int end,
-            Vector3Int.Axis stepAxis,
-            int stepDir,
-            int remaining,
+        protected void QueueAreaForProcessing(
+            Vector3Int start, 
+            Vector3Int end, 
+            Vector3Int.Axis axis, 
+            int stepDir, 
+            int remaining, 
             bool includeItems = false)
         {
-            for (int x = start.x; x <= end.x; x++)
+            while (true)
             {
-                for (int y = start.y; y <= end.y; y++)
+                for (int x = start.x; x <= end.x; x++)
                 {
-                    for (int z = start.z; z <= end.z; z++)
+                    for (int y = start.y; y <= end.y; y++)
                     {
-                        this.MakeCellFlash(x, y, z);
+                        for (int z = start.z; z <= end.z; z++)
+                        {
+                            this.AreaQueue.Enqueue(new Vector3Int(x, y, z));
+                        }
                     }
                 }
-            }
 
-            if (includeItems)
-            {
-                AABB bounds = new AABB(start.ToVector3(), (end - start).ToVector3());
-
-                var toFlash = this.DigItems.Where(
-                    item => item.Flashing == false
-                            && bounds.Intersects(item.ObjectMesh.GetTransformedAabb(), true));
-                foreach (DigItem item in toFlash)
+                if (remaining == 0)
                 {
-                    item.MakeMeFlash();
-                }
-            }
-
-            if (remaining == 0)
-            {
-                return;
-            }
-
-            Vector3Int nextStart = start;
-            Vector3Int nextEnd = end;
-
-            switch (stepAxis)
-            {
-                case Vector3Int.Axis.X:
-                    nextStart += (Vector3Int.Right * stepDir);
-                    nextEnd += (Vector3Int.Right * stepDir);
-                    break;
-
-                case Vector3Int.Axis.Y:
-                    nextStart += (Vector3Int.Up * stepDir);
-                    nextEnd += (Vector3Int.Up * stepDir);
-                    break;
-
-                case Vector3Int.Axis.Z:
-                    nextStart += (Vector3Int.Back * stepDir);
-                    nextEnd += (Vector3Int.Back * stepDir);
-                    break;
-                default:
                     return;
+                }
+
+                Vector3Int nextStart = start;
+                Vector3Int nextEnd = end;
+
+                switch (axis)
+                {
+                    case Vector3Int.Axis.X:
+                        nextStart += (Vector3Int.Right);
+                        nextEnd += (Vector3Int.Right);
+                        break;
+
+                    case Vector3Int.Axis.Y:
+                        nextStart += (Vector3Int.Up);
+                        nextEnd += (Vector3Int.Up);
+                        break;
+
+                    case Vector3Int.Axis.Z:
+                        nextStart += (Vector3Int.Back);
+                        nextEnd += (Vector3Int.Back);
+                        break;
+                    default:
+                        return;
+                }
+
+                start = nextStart;
+                end = nextEnd;
+                remaining -= 1;
             }
-
-            this.Timer.Start(0.1f);
-            await this.ToSignal(this.Timer, "timeout");
-            this.MakeAreaFlash(nextStart, nextEnd, stepAxis, stepDir, remaining - 1, includeItems);
-        }
-
-        protected void SetShaderParams(
-            Vector3Int.Axis axisIndex,
-            int axisDir,
-            int lengthInUnits = 1,
-            float duration = 0.5f)
-        {
-            this.FlashMaterial.SetShaderParam("shineLengthInUnits", lengthInUnits);
-            this.FlashMaterial.SetShaderParam("durationInSeconds", duration);
-            this.FlashMaterial.SetShaderParam("axisIndex", (int) axisIndex);
-            this.FlashMaterial.SetShaderParam("axisDir", axisDir);
-            this.FlashMaterial.SetShaderParam("startTime", OS.GetTicksMsec());
         }
 
         public void EndAreaFlash(
@@ -550,67 +537,17 @@ namespace ATimeGoneBy.scripts.digging
             }
         }
 
-        protected async void EndAreaFlashAsync(
-            Vector3Int start,
-            Vector3Int end,
-            Vector3Int.Axis stepAxis,
-            int stepDir,
-            int remaining,
-            bool includeItems = false)
+        protected void SetShaderParams(
+            Vector3Int.Axis axisIndex,
+            int axisDir,
+            int lengthInUnits = 1,
+            float duration = 0.5f)
         {
-            for (int x = start.x; x <= end.x; x++)
-            {
-                for (int y = start.y; y <= end.y; y++)
-                {
-                    for (int z = start.z; z <= end.z; z++)
-                    {
-                        this.EndCellFlash(x, y, z);
-                    }
-                }
-            }
-
-            if (includeItems)
-            {
-                AABB bounds = new AABB(start.ToVector3(), (end - start).ToVector3());
-
-                var toFlash =
-                    this.DigItems.Where(item => bounds.Intersects(item.ObjectMesh.GetTransformedAabb(), true));
-                foreach (DigItem item in toFlash)
-                {
-                    item.EndMyFlash();
-                }
-            }
-
-            if (remaining == 0)
-            {
-                return;
-            }
-
-            Vector3Int nextStart = start;
-            Vector3Int nextEnd = end;
-
-            switch (stepAxis)
-            {
-                case Vector3Int.Axis.X:
-                    nextStart += (Vector3Int.Right * stepDir);
-                    nextEnd += (Vector3Int.Right * stepDir);
-                    break;
-
-                case Vector3Int.Axis.Y:
-                    nextStart += (Vector3Int.Up * stepDir);
-                    nextEnd += (Vector3Int.Up * stepDir);
-                    break;
-
-                case Vector3Int.Axis.Z:
-                    nextStart += (Vector3Int.Back * stepDir);
-                    nextEnd += (Vector3Int.Back * stepDir);
-                    break;
-                default:
-                    return;
-            }
-
-            await this.ToSignal(this.GetTree(), "idle_frame");
-            this.EndAreaFlashAsync(nextStart, nextEnd, stepAxis, stepDir, remaining - 1, includeItems);
+            this.FlashMaterial.SetShaderParam("shineLengthInUnits", lengthInUnits);
+            this.FlashMaterial.SetShaderParam("durationInSeconds", duration);
+            this.FlashMaterial.SetShaderParam("axisIndex", (int) axisIndex);
+            this.FlashMaterial.SetShaderParam("axisDir", axisDir);
+            this.FlashMaterial.SetShaderParam("startTime", OS.GetTicksMsec());
         }
 
         protected void MakeCellFlash(int x, int y, int z)
