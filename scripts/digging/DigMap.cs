@@ -115,13 +115,6 @@ namespace ATimeGoneBy.scripts.digging
             }
         }
 
-        public override void _PhysicsProcess(float delta)
-        {
-            base._PhysicsProcess(delta);
-
-            this.CheckForUncovered();
-        }
-
         protected async void BeginProcessing()
         {
             this.Timer.Start(1f);
@@ -227,15 +220,41 @@ namespace ATimeGoneBy.scripts.digging
         {
             foreach (DigItem item in this.DigItems)
             {
-                var collidingBodies = item.GetCollidingBodies();
-                if (item.Uncovered || collidingBodies.Contains(this))
-                {
-                    continue;
-                }
-
-                item.MarkMeUncovered();
-                item.MakeMeGlow();
+                this.CheckObject(item);
             }
+        }
+
+        protected void CheckObject(DigItem item)
+        {
+            if (item.GetCollidingBodies().Contains(this))
+            {
+                return;
+            }
+
+            AABB box = item.ObjectMesh.GetTransformedAabb();
+
+            Vector3Int position = new Vector3Int(box.Position);
+            Vector3Int end = new Vector3Int(box.End);
+                
+            for (int x = position.x; x <= end.x; x++)
+            {
+                for (int y = position.y; y <= end.y; y++)
+                {
+                    for (int z = position.z; z <= end.z; z++)
+                    {
+                        if (this.IsValid(x, y, z))
+                        {
+                            if (item.Uncovered)
+                            {
+                                item.MarkMeCovered();
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+            
+            item.MarkMeUncovered();
         }
 
         public bool RemoveObject(DigItem removed)

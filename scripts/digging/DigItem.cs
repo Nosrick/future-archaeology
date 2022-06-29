@@ -68,13 +68,22 @@ namespace ATimeGoneBy.scripts.digging
             this.ObjectMesh.Mesh?.SurfaceSetMaterial(0, this.MyMaterial);
         }
 
+        public void MarkMeCovered()
+        {
+            this.Uncovered = false;
+
+            if (this.Glowing && this.MyMaterial is null == false)
+            {
+                this.Glowing = false;
+                this.MyMaterial.NextPass = null;
+                this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+            }
+        }
+
         public void MarkMeUncovered()
         {
             this.Uncovered = true;
-        }
-
-        public void MakeMeGlow()
-        {
+            
             if (!this.Glowing && this.MyMaterial is null == false)
             {
                 this.Glowing = true;

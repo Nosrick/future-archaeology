@@ -51,6 +51,9 @@ namespace ATimeGoneBy.scripts
         
         public bool ProcessClicks { get; set; }
 
+        protected bool CheckForUncovered;
+        protected int CheckDelay;
+
         protected const string CurrentToolString = "tools.current.label";
 
         protected const string ItemMeshPaths = "res://scenes/game/items";
@@ -192,6 +195,20 @@ namespace ATimeGoneBy.scripts
         {
             base._PhysicsProcess(delta);
 
+            if (this.CheckForUncovered)
+            {
+                if (this.CheckDelay > 0)
+                {
+                    this.CheckDelay--;
+                }
+
+                if (this.CheckDelay == 0)
+                {
+                    this.DiggingSpace.CheckForUncovered();
+                    this.CheckForUncovered = false;
+                }
+            }
+
             if (this.DiggingSpace.LevelComplete())
             {
                 this.DiggingSpace.SetPhysicsProcess(false);
@@ -216,6 +233,8 @@ namespace ATimeGoneBy.scripts
         public void ExecuteTool(Vector3Int hit, Vector3Int previous)
         {
             this.CurrentTool?.Execute(hit, previous);
+            this.CheckDelay = 5;
+            this.CheckForUncovered = true;
         }
 
         public void GenerateLevel()
