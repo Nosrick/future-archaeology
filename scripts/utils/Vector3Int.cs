@@ -8,15 +8,28 @@ namespace ATimeGoneBy.scripts.utils
     {
         public int x, y, z;
 
-        public static Vector3Int Left => new(-1, 0, 0);
-        public static Vector3Int Right => new(1, 0, 0);
-        public static Vector3Int Up => new(0, 1, 0);
-        public static Vector3Int Down => new(0, -1, 0);
-        public static Vector3Int Forward => new(0, 0, -1);
-        public static Vector3Int Back => new(0, 0, 1);
-        public static Vector3Int Zero => new(0, 0, 0);
-        public static Vector3Int Unit => new(1, 1, 1);
-        public static Vector3Int NegativeUnit => new(-1, -1, -1); 
+        private static readonly Vector3Int _left = new(-1, 0, 0);
+        private static readonly Vector3Int _right = new(1, 0, 0);
+
+        private static readonly Vector3Int _up = new(0, 1, 0);
+        private static readonly Vector3Int _down = new(0, -1, 0);
+
+        private static readonly Vector3Int _forward = new(0, 0, -1);
+        private static readonly Vector3Int _back = new(0, 0, 1);
+
+        private static readonly Vector3Int _zero = new();
+        private static readonly Vector3Int _unit = new(1, 1, 1);
+        private static readonly Vector3Int _negUnit = new(-1, -1, -1);
+
+        public static Vector3Int Left => _left;
+        public static Vector3Int Right => _right;
+        public static Vector3Int Up => _up;
+        public static Vector3Int Down => _down;
+        public static Vector3Int Forward => _forward;
+        public static Vector3Int Back => _back;
+        public static Vector3Int Zero => _zero;
+        public static Vector3Int Unit => _unit;
+        public static Vector3Int NegativeUnit => _negUnit; 
 
         public Vector3Int(int x, int y, int z)
         {
