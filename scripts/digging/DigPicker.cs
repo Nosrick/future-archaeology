@@ -66,10 +66,14 @@ namespace ATimeGoneBy.scripts.digging
 
                 var result = spaceState.IntersectRay(origin, destination, new Array {this.DigMap});
                 if (result.Contains("collider")
-                    && result["collider"] is DigItem {Uncovered: true} digItem)
+                    && result["collider"] is DigItem digItem)
                 {
-                    this.DigMap.RemoveObject(digItem);
-                    this.CastRay = false;
+                    if (this.DigMap.CheckObject(digItem))
+                    {
+                        this.DigMap.RemoveObject(digItem);
+                        this.CastRay = false;
+                    }
+
                     return;
                 }
 

@@ -235,7 +235,7 @@ namespace ATimeGoneBy.scripts.digging
             }
         }
 
-        protected void CheckObject(DigItem item)
+        public bool CheckObject(DigItem item)
         {
             if (item.GetCollidingBodies().Contains(this))
             {
@@ -243,10 +243,11 @@ namespace ATimeGoneBy.scripts.digging
                 {
                     item.MarkMeCovered();
                 }
-                return;
+                return false;
             }
             
             item.MarkMeUncovered();
+            return true;
         }
 
         public bool RemoveObject(DigItem removed)

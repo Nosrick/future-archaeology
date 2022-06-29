@@ -37,6 +37,7 @@ spot_angle = 26.84
 [node name="DigMap" type="GridMap" parent="."]
 mesh_library = ExtResource( 3 )
 cell_size = Vector3( 1, 1, 1 )
+cell_octant_size = 16
 data = {
 "cells": PoolIntArray(  )
 }
