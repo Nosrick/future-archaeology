@@ -278,7 +278,7 @@ namespace ATimeGoneBy.scripts
             ToolCooldownButton toolCooldownButton = this.ToolButtons[name] as ToolCooldownButton;
             toolCooldownButton?.SetValue(GlobalConstants.GameManager.CurrentTool.UsageCooldown);
 
-            this.CheckDelay = 5;
+            this.CheckDelay = 2;
             this.CheckForUncovered = true;
         }
 
