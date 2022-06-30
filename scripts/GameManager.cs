@@ -386,6 +386,9 @@ namespace ATimeGoneBy.scripts
             }
             
             this.RefreshCooldownProgressBars();
+            
+            this.DiggingSpace.SetProcess(true);
+            this.DiggingSpace.SetPhysicsProcess(true);
 
             return true;
         }
