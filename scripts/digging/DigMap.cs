@@ -264,7 +264,6 @@ namespace ATimeGoneBy.scripts.digging
                     this.PickupAudioPlayer.Play();
                     SceneTreeTimer timer = this.GetTree().CreateTimer(0.25f);
                     timer.Connect("timeout", this, nameof(this.DelayedRemoval), new Array {removed});
-                    this.DigItems.Remove(removed);
                     return true;
                 }
             }
@@ -284,7 +283,8 @@ namespace ATimeGoneBy.scripts.digging
 
         protected void DelayedRemoval(Node removal)
         {
-            this.RemoveChild(removal);
+            this.DigItems.Remove(removal as DigItem);
+            removal.QueueFree();
         }
 
         protected Vector3 RandomPosition()
