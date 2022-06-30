@@ -1,6 +1,7 @@
 ﻿using ATimeGoneBy.scripts.digging;
 using ATimeGoneBy.scripts.utils;
 using Godot;
+using Godot.Collections;
 
 namespace ATimeGoneBy.scripts.tools
 {
@@ -108,6 +109,22 @@ namespace ATimeGoneBy.scripts.tools
             };
             
             return area;
+        }
+
+        public override void Load(Dictionary data)
+        {
+            base.Load(data);
+
+            this.Damage = (int) data[DAMAGE_KEY];
+        }
+
+        public override Dictionary Save()
+        {
+            Dictionary saveDict = base.Save();
+
+            saveDict.Add(DAMAGE_KEY, this.Damage);
+
+            return saveDict;
         }
     }
 }

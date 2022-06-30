@@ -4,17 +4,20 @@ using System.Linq;
 using ATimeGoneBy.scripts.digging;
 using ATimeGoneBy.scripts.utils;
 using Godot;
+using Godot.Collections;
 using Array = Godot.Collections.Array;
 
 namespace ATimeGoneBy.scripts.tools
 {
     public class BombTool : AbstractTool
     {
+        public const string TILES_KEY = "tiles";
+        
         public override string TranslationKey => "tools.bomb.name";
 
-        protected const int Tiles = 20;
+        protected int Tiles = 20;
 
-        protected const int Damage = 3;
+        protected int Damage = 3;
 
         protected static readonly Random Random = new Random();
 
@@ -75,6 +78,24 @@ namespace ATimeGoneBy.scripts.tools
 
             this.CooldownTimer = this.UsageCooldown;
             return digSite.Area;
+        }
+
+        public override Dictionary Save()
+        {
+            Dictionary saveDict = base.Save();
+            
+            saveDict.Add(TILES_KEY, this.Tiles);
+            saveDict.Add(DAMAGE_KEY, this.Damage);
+
+            return saveDict;
+        }
+
+        public override void Load(Dictionary data)
+        {
+            base.Load(data);
+
+            this.Tiles = (int) data[TILES_KEY];
+            this.Damage = (int) data[DAMAGE_KEY];
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ATimeGoneBy.scripts.utils;
 using Godot;
+using Godot.Collections;
 
 namespace ATimeGoneBy.scripts.tools
 {
@@ -16,5 +17,7 @@ namespace ATimeGoneBy.scripts.tools
         
         AudioStreamRandomPitch AssociatedSound { get; }
         AABB Execute(Vector3Int hit, Vector3Int previous);
+        Dictionary Save();
+        void Load(Dictionary data);
     }
 }

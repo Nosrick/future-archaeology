@@ -304,9 +304,48 @@ namespace ATimeGoneBy.scripts
             }
         }
 
+        protected void RefreshCooldownProgressBars()
+        {
+            foreach (ITool tool in this.ToolBox.Values)
+            {
+                if (tool.IsUsable())
+                {
+                    continue;
+                }
+
+                string toolName = this.Tr(tool.TranslationKey);
+                ToolCooldownButton button = this.ToolButtons[toolName] as ToolCooldownButton;
+                if (button is null)
+                {
+                    continue;
+                }
+                
+                button.SetMax(tool.UsageCooldown);
+                button.SetValue(tool.CooldownTimer);
+            }
+        }
+
         public void GenerateLevel()
         {
+            if (!this.CompletedTutorial)
+            {
+                this.RunTutorial();
+            }
+            else
+            {
+                this.TutorialSpeech.Hide();
+            }
+            if (GlobalConstants.AppManager.SaveState is null == false)
+            {
+                return;
+            }
+            
             this.DiggingSpace.GenerateDigSite(new Vector3Int(3, 3, 3), 4);
+        }
+
+        public void RunTutorial()
+        {
+            
         }
 
         public Dictionary Save()
@@ -315,6 +354,16 @@ namespace ATimeGoneBy.scripts
             
             saveDict.Add("cash", this.Cash);
             saveDict.Add("dig-site", this.DiggingSpace.Save());
+            saveDict.Add("tutorial-done", this.CompletedTutorial);
+
+            Array tools = new Array();
+            
+            foreach(ITool tool in this.ToolBox.Values)
+            {
+                tools.Add(tool.Save());
+            }
+            
+            saveDict.Add("tools", tools);
 
             return saveDict;
         }
@@ -323,6 +372,20 @@ namespace ATimeGoneBy.scripts
         {
             this.Cash = (int) data["cash"];
             this.DiggingSpace.Load(data["dig-site"] as Dictionary);
+            this.CompletedTutorial = (bool) data["tutorial-done"];
+
+            Array tools = (Array) data["tools"];
+
+            foreach (Dictionary tool in tools)
+            {
+                string name = this.Tr((string) tool[AbstractTool.NAME_KEY]);
+                if (this.ToolBox.ContainsKey(name))
+                {
+                    this.ToolBox[name].Load(tool);
+                }
+            }
+            
+            this.RefreshCooldownProgressBars();
 
             return true;
         }

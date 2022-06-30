@@ -2,11 +2,14 @@
 using ATimeGoneBy.scripts.digging;
 using ATimeGoneBy.scripts.utils;
 using Godot;
+using Godot.Collections;
 
 namespace ATimeGoneBy.scripts.tools
 {
     public class LaserTool : AbstractTool
     {
+        public const string RANGE_KEY = "range";
+        
         public override string TranslationKey => "tools.laser.name";
 
         public const int DEFAULT_COST = 30;
@@ -100,6 +103,24 @@ namespace ATimeGoneBy.scripts.tools
             this.CooldownTimer = this.UsageCooldown;
 
             return box;
+        }
+
+        public override void Load(Dictionary data)
+        {
+            base.Load(data);
+
+            this.Damage = (int) data[DAMAGE_KEY];
+            this.Range = (int) data[RANGE_KEY];
+        }
+
+        public override Dictionary Save()
+        {
+            Dictionary saveDict = base.Save();
+
+            saveDict.Add(DAMAGE_KEY, this.Damage);
+            saveDict.Add(RANGE_KEY, this.Range);
+
+            return saveDict;
         }
     }
 }
