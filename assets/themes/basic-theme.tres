@@ -12,7 +12,7 @@ bg_color = Color( 0.294118, 0.196078, 0.294118, 1 )
 bg_color = Color( 0.180392, 0.12549, 0.180392, 1 )
 
 [sub_resource type="StyleBoxFlat" id=6]
-bg_color = Color( 0.36, 0.1764, 0.36, 1 )
+bg_color = Color( 0.360784, 0.176471, 0.360784, 1 )
 
 [sub_resource type="StyleBoxFlat" id=7]
 bg_color = Color( 0.0862745, 0.054902, 0.0862745, 1 )
@@ -28,3 +28,4 @@ Button/styles/hover = SubResource( 5 )
 Button/styles/normal = SubResource( 6 )
 Button/styles/pressed = SubResource( 7 )
 Panel/styles/panel = SubResource( 8 )
+RichTextLabel/fonts/normal_font = ExtResource( 2 )
