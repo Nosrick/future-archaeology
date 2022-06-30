@@ -32,3 +32,18 @@ to_menu.button,Exit to Menu
 exit.button,Exit to Desktop
 ,
 atgb.title,A Time Gone By
+,
+tutorial.speaker,Foreman Abignail
+tutorial.1,-llo? Is this thing working?
+tutorial.2,"Oh, hello, newbie. You're the new graduate, right?"
+tutorial.3,"I know you know all of this already, but I am contractually obligated to run you through your tool suite. First, let's maneuver you around your little dig site."
+tutorial.4,Use any of the view rotation buttons [%1%] and move your favourite appendage to rotate around.
+tutorial.5,"Next, we'll try trucking around. Hold any of the trucking buttons [%2%] and give your view a wiggle."
+tutorial.6,"Lastly, let's try zooming. Zoom in and out for me, by using any of the zooming buttons [%3%]."
+tutorial.7,"Alright, you seem to know what you're doing here. Select your Survey tool for me by activating the button on your toolkit with [%4]."
+tutorial.8,"Great. Now survey your site, by moving your cursor over the dig site and using your activation button."
+tutorial.9,"Nothing to it, right? If we haven't completely blown it when choosing our site, you should see that we've got some artifacts to dig up."
+tutorial.10,"Select your Chisel tool, and take it to the earth, digging using any of your activation buttons. [%4]"
+tutorial.11,"Once you've cleared the earth around the artifact, your AR toolkit should highlight it."
+tutorial.12,Place your cursor over the highlighted item and push your activation button.
+tutorial.13,"Great, you've got it. You can probably take it from here. Good luck, kid."

@@ -20,6 +20,8 @@ namespace ATimeGoneBy.scripts
 
         protected PackedScene PauseMenuPackedScene { get; set; }
         protected PauseMenu PauseMenuScreen { get; set; }
+        
+        protected bool CompletedTutorial { get; set; }
 
         public ITool CurrentTool
         {
@@ -43,10 +45,13 @@ namespace ATimeGoneBy.scripts
         [Export] protected NodePath CameraPath;
         [Export] protected NodePath CameraIconContainerPath;
         [Export] protected NodePath ToolButtonContainerPath;
+        [Export] protected NodePath UIRootPath;
         
         protected Dictionary ToolButtons;
 
         protected Label ToolLabel { get; set; }
+        
+        protected TutorialSpeech TutorialSpeech { get; set; }
         
         protected HBoxContainer CameraIconContainer { get; set; }
         protected List<Control> CameraIcons { get; set; }
@@ -149,6 +154,8 @@ namespace ATimeGoneBy.scripts
                 this.CameraIcons.Add(child);
             }
 
+            this.TutorialSpeech = this.GetNode<TutorialSpeech>(this.UIRootPath + "/TutorialSpeech");
+
             this.Cash = 500;
 
             this.ProcessClicks = true;
@@ -196,6 +203,9 @@ namespace ATimeGoneBy.scripts
             {
                 if (eventKey.IsActionReleased("open_pause_menu"))
                 {
+                    this.CompletedTutorial = true;
+                    this.TutorialSpeech.Hide();
+                    
                     if (this.PauseMenuScreen is null || IsInstanceValid(this.PauseMenuScreen) == false)
                     {
                         this.PauseMenuScreen = this.PauseMenuPackedScene.Instance<PauseMenu>();

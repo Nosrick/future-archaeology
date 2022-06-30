@@ -1,0 +1,86 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://scripts/ui/TutorialSpeech.cs" type="Script" id=1]
+[ext_resource path="res://assets/textures/ui/background-tile.png" type="Texture" id=2]
+[ext_resource path="res://assets/themes/basic-theme.tres" type="Theme" id=3]
+[ext_resource path="res://assets/textures/ui/draw.png" type="Texture" id=4]
+
+[node name="TutorialSpeech" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 1 )
+SpeakerLabelPath = NodePath("SpeechContainer/SpeechContainer/SpeakerLabel")
+SpeechLabelPath = NodePath("SpeechContainer/BackgroundContainer/TextContainer/SpeechRichText")
+
+[node name="SpeechContainer" type="VBoxContainer" parent="."]
+anchor_left = 0.3
+anchor_top = 0.701
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 0
+custom_constants/separation = 0
+
+[node name="SpeechContainer" type="Control" parent="SpeechContainer"]
+margin_right = 716.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 0, 48 )
+size_flags_horizontal = 3
+
+[node name="SpeechBackground" type="NinePatchRect" parent="SpeechContainer/SpeechContainer"]
+modulate = Color( 0.360784, 0.176471, 0.360784, 1 )
+anchor_right = 0.4
+anchor_bottom = 1.0
+margin_left = 5.0
+rect_min_size = Vector2( 0, 48 )
+texture = ExtResource( 2 )
+patch_margin_left = 3
+patch_margin_top = 3
+patch_margin_right = 3
+patch_margin_bottom = 3
+
+[node name="SpeakerLabel" type="Label" parent="SpeechContainer/SpeechContainer"]
+anchor_left = 0.02
+anchor_top = 0.1
+anchor_right = 0.395
+anchor_bottom = 0.95
+theme = ExtResource( 3 )
+text = "SPEAKER"
+valign = 1
+
+[node name="BackgroundContainer" type="Control" parent="SpeechContainer"]
+margin_top = 48.0
+margin_right = 716.0
+margin_bottom = 179.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="SpeechContainer/BackgroundContainer"]
+modulate = Color( 0.360784, 0.176471, 0.360784, 1 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = -5.0
+margin_right = -5.0
+margin_bottom = -5.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 4 )
+patch_margin_bottom = 3
+
+[node name="TextContainer" type="Control" parent="SpeechContainer/BackgroundContainer"]
+anchor_left = 0.02
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -10.0
+margin_bottom = -10.0
+
+[node name="SpeechRichText" type="RichTextLabel" parent="SpeechContainer/BackgroundContainer/TextContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource( 3 )
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam placerat sollicitudin neque. Proin vitae eros libero. Mauris dictum convallis justo, rutrum accumsan mi fringilla vel. Morbi hendrerit nunc dui, non cursus est vulputate eu. Suspendisse potenti. Curabitur fringilla nec diam sit amet scelerisque. Vestibulum lobortis, sem sed pharetra ullamcorper, nunc ipsum ullamcorper quam, ac rhoncus eros odio vel nunc. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."
+
+[connection signal="gui_input" from="SpeechContainer" to="." method="ClickedOn"]
