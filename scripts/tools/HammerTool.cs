@@ -9,7 +9,7 @@ namespace ATimeGoneBy.scripts.tools
         public override string TranslationKey => "tools.hammer.name";
 
         public const int DEFAULT_COST = 40;
-        public const int DEFAULT_COOLDOWN = 3;
+        public const int DEFAULT_COOLDOWN = 9;
 
         public int Damage { get; protected set; }
 
