@@ -189,16 +189,21 @@ size_flags_vertical = 11
 alignment = 2
 
 [node name="BrushButton" parent="ToolMarginContainer/HBoxContainer/ToolContainer" instance=ExtResource( 5 )]
+margin_top = 260.0
+margin_bottom = 290.0
 
 [node name="ChiselButton" parent="ToolMarginContainer/HBoxContainer/ToolContainer" instance=ExtResource( 5 )]
-margin_top = 328.0
-margin_bottom = 358.0
 text = "tools.chisel.name"
 
 [node name="HammerButton" parent="ToolMarginContainer/HBoxContainer/ToolContainer" instance=ExtResource( 5 )]
+margin_top = 328.0
+margin_bottom = 358.0
+text = "tools.hammer.name"
+
+[node name="LaserButton" parent="ToolMarginContainer/HBoxContainer/ToolContainer" instance=ExtResource( 5 )]
 margin_top = 362.0
 margin_bottom = 392.0
-text = "tools.hammer.name"
+text = "tools.laser.name"
 
 [node name="BombButton" parent="ToolMarginContainer/HBoxContainer/ToolContainer" instance=ExtResource( 5 )]
 visible = false

@@ -117,6 +117,7 @@ namespace ATimeGoneBy.scripts
                 {"brush", new BrushTool()},
                 {"chisel", new ChiselTool()},
                 {"hammer", new HammerTool()},
+                {"laser", new LaserTool()},
                 {"bomb", new BombTool()},
                 {"survey", new SurveyTool()}
             };

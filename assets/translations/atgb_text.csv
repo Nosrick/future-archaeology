@@ -3,8 +3,10 @@ tools.hammer.name,hammer
 tools.chisel.name,chisel
 tools.brush.name,brush
 tools.bomb.name,bomb
-tools.none.name,none
 tools.survey.name,survey
+tools.laser.name,laser
+tools.none.name,none
+,
 tools.current.label,Current Tool: 
 cash.label,Biggabux: 
 ,
