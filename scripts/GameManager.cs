@@ -242,7 +242,7 @@ namespace ATimeGoneBy.scripts
             {
                 this.DiggingSpace.SetPhysicsProcess(false);
                 GD.Print("LEVEL COMPLETE!");
-                this.DiggingSpace.GenerateDigSite();
+                this.DiggingSpace.GenerateDigSite(new Vector3Int(3, 3, 3));
             }
         }
 
@@ -306,7 +306,7 @@ namespace ATimeGoneBy.scripts
 
         public void GenerateLevel()
         {
-            this.DiggingSpace.GenerateDigSite();
+            this.DiggingSpace.GenerateDigSite(new Vector3Int(3, 3, 3));
         }
 
         public Dictionary Save()

@@ -65,6 +65,7 @@ mouse_filter = 2
 
 [node name="GameUI" parent="UIRoot" instance=ExtResource( 2 )]
 
+[connection signal="ready" from="." to="." method="GenerateLevel"]
 [connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/BrushButton" to="." method="SetTool" binds= [ "brush" ]]
 [connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/ChiselButton" to="." method="SetTool" binds= [ "chisel" ]]
 [connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/HammerButton" to="." method="SetTool" binds= [ "hammer" ]]

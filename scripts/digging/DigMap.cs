@@ -67,18 +67,22 @@ namespace ATimeGoneBy.scripts.digging
             this.Width = 5;
             this.Height = 5;
             this.Depth = 5;
+        }
+
+        public void GenerateDigSite(Vector3Int dimensions)
+        {
+            this.Width = dimensions.x;
+            this.Height = dimensions.y;
+            this.Depth = dimensions.z;
 
             this.Area = new AABB
             {
                 Position = new Vector3(-this.Width, -this.Height, -this.Depth),
                 End = new Vector3(this.Width, this.Height, this.Depth)
             };
-
-            this.GenerateDigSite();
-        }
-
-        public void GenerateDigSite()
-        {
+            
+            this.SetProcess(false);
+            this.SetPhysicsProcess(false);
             this.Clear();
 
             for (int x = -this.Width; x <= this.Width; x++)
@@ -123,8 +127,7 @@ namespace ATimeGoneBy.scripts.digging
 
         protected async void BeginProcessing()
         {
-            this.Timer.Start(1f);
-            await this.ToSignal(this.Timer, "timeout");
+            await this.ToSignal(this.GetTree(), "idle_frame");
 
             this.CreateObjects();
 
@@ -142,15 +145,13 @@ namespace ATimeGoneBy.scripts.digging
 
                 if (loop)
                 {
-                    this.Timer.Start(1f);
-                    await this.ToSignal(this.Timer, "timeout");
+                    await this.ToSignal(this.GetTree(), "idle_frame");
                 }
             }
 
             this.PlaceObjects();
 
-            this.Timer.Start(1f);
-            await this.ToSignal(this.Timer, "timeout");
+            await this.ToSignal(this.GetTree(), "idle_frame");
 
             this.RemoveOccludedTiles();
 
