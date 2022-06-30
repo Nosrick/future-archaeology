@@ -16,6 +16,8 @@ namespace ATimeGoneBy.scripts.digging
         protected int Height { get; set; }
         protected int Depth { get; set; }
         
+        protected int ObjectsToGenerate { get; set; }
+        
         public AABB Area { get; protected set; }
 
         public int[] ValidCells { get; protected set; }
@@ -69,11 +71,13 @@ namespace ATimeGoneBy.scripts.digging
             this.Depth = 5;
         }
 
-        public void GenerateDigSite(Vector3Int dimensions)
+        public void GenerateDigSite(Vector3Int dimensions, int numObjects = 5)
         {
             this.Width = dimensions.x;
             this.Height = dimensions.y;
             this.Depth = dimensions.z;
+
+            this.ObjectsToGenerate = numObjects;
 
             this.Area = new AABB
             {
@@ -161,9 +165,7 @@ namespace ATimeGoneBy.scripts.digging
 
         protected void CreateObjects()
         {
-            int numObjects = 5;
-
-            for (int i = 0; i < numObjects; i++)
+            for (int i = 0; i < this.ObjectsToGenerate; i++)
             {
                 DigItem item = this.DiggingObjectScene.Instance<DigItem>();
 

@@ -306,7 +306,7 @@ namespace ATimeGoneBy.scripts
 
         public void GenerateLevel()
         {
-            this.DiggingSpace.GenerateDigSite(new Vector3Int(3, 3, 3));
+            this.DiggingSpace.GenerateDigSite(new Vector3Int(3, 3, 3), 4);
         }
 
         public Dictionary Save()
