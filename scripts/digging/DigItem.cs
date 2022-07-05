@@ -1,4 +1,6 @@
-﻿using Godot;
+﻿using System;
+using ATimeGoneBy.scripts.utils;
+using Godot;
 using Godot.Collections;
 
 namespace ATimeGoneBy.scripts.digging
@@ -10,6 +12,7 @@ namespace ATimeGoneBy.scripts.digging
         public CollisionShape CollisionShape { get; protected set; }
 
         protected ShaderMaterial OutlineMaterial { get; set; }
+        protected ShaderMaterial FlashMaterial { get; set; }
         
         protected string MeshPath { get; set; }
         protected string MaterialPath { get; set; }
@@ -19,6 +22,9 @@ namespace ATimeGoneBy.scripts.digging
         protected bool PathsRetrieved { get; set; }
         
         public bool Uncovered { get; protected set; }
+        
+        public bool Flashing { get; protected set; }
+        public bool Glowing { get; protected set; }
 
         public const string PICKUP_ANIM = "PickupBounce";
 
@@ -40,6 +46,7 @@ namespace ATimeGoneBy.scripts.digging
             this.MyAnimationPlayer = this.GetNode<AnimationPlayer>("AnimationPlayer");
 
             this.OutlineMaterial = GD.Load<ShaderMaterial>("assets/shaders/outline-material.tres");
+            this.FlashMaterial = GD.Load<ShaderMaterial>("assets/shaders/flash-item-material.tres");
 
             this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
             this.MyMaterial = this.ObjectMesh.Mesh.SurfaceGetMaterial(0);
@@ -61,16 +68,52 @@ namespace ATimeGoneBy.scripts.digging
             this.ObjectMesh.Mesh?.SurfaceSetMaterial(0, this.MyMaterial);
         }
 
+        public void MarkMeCovered()
+        {
+            this.Uncovered = false;
+
+            if (this.Glowing && this.MyMaterial is null == false)
+            {
+                this.Glowing = false;
+                this.MyMaterial.NextPass = null;
+                this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+            }
+        }
+
         public void MarkMeUncovered()
         {
             this.Uncovered = true;
+            
+            if (!this.Glowing && this.MyMaterial is null == false)
+            {
+                this.Glowing = true;
+                this.MyMaterial.NextPass = this.OutlineMaterial;
+                this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+            }
         }
 
-        public void MakeMeGlow()
+        public void MakeMeFlash()
         {
-            if (this.MyMaterial is null == false)
+            if (!this.Flashing && this.MyMaterial is null == false)
             {
-                this.MyMaterial.NextPass = this.OutlineMaterial;
+                this.Flashing = true;
+                
+                this.FlashMaterial.SetShaderParam("axisIndex", GD.Randi() % 3);
+                this.FlashMaterial.SetShaderParam("axisDir", RandomUtil.PosNegCoinFlip());
+                this.MyMaterial.NextPass = this.FlashMaterial;
+                this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+            }
+        }
+
+        public void EndMyFlash()
+        {
+            if (this.Flashing && this.MyMaterial is null == false)
+            {
+                this.Flashing = false;
+                
+                this.FlashMaterial.SetShaderParam("axisIndex", 0);
+                this.FlashMaterial.SetShaderParam("axisDir", 0);
+                this.MyMaterial.NextPass = null;
                 this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
             }
         }
@@ -80,11 +123,28 @@ namespace ATimeGoneBy.scripts.digging
             this.MyAnimationPlayer.Play(PICKUP_ANIM);
         }
 
-        public void AssignObject(MeshInstance meshInstance, int cashValue)
+        public void AssignObject(ArrayMesh mesh, Material material, int cashValue, bool deferred = false)
         {
             this.CashValue = cashValue;
-            this.ObjectMesh = meshInstance;
-            this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
+
+            if (this.IsInsideTree())
+            {
+                this.ObjectMesh.Mesh = (ArrayMesh) mesh.Duplicate();
+                this.MyMaterial = (Material) material.Duplicate();
+                this.ObjectMesh.SetSurfaceMaterial(0, this.MyMaterial);
+                this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
+                return;
+            }
+
+            if (!deferred)
+            {
+                this.CallDeferred(nameof(this.AssignObject), mesh, cashValue, true);
+            }
+        }
+
+        public void AssignObject(Tuple<ArrayMesh, Material> itemTuple, int cashValue, bool deferred = false)
+        {
+            this.AssignObject(itemTuple.Item1, itemTuple.Item2, cashValue, deferred);
         }
 
         public Dictionary Save()

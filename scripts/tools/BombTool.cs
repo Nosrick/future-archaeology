@@ -4,30 +4,37 @@ using System.Linq;
 using ATimeGoneBy.scripts.digging;
 using ATimeGoneBy.scripts.utils;
 using Godot;
+using Godot.Collections;
 using Array = Godot.Collections.Array;
 
 namespace ATimeGoneBy.scripts.tools
 {
-    public class BombTool : ITool
+    public class BombTool : AbstractTool
     {
-        public string Name => "Bomb";
-        public int Cost => 75;
+        public const string TILES_KEY = "tiles";
         
-        protected const int Tiles = 20;
+        public override string TranslationKey => "tools.bomb.name";
 
-        protected const int Damage = 3;
-        public AudioStreamRandomPitch AssociatedSound { get; protected set; }
+        protected int Tiles = 20;
+
+        protected int Damage = 3;
 
         protected static readonly Random Random = new Random();
 
+        public const int DEFAULT_COST = 75;
+        public const int DEFAULT_COOLDOWN = 20;
+
         public BombTool()
         {
+            this.Cost = DEFAULT_COST;
+            this.UsageCooldown = DEFAULT_COOLDOWN;
+            
             this.AssociatedSound = new AudioStreamRandomPitch();
             this.AssociatedSound.AudioStream = GD.Load<AudioStream>("assets/sounds/bomb-1.wav");
             this.AssociatedSound.RandomPitch = 1.2f;
         }
         
-        public int Execute(Vector3Int hit, Vector3Int previous)
+        public override AABB Execute(Vector3Int hit, Vector3Int previous)
         {
             DigMap digSite = GlobalConstants.GameManager.DiggingSpace;
 
@@ -47,7 +54,7 @@ namespace ATimeGoneBy.scripts.tools
                     digSite.DamageCell(pos.x, pos.y, pos.z, Damage);
                 }
 
-                return this.Cost;
+                return digSite.Area;
             }
 
             HashSet<int> tilesToHit = new HashSet<int>();
@@ -69,7 +76,27 @@ namespace ATimeGoneBy.scripts.tools
                 digSite.DamageCell(tile, Damage);
             }
 
-            return this.Cost;
+            this.TimesUsed++;
+            this.CooldownTimer = this.UsageCooldown;
+            return digSite.Area;
+        }
+
+        public override Dictionary Save()
+        {
+            Dictionary saveDict = base.Save();
+            
+            saveDict.Add(TILES_KEY, this.Tiles);
+            saveDict.Add(DAMAGE_KEY, this.Damage);
+
+            return saveDict;
+        }
+
+        public override void Load(Dictionary data)
+        {
+            base.Load(data);
+
+            this.Tiles = (int) data[TILES_KEY];
+            this.Damage = (int) data[DAMAGE_KEY];
         }
     }
 }

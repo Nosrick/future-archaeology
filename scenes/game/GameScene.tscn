@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://assets/default_environment.tres" type="Environment" id=1]
 [ext_resource path="res://scenes/ui/GameUI.tscn" type="PackedScene" id=2]
@@ -7,11 +7,15 @@
 [ext_resource path="res://scripts/digging/DigPicker.cs" type="Script" id=5]
 [ext_resource path="res://scripts/digging/DigMap.cs" type="Script" id=6]
 [ext_resource path="res://scripts/GameManager.cs" type="Script" id=7]
+[ext_resource path="res://scenes/game/TutorialSpeech.tscn" type="PackedScene" id=8]
 
 [node name="Root" type="Spatial"]
 script = ExtResource( 7 )
 ToolLabelPath = NodePath("UIRoot/GameUI/GameplayMarginContainer/GameplayLabelContainer/ToolLabel")
 CameraPath = NodePath("OrbitAnchor/Camera")
+CameraIconContainerPath = NodePath("UIRoot/GameUI/CameraMarginContainer/CameraIconContainer")
+ToolButtonContainerPath = NodePath("UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer")
+UIRootPath = NodePath("UIRoot")
 
 [node name="OrbitAnchor" type="Spatial" parent="."]
 
@@ -36,6 +40,7 @@ spot_angle = 26.84
 [node name="DigMap" type="GridMap" parent="."]
 mesh_library = ExtResource( 3 )
 cell_size = Vector3( 1, 1, 1 )
+cell_octant_size = 16
 data = {
 "cells": PoolIntArray(  )
 }
@@ -53,15 +58,45 @@ attenuation_model = 3
 max_db = 1.0
 bus = "Pickup Sounds"
 
+[node name="Timer" type="Timer" parent="DigMap"]
+
 [node name="UIRoot" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 
 [node name="GameUI" parent="UIRoot" instance=ExtResource( 2 )]
 
-[connection signal="pressed" from="UIRoot/GameUI/MarginContainer/HBoxContainer/ToolContainer/BrushButton" to="." method="SetTool" binds= [ "brush" ]]
-[connection signal="pressed" from="UIRoot/GameUI/MarginContainer/HBoxContainer/ToolContainer/ChiselButton" to="." method="SetTool" binds= [ "chisel" ]]
-[connection signal="pressed" from="UIRoot/GameUI/MarginContainer/HBoxContainer/ToolContainer/HammerButton" to="." method="SetTool" binds= [ "hammer" ]]
-[connection signal="pressed" from="UIRoot/GameUI/MarginContainer/HBoxContainer/ToolContainer/BombButton" to="." method="SetTool" binds= [ "bomb" ]]
+[node name="PriceMarginContainer" parent="UIRoot/GameUI/ToolMarginContainer/HBoxContainer" index="0"]
+margin_right = 43.0
+
+[node name="PriceContainer" parent="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/PriceMarginContainer" index="0"]
+margin_right = 43.0
+
+[node name="BrushLabel" parent="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/PriceMarginContainer/PriceContainer" index="0"]
+margin_right = 38.0
+
+[node name="ChiselLabel" parent="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/PriceMarginContainer/PriceContainer" index="1"]
+margin_right = 38.0
+
+[node name="HammerLabel" parent="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/PriceMarginContainer/PriceContainer" index="2"]
+margin_right = 38.0
+
+[node name="BombLabel" parent="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/PriceMarginContainer/PriceContainer" index="3"]
+margin_right = 38.0
+
+[node name="SurveyLabel" parent="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/PriceMarginContainer/PriceContainer" index="4"]
+margin_right = 38.0
+
+[node name="TutorialSpeech" parent="UIRoot" instance=ExtResource( 8 )]
+
+[connection signal="ready" from="." to="." method="GenerateLevel"]
+[connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/BrushButton" to="." method="SetTool" binds= [ "brush" ]]
+[connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/ChiselButton" to="." method="SetTool" binds= [ "chisel" ]]
+[connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/HammerButton" to="." method="SetTool" binds= [ "hammer" ]]
+[connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/LaserButton" to="." method="SetTool" binds= [ "laser" ]]
+[connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/BombButton" to="." method="SetTool" binds= [ "bomb" ]]
+[connection signal="pressed" from="UIRoot/GameUI/ToolMarginContainer/HBoxContainer/ToolContainer/SurveyButton" to="." method="SetTool" binds= [ "survey" ]]
 
 [editable path="UIRoot/GameUI"]
+[editable path="UIRoot/TutorialSpeech"]

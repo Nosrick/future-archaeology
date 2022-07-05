@@ -1,0 +1,57 @@
+[gd_resource type="Shader" format=2]
+
+[resource]
+resource_local_to_scene = true
+code = "shader_type spatial;
+render_mode unshaded;
+
+uniform vec4 shineColour : hint_color = vec4(1.0, 1.0, 1.0, 1.0);
+
+//This is the length in units
+uniform float shineLengthInUnits = 5;
+uniform float durationInSeconds = 0.5;
+
+uniform float shineWidth : hint_range(1.0, 100.0) = 3.0;
+
+uniform int axisIndex : hint_range(0, 2) = 0;
+uniform int axisDir : hint_range(-1, 1) = 1;
+
+uniform float startTime = 0.0;
+
+void fragment( )
+{
+	vec3 vertex = (CAMERA_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	
+	float axis = 0.0;
+	switch(axisIndex)
+	{
+		case 0:
+			axis = vertex.x;
+			break;
+			
+		case 1:
+			axis = vertex.y;
+			break;
+			
+		case 2:
+			axis = vertex.z;
+			break;
+			
+		default:
+			axis = 0.0;
+			break;
+	}
+	
+	float timeElapsed = TIME - startTime;
+	
+	axis = axis * float(axisDir);
+	
+	float speedDelta = shineLengthInUnits / (durationInSeconds);
+	
+	float width = shineWidth * speedDelta;
+	
+	float frequency = sin((axis + timeElapsed * speedDelta) + width);
+	ALBEDO = shineColour.rgb;
+	ALPHA = clamp((1.0 - dot(NORMAL, VIEW)) * frequency * shineColour.a, 0.0, 0.6);
+	DEPTH = 0.0;
+}"

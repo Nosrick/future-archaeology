@@ -15,7 +15,7 @@ namespace ATimeGoneBy.scripts.digging
         protected DigMap DigMap { get; set; }
 
         protected Vector2 MousePosition { get; set; }
-        protected bool CastRay { get; set; }
+        public bool CastRay { get; protected set; }
 
         public override void _Ready()
         {
@@ -35,10 +35,8 @@ namespace ATimeGoneBy.scripts.digging
             this.DigMap = this.GetNodeOrNull<DigMap>(this.GridPath);
         }
 
-        public override void _Input(InputEvent @event)
+        public override void _UnhandledInput(InputEvent @event)
         {
-            base._Input(@event);
-
             if (!GlobalConstants.GameManager.ProcessClicks)
             {
                 return;
@@ -57,7 +55,8 @@ namespace ATimeGoneBy.scripts.digging
         {
             base._PhysicsProcess(delta);
 
-            if (this.CastRay)
+            if (this.CastRay
+                && GlobalConstants.GameManager.CurrentTool?.IsUsable() == true)
             {
                 Vector3 origin = this.MyCamera.ProjectRayOrigin(this.MousePosition);
                 Vector3 direction = this.MyCamera.ProjectRayNormal(this.MousePosition).Normalized();
@@ -70,8 +69,12 @@ namespace ATimeGoneBy.scripts.digging
                 if (result.Contains("collider")
                     && result["collider"] is DigItem digItem)
                 {
-                    this.DigMap.RemoveObject(digItem);
-                    this.CastRay = false;
+                    if (this.DigMap.CheckObject(digItem))
+                    {
+                        this.DigMap.RemoveObject(digItem);
+                        this.CastRay = false;
+                    }
+
                     return;
                 }
 

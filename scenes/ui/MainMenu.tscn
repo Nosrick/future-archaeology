@@ -16,7 +16,7 @@ script = ExtResource( 2 )
 anchor_right = 1.0
 anchor_bottom = 0.2
 custom_fonts/font = ExtResource( 3 )
-text = "A Time Gone By"
+text = "atgb.title"
 align = 1
 valign = 1
 __meta__ = {
@@ -34,7 +34,7 @@ margin_right = 409.0
 margin_bottom = 72.0
 size_flags_vertical = 3
 theme = ExtResource( 4 )
-text = "New Game"
+text = "new_game.button"
 
 [node name="LoadGameButton" type="Button" parent="ButtonContainer"]
 margin_top = 76.0
@@ -42,7 +42,7 @@ margin_right = 409.0
 margin_bottom = 148.0
 size_flags_vertical = 3
 theme = ExtResource( 4 )
-text = "Load Game"
+text = "load.button"
 
 [node name="OptionsButton" type="Button" parent="ButtonContainer"]
 margin_top = 152.0
@@ -50,7 +50,7 @@ margin_right = 409.0
 margin_bottom = 224.0
 size_flags_vertical = 3
 theme = ExtResource( 4 )
-text = "Options"
+text = "options.button"
 
 [node name="ExitGameButton" type="Button" parent="ButtonContainer"]
 margin_top = 228.0
@@ -58,7 +58,7 @@ margin_right = 409.0
 margin_bottom = 300.0
 size_flags_vertical = 3
 theme = ExtResource( 4 )
-text = "Exit To Desktop"
+text = "exit.button"
 
 [connection signal="pressed" from="ButtonContainer/NewGameButton" to="." method="ChangeScreen" binds= [ "new-game" ]]
 [connection signal="pressed" from="ButtonContainer/LoadGameButton" to="." method="ChangeScreen" binds= [ "load-game" ]]

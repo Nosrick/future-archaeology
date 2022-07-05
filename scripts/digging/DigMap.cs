@@ -6,6 +6,7 @@ using ATimeGoneBy.scripts.utils;
 using Godot;
 using Godot.Collections;
 using Array = Godot.Collections.Array;
+using Timer = Godot.Timer;
 
 namespace ATimeGoneBy.scripts.digging
 {
@@ -14,11 +15,19 @@ namespace ATimeGoneBy.scripts.digging
         protected int Width { get; set; }
         protected int Height { get; set; }
         protected int Depth { get; set; }
+        
+        protected int ObjectsToGenerate { get; set; }
+        
+        public AABB Area { get; protected set; }
+
+        public bool LevelTouched => this.DigItems.Count != this.ObjectsToGenerate;
 
         public int[] ValidCells { get; protected set; }
-        public const int FULL_CUBE = 0;
+        public const int BARE_CUBE = 0;
         public const int HALF_CUBE = 1;
-        public const int BARE_CUBE = 2;
+        public const int FULL_CUBE = 2;
+
+        public const int FLASH_MODIFIER = 3;
         public const int EMPTY_CELL = -1;
 
         protected PackedScene DiggingObjectScene { get; set; }
@@ -26,16 +35,24 @@ namespace ATimeGoneBy.scripts.digging
         protected List<DigItem> DigItems;
 
         protected Random Random;
-
-        protected AudioStreamPlayer3D ToolAudioPlayer { get; set; }
         protected AudioStreamPlayer3D PickupAudioPlayer { get; set; }
+        protected Timer Timer { get; set; }
 
         protected AudioStreamRandomPitch ItemPickUpSound { get; set; }
 
+        protected ShaderMaterial FlashMaterial;
+
+        protected Queue<Vector3Int> AreaQueue;
+        protected bool Flashing;
+        
+        [Export] protected int PointsPerFrame = 500;
+
         public override void _Ready()
         {
+            this.SetProcess(false);
             this.SetPhysicsProcess(false);
             this.Random = new Random();
+            this.AreaQueue = new Queue<Vector3Int>();
             this.DiggingObjectScene = GD.Load<PackedScene>("scenes/game/DiggingObject.tscn");
             this.DigItems = new List<DigItem>();
 
@@ -43,8 +60,10 @@ namespace ATimeGoneBy.scripts.digging
             this.ItemPickUpSound.AudioStream = GD.Load<AudioStream>("assets/sounds/money-get.wav");
             this.ItemPickUpSound.RandomPitch = 1.1f;
 
-            this.ToolAudioPlayer = this.GetNode<AudioStreamPlayer3D>("ToolSounds");
             this.PickupAudioPlayer = this.GetNode<AudioStreamPlayer3D>("PickupSounds");
+            this.Timer = this.GetNode<Timer>("Timer");
+
+            this.FlashMaterial = GD.Load<ShaderMaterial>("assets/shaders/flash-material.tres");
 
             this.PickupAudioPlayer.Stream = this.ItemPickUpSound;
 
@@ -52,14 +71,26 @@ namespace ATimeGoneBy.scripts.digging
             this.Width = 5;
             this.Height = 5;
             this.Depth = 5;
-
-            this.GenerateDigSite();
         }
 
-        public void GenerateDigSite()
+        public void GenerateDigSite(Vector3Int dimensions, int numObjects = 5)
         {
-            this.Clear();
+            this.Width = dimensions.x;
+            this.Height = dimensions.y;
+            this.Depth = dimensions.z;
+
+            this.ObjectsToGenerate = numObjects;
+
+            this.Area = new AABB
+            {
+                Position = new Vector3(-this.Width, -this.Height, -this.Depth),
+                End = new Vector3(this.Width, this.Height, this.Depth)
+            };
             
+            this.SetProcess(false);
+            this.SetPhysicsProcess(false);
+            this.Clear();
+
             for (int x = -this.Width; x <= this.Width; x++)
             {
                 for (int y = -this.Height; y <= this.Height; y++)
@@ -71,32 +102,72 @@ namespace ATimeGoneBy.scripts.digging
                 }
             }
 
-            this.PlaceObjects();
-            
             this.BeginProcessing();
         }
 
-        public override void _PhysicsProcess(float delta)
+        public override void _Process(float delta)
         {
-            base._PhysicsProcess(delta);
+            base._Process(delta);
 
-            this.CheckForUncovered();
+            if (this.AreaQueue.Any())
+            {
+                for (int i = 0; i < this.PointsPerFrame; i++)
+                {
+                    if (this.AreaQueue.Any() == false)
+                    {
+                        break;
+                    }
+                    
+                    Vector3Int point = this.AreaQueue.Dequeue();
+                    if (this.Flashing)
+                    {
+                        this.MakeCellFlash(point.x, point.y, point.z);
+                    }
+                    else
+                    {
+                        this.EndCellFlash(point.x, point.y, point.z);
+                    }
+                }
+            }
         }
 
         protected async void BeginProcessing()
         {
-            SceneTreeTimer timer = this.GetTree().CreateTimer(1f);
+            await this.ToSignal(this.GetTree(), "idle_frame");
 
-            await this.ToSignal(timer, "timeout");
+            this.CreateObjects();
 
+            bool loop = true;
+            while (loop)
+            {
+                loop = false;
+                foreach (DigItem item in this.DigItems)
+                {
+                    if (!item.IsInsideTree())
+                    {
+                        loop = true;
+                    }
+                }
+
+                if (loop)
+                {
+                    await this.ToSignal(this.GetTree(), "idle_frame");
+                }
+            }
+
+            this.PlaceObjects();
+
+            await this.ToSignal(this.GetTree(), "idle_frame");
+
+            this.RemoveOccludedTiles();
+
+            this.SetProcess(true);
             this.SetPhysicsProcess(true);
         }
 
-        protected void PlaceObjects()
+        protected void CreateObjects()
         {
-            int numObjects = 5;
-
-            for (int i = 0; i < numObjects; i++)
+            for (int i = 0; i < this.ObjectsToGenerate; i++)
             {
                 DigItem item = this.DiggingObjectScene.Instance<DigItem>();
 
@@ -106,13 +177,21 @@ namespace ATimeGoneBy.scripts.digging
                 this.DigItems.Add(item);
                 this.AddChild(item);
 
+                item.AssignObject(GlobalConstants.GameManager.Items.GetRandom(), 100);
+            }
+        }
+
+        protected void PlaceObjects()
+        {
+            foreach (DigItem item in this.DigItems)
+            {
                 bool loopBreak = false;
                 int tries = 0;
-                while (!loopBreak && tries < 100)
+                while (!loopBreak && tries < 20)
                 {
                     foreach (var obj in item.GetCollidingBodies())
                     {
-                        if (obj is DigItem otherItem)
+                        if (obj is DigItem)
                         {
                             item.Translation = this.RandomPosition();
                             item.RotationDegrees = this.RandomRotation();
@@ -127,18 +206,65 @@ namespace ATimeGoneBy.scripts.digging
             }
         }
 
-        public void CheckForUncovered()
+        protected void RemoveOccludedTiles()
         {
             foreach (DigItem item in this.DigItems)
             {
-                if (item.Uncovered || item.GetCollidingBodies().Contains(this))
-                {
-                    continue;
-                }
+                AABB aabb = item.ObjectMesh.GetTransformedAabb();
+                Vector3Int begin, end;
+                begin = new Vector3Int(aabb.Position);
+                end = new Vector3Int(aabb.End);
 
-                item.MarkMeUncovered();
-                item.MakeMeGlow();
+                for (int x = begin.x + 1; x < end.x - 1; x++)
+                {
+                    for (int y = begin.y + 1; y < end.y - 1; y++)
+                    {
+                        for (int z = begin.z + 1; z < end.z - 1; z++)
+                        {
+                            this.SetCellItem(x, y, z, EMPTY_CELL);
+                        }
+                    }
+                }
             }
+        }
+
+        public void CheckForUncovered(AABB area)
+        {
+            foreach (DigItem item in this.DigItems)
+            {
+                if (area.Intersects(item.ObjectMesh.GetTransformedAabb()))
+                {
+                    this.CheckObject(item);
+                }
+            }
+        }
+
+        public bool IsAnyUncovered()
+        {
+            foreach (DigItem item in this.DigItems)
+            {
+                if (item.Uncovered)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool CheckObject(DigItem item)
+        {
+            if (item.GetCollidingBodies().Contains(this))
+            {
+                if (item.Uncovered)
+                {
+                    item.MarkMeCovered();
+                }
+                return false;
+            }
+            
+            item.MarkMeUncovered();
+            return true;
         }
 
         public bool RemoveObject(DigItem removed)
@@ -153,7 +279,6 @@ namespace ATimeGoneBy.scripts.digging
                     this.PickupAudioPlayer.Play();
                     SceneTreeTimer timer = this.GetTree().CreateTimer(0.25f);
                     timer.Connect("timeout", this, nameof(this.DelayedRemoval), new Array {removed});
-                    this.DigItems.Remove(removed);
                     return true;
                 }
             }
@@ -163,12 +288,18 @@ namespace ATimeGoneBy.scripts.digging
 
         public bool LevelComplete()
         {
+            if (this.IsPhysicsProcessing() == false)
+            {
+                return false;
+            }
+
             return !this.DigItems.Any();
         }
 
         protected void DelayedRemoval(Node removal)
         {
-            this.RemoveChild(removal);
+            this.DigItems.Remove(removal as DigItem);
+            removal.QueueFree();
         }
 
         protected Vector3 RandomPosition()
@@ -187,9 +318,44 @@ namespace ATimeGoneBy.scripts.digging
             return new Vector3(xRot, yRot, zRot);
         }
 
+        public bool IsObjectAt(Vector3Int pos)
+        {
+            Vector3 point = pos.ToVector3();
+            foreach (DigItem item in this.DigItems)
+            {
+                AABB aabb = item.ObjectMesh.GetTransformedAabb();
+                if (aabb.HasPoint(point))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public DigItem GetObjectAt(Vector3Int pos)
+        {
+            Vector3 point = pos.ToVector3();
+            foreach (DigItem item in this.DigItems)
+            {
+                AABB aabb = item.ObjectMesh.GetTransformedAabb();
+                if (aabb.HasPoint(point))
+                {
+                    return item;
+                }
+            }
+
+            return null;
+        }
+
         public bool IsValid(Vector3Int pos)
         {
-            return this.ValidCells.Contains(this.GetCellItem(pos.x, pos.y, pos.z));
+            return this.IsValid(pos.x, pos.y, pos.z);
+        }
+
+        public bool IsValid(int x, int y, int z)
+        {
+            return this.ValidCells.Contains(this.GetCellItem(x, y, z));
         }
 
         public bool IsOuterCell(Vector3Int pos)
@@ -226,17 +392,223 @@ namespace ATimeGoneBy.scripts.digging
             int cell = this.GetCellItem(x, y, z);
             if (this.ValidCells.Contains(cell))
             {
-                this.SetCellItem(x, y, z, cell + damage);
-                var sound = GlobalConstants.GameManager.CurrentTool?.AssociatedSound;
-                if (this.ToolAudioPlayer.Stream != sound)
+                if (cell >= FLASH_MODIFIER
+                    && cell - damage < FLASH_MODIFIER)
                 {
-                    this.ToolAudioPlayer.Stream = sound;
+                    cell = EMPTY_CELL;
                 }
-
-                this.ToolAudioPlayer.Play();
+                else
+                {
+                    cell = Mathf.Max(cell - damage, EMPTY_CELL);
+                }
+                this.SetCellItem(x, y, z, cell);
+            }
+            
+            bool valid = this.IsValid(new Vector3Int(x, y, z));
+            if (!valid)
+            {
+                GlobalConstants.GameManager.TickCooldowns();
             }
 
-            return this.IsValid(new Vector3Int(x, y, z));
+            return valid;
+        }
+
+        public void MakeCellFlash(Vector3Int pos, Vector3Int.Axis axis, int axisDir)
+        {
+            this.MakeCellFlash(pos.x, pos.y, pos.z, axis, axisDir);
+        }
+
+        public async void MakeAreaFlash(
+            Vector3Int start,
+            Vector3Int end,
+            Vector3Int.Axis axis,
+            int axisDir,
+            int lengthInUnits,
+            float duration,
+            bool autoEnd = true,
+            bool includeItems = false,
+            bool stopItemFlashing = false)
+        {
+            this.SetShaderParams(axis, axisDir, lengthInUnits, duration);
+
+            this.Flashing = true;
+            
+            Vector3Int layerEnd = new Vector3Int();
+
+            switch (axis)
+            {
+                case Vector3Int.Axis.X:
+                    layerEnd = new Vector3Int(start.x, end.y, end.z);
+                    break;
+
+                case Vector3Int.Axis.Y:
+                    layerEnd = new Vector3Int(end.x, start.y, end.z);
+                    break;
+
+                case Vector3Int.Axis.Z:
+                    layerEnd = new Vector3Int(end.x, end.y, start.z);
+                    break;
+            }
+            
+            this.QueueAreaForProcessing(start, layerEnd, axis, axisDir, lengthInUnits, includeItems);
+
+            if (includeItems)
+            {
+                AABB box = new AABB
+                {
+                    Position = start.ToVector3(),
+                    End = end.ToVector3()
+                };
+
+                var items = this.DigItems.Where(item => box.Intersects(item.ObjectMesh.GetTransformedAabb(), true));
+                foreach (DigItem item in items)
+                {
+                    item.MakeMeFlash();
+                }
+            }
+
+            if (autoEnd)
+            {
+                this.Timer.Start(duration);
+                await this.ToSignal(this.Timer, "timeout");
+
+                this.Flashing = false;
+                this.QueueAreaForProcessing(start, end, axis, axisDir, lengthInUnits, stopItemFlashing);
+            }
+        }
+
+        protected void QueueAreaForProcessing(
+            Vector3Int start, 
+            Vector3Int end, 
+            Vector3Int.Axis axis, 
+            int stepDir, 
+            int remaining, 
+            bool includeItems = false)
+        {
+            while (true)
+            {
+                for (int x = start.x; x <= end.x; x++)
+                {
+                    for (int y = start.y; y <= end.y; y++)
+                    {
+                        for (int z = start.z; z <= end.z; z++)
+                        {
+                            this.AreaQueue.Enqueue(new Vector3Int(x, y, z));
+                        }
+                    }
+                }
+
+                if (remaining == 0)
+                {
+                    return;
+                }
+
+                Vector3Int nextStart = start;
+                Vector3Int nextEnd = end;
+
+                switch (axis)
+                {
+                    case Vector3Int.Axis.X:
+                        nextStart += (Vector3Int.Right);
+                        nextEnd += (Vector3Int.Right);
+                        break;
+
+                    case Vector3Int.Axis.Y:
+                        nextStart += (Vector3Int.Up);
+                        nextEnd += (Vector3Int.Up);
+                        break;
+
+                    case Vector3Int.Axis.Z:
+                        nextStart += (Vector3Int.Back);
+                        nextEnd += (Vector3Int.Back);
+                        break;
+                    default:
+                        return;
+                }
+
+                start = nextStart;
+                end = nextEnd;
+                remaining -= 1;
+            }
+        }
+
+        public void EndAreaFlash(
+            Vector3Int begin,
+            Vector3Int end,
+            bool includeItems = false)
+        {
+            for (int x = begin.x; x <= end.x; x++)
+            {
+                for (int y = begin.y; y <= end.y; y++)
+                {
+                    for (int z = begin.z; z <= end.z; z++)
+                    {
+                        this.EndCellFlash(x, y, z);
+                    }
+                }
+            }
+
+            if (includeItems)
+            {
+                AABB box = new AABB();
+                box.Position = begin.ToVector3();
+                box.End = end.ToVector3();
+
+                var items = this.DigItems.Where(
+                    item => item.Flashing
+                            && box.Intersects(item.ObjectMesh.GetTransformedAabb(), true));
+
+                foreach (DigItem item in items)
+                {
+                    item.EndMyFlash();
+                }
+            }
+        }
+
+        protected void SetShaderParams(
+            Vector3Int.Axis axisIndex,
+            int axisDir,
+            int lengthInUnits = 1,
+            float duration = 0.5f)
+        {
+            this.FlashMaterial.SetShaderParam("shineLengthInUnits", lengthInUnits);
+            this.FlashMaterial.SetShaderParam("durationInSeconds", duration);
+            this.FlashMaterial.SetShaderParam("axisIndex", (int) axisIndex);
+            this.FlashMaterial.SetShaderParam("axisDir", axisDir);
+            this.FlashMaterial.SetShaderParam("startTime", OS.GetTicksMsec());
+        }
+
+        protected void MakeCellFlash(int x, int y, int z)
+        {
+            int cell = this.GetCellItem(x, y, z);
+            if (cell >= FLASH_MODIFIER || !this.IsValid(x, y, z))
+            {
+                return;
+            }
+
+            this.SetCellItem(x, y, z, cell + FLASH_MODIFIER);
+        }
+
+        public void MakeCellFlash(int x, int y, int z, Vector3Int.Axis axisIndex, int axisDir)
+        {
+            this.SetShaderParams(axisIndex, axisDir);
+            this.MakeCellFlash(x, y, z);
+        }
+
+        public void EndCellFlash(Vector3Int pos)
+        {
+            this.EndCellFlash(pos.x, pos.y, pos.z);
+        }
+
+        public void EndCellFlash(int x, int y, int z)
+        {
+            int cell = this.GetCellItem(x, y, z);
+            if (cell < FLASH_MODIFIER || !this.IsValid(x, y, z))
+            {
+                return;
+            }
+
+            this.SetCellItem(x, y, z, cell - FLASH_MODIFIER);
         }
 
         public Dictionary Save()
@@ -251,7 +623,7 @@ namespace ATimeGoneBy.scripts.digging
 
                 tiles.Add(t, result);
             }
-            
+
             saveDict.Add("tiles", tiles);
 
             Array objects = new Array();
@@ -259,7 +631,7 @@ namespace ATimeGoneBy.scripts.digging
             {
                 objects.Add(item.Save());
             }
-            
+
             saveDict.Add("objects", objects);
 
             return saveDict;
@@ -271,15 +643,15 @@ namespace ATimeGoneBy.scripts.digging
             {
                 return false;
             }
-            
+
             this.Clear();
-            
+
             Dictionary tiles = data["tiles"] as Dictionary;
             foreach (DictionaryEntry tile in tiles)
             {
                 Vector3Int pos = new Vector3Int((Vector3) tile.Key);
                 int cell = (int) tile.Value;
-                
+
                 this.SetCellItem(pos.x, pos.y, pos.z, cell);
             }
 

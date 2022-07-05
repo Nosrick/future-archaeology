@@ -39,7 +39,6 @@ namespace ATimeGoneBy.scripts.ui
 
                 GlobalConstants.AppManager.SaveState = gameState;
                 
-                GD.Print("Seems legit?");
                 this.GetTree().ChangeScene(GlobalConstants.GameSceneLocation);
             }
             else if (screen == "options")

@@ -33,7 +33,6 @@ void fragment( )
 	float depth[9];
 	vec2 pixel_size = ( vec2( 1.0, 1.0 ) / VIEWPORT_SIZE ) * 1.15;
 
-	// Gaussian FilterとSobel FilterでColor/Depthで取る
 	for( int y=0; y<3; y ++ ) {
 		for( int x=0; x<3; x ++ ) {
 			vec2 uv = SCREEN_UV + vec2( float( x-1 ), float( y-1 ) ) * pixel_size;
@@ -93,5 +92,5 @@ void fragment( )
 	,	0.0
 	,	1.0
 	);
-	DEPTH = 0.0;
+	//DEPTH = 0.0;
 }

@@ -1,4 +1,6 @@
-﻿using Godot;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Godot;
 using Godot.Collections;
 
 namespace ATimeGoneBy.scripts.options
@@ -13,13 +15,18 @@ namespace ATimeGoneBy.scripts.options
 
         protected Dictionary m_Options;
 
-        public readonly string InvertXRotation = "Invert X Rotation";
-        public readonly string InvertYRotation = "Invert Y Rotation";
-        public readonly string InvertXPanning = "Invert X Panning";
-        public readonly string InvertYPanning = "Invert Y Panning";
-        public readonly string InvertZooming = "Invert Zooming";
-        public readonly string RotationSensitivity = "Rotation Sensitivity";
-        public readonly string PanningSensitivity = "Panning Sensitivity";
+        //Key: localised strings of the translation keys
+        //Value: the raw translation keys
+        protected IDictionary<string, string> m_LocaleMap;
+
+        public readonly string InvertXRotation = "options.invert_x_rotation.label";
+        public readonly string InvertYRotation = "options.invert_y_rotation.label";
+        public readonly string InvertXPanning = "options.invert_x_panning.label";
+        public readonly string InvertYPanning = "options.invert_y_panning.label";
+        public readonly string InvertZooming = "options.invert_zooming.label";
+        public readonly string RotationSensitivity = "options.rotation_sensitivity.label";
+        public readonly string PanningSensitivity = "options.panning_sensitivity.label";
+        public readonly string ZoomingSensitivity = "options.zooming_sensitivity.label";
         public readonly string UseMoney = "Use Money";
 
         public readonly string OptionsFile = "user://options.dat";
@@ -42,7 +49,8 @@ namespace ATimeGoneBy.scripts.options
                 {InvertYPanning, false},
                 {InvertZooming, false},
                 {RotationSensitivity, 0.1f},
-                {PanningSensitivity, 1f}
+                {PanningSensitivity, 1f},
+                {ZoomingSensitivity, 1f}
             };
         }
         
@@ -77,6 +85,8 @@ namespace ATimeGoneBy.scripts.options
                 }
 
                 this.m_Options = (Dictionary) parseResult.Result;
+                
+                this.OptionsToLocale();
 
                 return true;
             }
@@ -88,6 +98,27 @@ namespace ATimeGoneBy.scripts.options
         public void ResetToDefaults()
         {
             this.m_Options = this.LoadDefaults();
+            this.OptionsToLocale();
+        }
+
+        protected void OptionsToLocale()
+        {
+            this.m_LocaleMap = new System.Collections.Generic.Dictionary<string, string>();
+
+            Dictionary defaults = this.LoadDefaults();
+            foreach (DictionaryEntry entry in defaults)
+            {
+                if (!this.m_Options.Contains(entry.Key))
+                {
+                    this.m_Options.Add(entry.Key, entry.Value);
+                }
+            }
+
+            foreach (DictionaryEntry entry in this.m_Options)
+            {
+                string key = entry.Key.ToString();
+                this.m_LocaleMap.Add(TranslationServer.Translate(key), key);
+            }
         }
 
         public T GetOption<T>(string name)
@@ -96,20 +127,36 @@ namespace ATimeGoneBy.scripts.options
             {
                 return (T) this.m_Options[name];
             }
+            if (this.m_LocaleMap.ContainsKey(name)
+                && this.m_Options.Contains(this.m_LocaleMap[name]))
+            {
+                return (T) this.m_Options[this.m_LocaleMap[name]];
+            }
 
             return default;
         }
 
         public bool SetOption(string name, object value)
         {
-            if (!this.m_Options.Contains(name))
+            if (this.m_Options.Contains(name))
             {
-                this.m_Options.Add(name, value);
+                this.m_Options[name] = value;
                 return true;
             }
 
-            this.m_Options[name] = value;
-            return true;
+            if (this.m_LocaleMap.ContainsKey(name))
+            {
+                if (!this.m_Options.Contains(this.m_LocaleMap[name]))
+                {
+                    this.m_Options.Add(this.m_LocaleMap[name], value);
+                    return true;
+                }
+
+                this.m_Options[this.m_LocaleMap[name]] = value;
+                return true;
+            }
+
+            return false;
         }
     }
 }

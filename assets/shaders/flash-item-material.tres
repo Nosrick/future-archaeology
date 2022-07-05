@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[ext_resource path="res://assets/shaders/flash-shader.tres" type="Shader" id=1]
+
+[resource]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/shineColour = Color( 0.764706, 0.788235, 0.0470588, 1 )
+shader_param/shineLengthInUnits = 3.0
+shader_param/durationInSeconds = 1.0
+shader_param/shineWidth = 3.0
+shader_param/axisIndex = 2
+shader_param/axisDir = 1
+shader_param/startTime = 0.0

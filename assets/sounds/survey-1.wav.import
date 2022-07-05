@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/survey-1.wav-af067854b3a7ed07732f75d26128ce5c.sample"
+
+[deps]
+
+source_file="res://assets/sounds/survey-1.wav"
+dest_files=[ "res://.import/survey-1.wav-af067854b3a7ed07732f75d26128ce5c.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

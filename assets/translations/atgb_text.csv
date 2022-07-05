@@ -1,0 +1,49 @@
+keys,en
+tools.hammer.name,hammer
+tools.chisel.name,chisel
+tools.brush.name,brush
+tools.bomb.name,bomb
+tools.survey.name,survey
+tools.laser.name,laser
+tools.none.name,none
+,
+tools.current.label,Current Tool: 
+cash.label,Biggabux: 
+,
+options.title.label,Options Menu
+options.invert_x_rotation.label,Invert X Rotation
+options.invert_y_rotation.label,Invert Y Rotation
+options.invert_x_panning.label,Invert X Panning
+options.invert_y_panning.label,Invert Y Panning
+options.invert_zooming.label,Invert Zooming
+options.rotation_sensitivity.label,Rotation Sensitivity
+options.zooming_sensitivity.label,Zoom Sensitivity
+options.panning_sensitivity.label,Panning Sensitivity
+options.default.button,Defaults
+back.button,Back
+,
+pause.title.label,Paused
+new_game.button,New Game
+options.button,Options
+resume.button,Resume
+load.button,Load Game
+save.button,Save Game
+to_menu.button,Exit to Menu
+exit.button,Exit to Desktop
+,
+atgb.title,A Time Gone By
+,
+tutorial.speaker,Foreman Abignail
+tutorial.0,-llo? Is this thing working?
+tutorial.1,"Oh, hello, newbie. You're the new graduate, right?"
+tutorial.2,"I know you know all of this already, but I am contractually obligated to run you through your tool suite. First, let's maneuver you around your little dig site."
+tutorial.3,Use any of the view rotation buttons [%3%] and move your favourite appendage to rotate around.
+tutorial.4,"Next, we'll try trucking around. Hold any of the trucking buttons [%4%] and give your view a wiggle."
+tutorial.5,"Lastly, let's try zooming. Zoom in and out for me, by using any of the zooming buttons [%5%]."
+tutorial.6,"Alright, you seem to know what you're doing here. Select your Survey tool for me by activating the button on your toolkit with [%6%]."
+tutorial.7,"Great. Now survey your site, by moving your cursor over the dig site and using your activation button."
+tutorial.8,"Nothing to it, right? If we haven't completely blown it when choosing our site, you should see that we've got some artifacts to dig up."
+tutorial.9,"Select your Chisel tool, and take it to the earth, digging using any of your activation buttons. [%9%]"
+tutorial.10,"Once you've cleared the earth around the artifact, your AR toolkit should highlight it."
+tutorial.11,Place your cursor over the highlighted item and push your activation button.
+tutorial.12,"Great, you've got it. You can probably take it from here. Good luck, kid."
