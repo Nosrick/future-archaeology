@@ -154,7 +154,7 @@ namespace ATimeGoneBy.scripts
                 this.CameraIcons.Add(child);
             }
 
-            this.TutorialSpeech = this.GetNode<TutorialSpeech>(this.UIRootPath + "/TutorialSpeech");
+            this.TutorialSpeech = this.GetNode<TutorialSpeech>(this.UIRootPath + "/TutorialSpeech/SpeechContainer");
 
             this.Cash = 500;
 

@@ -9,22 +9,23 @@
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-script = ExtResource( 1 )
-SpeakerLabelPath = NodePath("SpeechContainer/SpeechContainer/SpeakerLabel")
-SpeechLabelPath = NodePath("SpeechContainer/BackgroundContainer/TextContainer/SpeechRichText")
 
 [node name="SpeechContainer" type="VBoxContainer" parent="."]
 anchor_left = 0.3
 anchor_top = 0.701
 anchor_right = 1.0
 anchor_bottom = 1.0
-mouse_filter = 0
+mouse_filter = 2
 custom_constants/separation = 0
+script = ExtResource( 1 )
+SpeakerLabelPath = NodePath("SpeechContainer/SpeakerLabel")
+SpeechLabelPath = NodePath("BackgroundContainer/TextContainer/SpeechRichText")
 
 [node name="SpeechContainer" type="Control" parent="SpeechContainer"]
 margin_right = 716.0
 margin_bottom = 48.0
 rect_min_size = Vector2( 0, 48 )
+mouse_filter = 2
 size_flags_horizontal = 3
 
 [node name="SpeechBackground" type="NinePatchRect" parent="SpeechContainer/SpeechContainer"]
@@ -43,7 +44,7 @@ patch_margin_bottom = 3
 anchor_left = 0.02
 anchor_top = 0.1
 anchor_right = 0.395
-anchor_bottom = 0.95
+anchor_bottom = 0.9
 theme = ExtResource( 3 )
 text = "SPEAKER"
 valign = 1
@@ -52,6 +53,7 @@ valign = 1
 margin_top = 48.0
 margin_right = 716.0
 margin_bottom = 179.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -74,6 +76,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -10.0
 margin_bottom = -10.0
+mouse_filter = 2
 
 [node name="SpeechRichText" type="RichTextLabel" parent="SpeechContainer/BackgroundContainer/TextContainer"]
 anchor_right = 1.0
@@ -81,6 +84,8 @@ anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 3 )
+bbcode_enabled = true
+bbcode_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam placerat sollicitudin neque. Proin vitae eros libero. Mauris dictum convallis justo, rutrum accumsan mi fringilla vel. Morbi hendrerit nunc dui, non cursus est vulputate eu. Suspendisse potenti. Curabitur fringilla nec diam sit amet scelerisque. Vestibulum lobortis, sem sed pharetra ullamcorper, nunc ipsum ullamcorper quam, ac rhoncus eros odio vel nunc. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."
 text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam placerat sollicitudin neque. Proin vitae eros libero. Mauris dictum convallis justo, rutrum accumsan mi fringilla vel. Morbi hendrerit nunc dui, non cursus est vulputate eu. Suspendisse potenti. Curabitur fringilla nec diam sit amet scelerisque. Vestibulum lobortis, sem sed pharetra ullamcorper, nunc ipsum ullamcorper quam, ac rhoncus eros odio vel nunc. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."
 
-[connection signal="gui_input" from="SpeechContainer" to="." method="ClickedOn"]
+[connection signal="gui_input" from="SpeechContainer/BackgroundContainer/TextContainer/SpeechRichText" to="SpeechContainer" method="ClickedOn"]
