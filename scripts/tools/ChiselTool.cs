@@ -22,6 +22,8 @@ namespace ATimeGoneBy.scripts.tools
         public override AABB Execute(Vector3Int hit, Vector3Int previous)
         {
             GlobalConstants.GameManager.DiggingSpace.DamageCell(hit, 3);
+
+            this.TimesUsed++;
             return new AABB
             {
                 Position = hit.ToVector3(),

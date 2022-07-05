@@ -100,7 +100,8 @@ namespace ATimeGoneBy.scripts.tools
                     break;
                 }
             }
-
+            
+            this.TimesUsed++;
             this.CooldownTimer = this.UsageCooldown;
             AABB area = new AABB
             {

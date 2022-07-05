@@ -12,12 +12,14 @@ namespace ATimeGoneBy.scripts.tools
         public const string TIMER_KEY = "cooldown-timer";
         public const string DAMAGE_KEY = "damage";
         public const string RANGE_KEY = "range";
+        public const string TIMES_USED_KEY = "times-used";
 
         public virtual string TranslationKey { get; protected set; }
 
         public int Cost { get; protected set; }
         public int UsageCooldown { get; protected set; }
         public int CooldownTimer { get; protected set; }
+        public int TimesUsed { get; protected set; }
 
         public AudioStreamRandomPitch AssociatedSound { get; protected set; }
 
@@ -33,7 +35,8 @@ namespace ATimeGoneBy.scripts.tools
                 {NAME_KEY, this.TranslationKey},
                 {COST_KEY, this.Cost},
                 {USAGE_KEY, this.UsageCooldown},
-                {TIMER_KEY, this.CooldownTimer}
+                {TIMER_KEY, this.CooldownTimer},
+                {TIMES_USED_KEY, this.TimesUsed}
             };
 
             return saveDict;
@@ -45,6 +48,7 @@ namespace ATimeGoneBy.scripts.tools
             this.Cost = (int) data[COST_KEY];
             this.UsageCooldown = (int) data[USAGE_KEY];
             this.CooldownTimer = (int) data[TIMER_KEY];
+            this.TimesUsed = (int) data[TIMES_USED_KEY];
         }
 
         public virtual void TickCooldown(int value = 1)

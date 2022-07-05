@@ -110,6 +110,7 @@ namespace ATimeGoneBy.scripts.tools
                 true, 
                 true);
 
+            this.TimesUsed++;
             this.CooldownTimer = this.UsageCooldown;
             AABB area = new AABB
             {

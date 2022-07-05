@@ -15,7 +15,7 @@ namespace ATimeGoneBy.scripts.digging
         protected DigMap DigMap { get; set; }
 
         protected Vector2 MousePosition { get; set; }
-        protected bool CastRay { get; set; }
+        public bool CastRay { get; protected set; }
 
         public override void _Ready()
         {

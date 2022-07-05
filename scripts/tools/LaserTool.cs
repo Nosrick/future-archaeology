@@ -99,7 +99,8 @@ namespace ATimeGoneBy.scripts.tools
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
+            
+            this.TimesUsed++;
             this.CooldownTimer = this.UsageCooldown;
 
             return box;

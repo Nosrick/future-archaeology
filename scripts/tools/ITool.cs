@@ -10,6 +10,8 @@ namespace ATimeGoneBy.scripts.tools
         int Cost { get; }
         int UsageCooldown { get; }
         int CooldownTimer { get; }
+        
+        int TimesUsed { get; }
 
         bool IsUsable();
 

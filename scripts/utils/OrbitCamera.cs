@@ -1,3 +1,4 @@
+using ATimeGoneBy.scripts.digging;
 using ATimeGoneBy.scripts.options;
 using Godot;
 
@@ -28,6 +29,8 @@ namespace ATimeGoneBy.scripts.utils
         public bool Rotating { get; protected set; }
         public bool Panning { get; protected set; }
         public bool Zooming { get; protected set; }
+        
+        public DigPicker DigPicker { get; protected set; }
 
         protected int XRotationDirection = 1;
         protected int YRotationDirection = 1;
@@ -41,6 +44,8 @@ namespace ATimeGoneBy.scripts.utils
 
             this.RotationDelta = this.Transform.basis.GetEuler();
             this.PanningDelta = Vector3.Zero;
+
+            this.DigPicker = this.GetNode<DigPicker>("RayCast");
 
             if (target is Spatial spatial)
             {

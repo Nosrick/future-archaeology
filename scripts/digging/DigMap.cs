@@ -20,6 +20,8 @@ namespace ATimeGoneBy.scripts.digging
         
         public AABB Area { get; protected set; }
 
+        public bool LevelTouched => this.DigItems.Count != this.ObjectsToGenerate;
+
         public int[] ValidCells { get; protected set; }
         public const int BARE_CUBE = 0;
         public const int HALF_CUBE = 1;
@@ -235,6 +237,19 @@ namespace ATimeGoneBy.scripts.digging
                     this.CheckObject(item);
                 }
             }
+        }
+
+        public bool IsAnyUncovered()
+        {
+            foreach (DigItem item in this.DigItems)
+            {
+                if (item.Uncovered)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool CheckObject(DigItem item)

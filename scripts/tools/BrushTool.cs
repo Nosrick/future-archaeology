@@ -24,6 +24,8 @@ namespace ATimeGoneBy.scripts.tools
         {
             GlobalConstants.GameManager.DiggingSpace.DamageCell(hit, 1);
 
+            this.TimesUsed++;
+
             return new AABB
             {
                 Position = hit.ToVector3(),

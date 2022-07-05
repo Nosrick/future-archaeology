@@ -76,6 +76,7 @@ namespace ATimeGoneBy.scripts.tools
                 digSite.DamageCell(tile, Damage);
             }
 
+            this.TimesUsed++;
             this.CooldownTimer = this.UsageCooldown;
             return digSite.Area;
         }
