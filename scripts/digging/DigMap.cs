@@ -15,9 +15,9 @@ namespace ATimeGoneBy.scripts.digging
         protected int Width { get; set; }
         protected int Height { get; set; }
         protected int Depth { get; set; }
-        
+
         protected int ObjectsToGenerate { get; set; }
-        
+
         public AABB Area { get; protected set; }
 
         public bool LevelTouched => this.DigItems.Count != this.ObjectsToGenerate;
@@ -44,7 +44,7 @@ namespace ATimeGoneBy.scripts.digging
 
         protected Queue<Vector3Int> AreaQueue;
         protected bool Flashing;
-        
+
         [Export] protected int PointsPerFrame = 500;
 
         public override void _Ready()
@@ -86,7 +86,7 @@ namespace ATimeGoneBy.scripts.digging
                 Position = new Vector3(-this.Width, -this.Height, -this.Depth),
                 End = new Vector3(this.Width, this.Height, this.Depth)
             };
-            
+
             this.SetProcess(false);
             this.SetPhysicsProcess(false);
             this.Clear();
@@ -117,7 +117,7 @@ namespace ATimeGoneBy.scripts.digging
                     {
                         break;
                     }
-                    
+
                     Vector3Int point = this.AreaQueue.Dequeue();
                     if (this.Flashing)
                     {
@@ -137,21 +137,11 @@ namespace ATimeGoneBy.scripts.digging
 
             this.CreateObjects();
 
-            bool loop = true;
-            while (loop)
+            foreach (DigItem item in this.DigItems)
             {
-                loop = false;
-                foreach (DigItem item in this.DigItems)
+                if (!item.IsInsideTree())
                 {
-                    if (!item.IsInsideTree())
-                    {
-                        loop = true;
-                    }
-                }
-
-                if (loop)
-                {
-                    await this.ToSignal(this.GetTree(), "idle_frame");
+                    await this.ToSignal(item, "ready");
                 }
             }
 
@@ -211,9 +201,8 @@ namespace ATimeGoneBy.scripts.digging
             foreach (DigItem item in this.DigItems)
             {
                 AABB aabb = item.ObjectMesh.GetTransformedAabb();
-                Vector3Int begin, end;
-                begin = new Vector3Int(aabb.Position);
-                end = new Vector3Int(aabb.End);
+                Vector3Int begin = new Vector3Int(aabb.Position);
+                Vector3Int end = new Vector3Int(aabb.End);
 
                 for (int x = begin.x + 1; x < end.x - 1; x++)
                 {
@@ -260,9 +249,10 @@ namespace ATimeGoneBy.scripts.digging
                 {
                     item.MarkMeCovered();
                 }
+
                 return false;
             }
-            
+
             item.MarkMeUncovered();
             return true;
         }
@@ -401,9 +391,10 @@ namespace ATimeGoneBy.scripts.digging
                 {
                     cell = Mathf.Max(cell - damage, EMPTY_CELL);
                 }
+
                 this.SetCellItem(x, y, z, cell);
             }
-            
+
             bool valid = this.IsValid(new Vector3Int(x, y, z));
             if (!valid)
             {
@@ -432,7 +423,7 @@ namespace ATimeGoneBy.scripts.digging
             this.SetShaderParams(axis, axisDir, lengthInUnits, duration);
 
             this.Flashing = true;
-            
+
             Vector3Int layerEnd = new Vector3Int();
 
             switch (axis)
@@ -449,7 +440,7 @@ namespace ATimeGoneBy.scripts.digging
                     layerEnd = new Vector3Int(end.x, end.y, start.z);
                     break;
             }
-            
+
             this.QueueAreaForProcessing(start, layerEnd, axis, axisDir, lengthInUnits, includeItems);
 
             if (includeItems)
@@ -478,11 +469,11 @@ namespace ATimeGoneBy.scripts.digging
         }
 
         protected void QueueAreaForProcessing(
-            Vector3Int start, 
-            Vector3Int end, 
-            Vector3Int.Axis axis, 
-            int stepDir, 
-            int remaining, 
+            Vector3Int start,
+            Vector3Int end,
+            Vector3Int.Axis axis,
+            int stepDir,
+            int remaining,
             bool includeItems = false)
         {
             while (true)
