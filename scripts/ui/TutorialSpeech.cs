@@ -86,7 +86,11 @@ public class TutorialSpeech : Control
         if (inputEvent is InputEventMouseButton mouseButton
             && Enum.TryParse(mouseButton.ButtonIndex.ToString(), out buttonEnum))
         {
-            return buttonEnum.ToString();
+            if (buttonEnum == ButtonList.MaskMiddle)
+            {
+                return "WheelUp";
+            }
+            return Enum.GetName(typeof(ButtonList), buttonEnum);
         }
 
         if (inputEvent is InputEventJoypadButton joypadButton
