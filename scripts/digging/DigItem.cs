@@ -49,6 +49,7 @@ namespace ATimeGoneBy.scripts.digging
 
             this.OutlineMaterial = GD.Load<ShaderMaterial>("assets/shaders/outline-material.tres");
             this.FlashMaterial = GD.Load<ShaderMaterial>("assets/shaders/flash-item-material.tres");
+            this.SurfaceCount = this.ObjectMesh.Mesh.GetSurfaceCount();
 
             this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
             this.MyMaterial = this.ObjectMesh.Mesh.SurfaceGetMaterial(0);
@@ -200,7 +201,10 @@ namespace ATimeGoneBy.scripts.digging
 
             this.MaterialPath = data["material"] as string;
             this.MyMaterial = GD.Load<Material>(this.MaterialPath).Duplicate() as Material;
-            this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+            for (int i = 0; i < this.SurfaceCount; i++)
+            {
+                this.ObjectMesh.Mesh?.SurfaceSetMaterial(i, this.MyMaterial);
+            }
 
             this.Scale = (Vector3) data["scale"];
             this.Rotation = (Vector3) data["rotation"];
