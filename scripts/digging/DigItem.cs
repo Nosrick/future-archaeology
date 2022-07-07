@@ -21,6 +21,8 @@ namespace ATimeGoneBy.scripts.digging
         
         protected bool PathsRetrieved { get; set; }
         
+        protected int SurfaceCount { get; set; }
+        
         public bool Uncovered { get; protected set; }
         
         public bool Flashing { get; protected set; }
@@ -65,7 +67,10 @@ namespace ATimeGoneBy.scripts.digging
         {
             this.ObjectMesh.Mesh = this.ObjectMesh.Mesh.Duplicate() as Mesh;
             this.MyMaterial = this.MyMaterial.Duplicate() as Material;
-            this.ObjectMesh.Mesh?.SurfaceSetMaterial(0, this.MyMaterial);
+            for (int i = 0; i < this.SurfaceCount; i++)
+            {
+                this.ObjectMesh.Mesh?.SurfaceSetMaterial(i, this.MyMaterial);
+            }
         }
 
         public void MarkMeCovered()
@@ -76,7 +81,10 @@ namespace ATimeGoneBy.scripts.digging
             {
                 this.Glowing = false;
                 this.MyMaterial.NextPass = null;
-                this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+                for (int i = 0; i < this.SurfaceCount; i++)
+                {
+                    this.ObjectMesh.Mesh.SurfaceSetMaterial(i, this.MyMaterial);
+                }
             }
         }
 
@@ -88,7 +96,10 @@ namespace ATimeGoneBy.scripts.digging
             {
                 this.Glowing = true;
                 this.MyMaterial.NextPass = this.OutlineMaterial;
-                this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+                for (int i = 0; i < this.SurfaceCount; i++)
+                {
+                    this.ObjectMesh.Mesh.SurfaceSetMaterial(i, this.MyMaterial);
+                }
             }
         }
 
@@ -101,7 +112,10 @@ namespace ATimeGoneBy.scripts.digging
                 this.FlashMaterial.SetShaderParam("axisIndex", GD.Randi() % 3);
                 this.FlashMaterial.SetShaderParam("axisDir", RandomUtil.PosNegCoinFlip());
                 this.MyMaterial.NextPass = this.FlashMaterial;
-                this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+                for (int i = 0; i < this.SurfaceCount; i++)
+                {
+                    this.ObjectMesh.Mesh.SurfaceSetMaterial(i, this.MyMaterial);
+                }
             }
         }
 
@@ -114,7 +128,10 @@ namespace ATimeGoneBy.scripts.digging
                 this.FlashMaterial.SetShaderParam("axisIndex", 0);
                 this.FlashMaterial.SetShaderParam("axisDir", 0);
                 this.MyMaterial.NextPass = null;
-                this.ObjectMesh.Mesh.SurfaceSetMaterial(0, this.MyMaterial);
+                for (int i = 0; i < this.SurfaceCount; i++)
+                {
+                    this.ObjectMesh.Mesh.SurfaceSetMaterial(i, this.MyMaterial);
+                }
             }
         }
 
@@ -130,8 +147,12 @@ namespace ATimeGoneBy.scripts.digging
             if (this.IsInsideTree())
             {
                 this.ObjectMesh.Mesh = (ArrayMesh) mesh.Duplicate();
+                this.SurfaceCount = this.ObjectMesh.Mesh.GetSurfaceCount();
                 this.MyMaterial = (Material) material.Duplicate();
-                this.ObjectMesh.SetSurfaceMaterial(0, this.MyMaterial);
+                for (int i = 0; i < this.SurfaceCount; i++)
+                {
+                    this.ObjectMesh.Mesh.SurfaceSetMaterial(i, this.MyMaterial);
+                }
                 this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
                 return;
             }
