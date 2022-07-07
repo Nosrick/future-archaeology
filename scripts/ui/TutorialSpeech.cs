@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using ATimeGoneBy.scripts;
 using ATimeGoneBy.scripts.tools;
 using ATimeGoneBy.scripts.utils;
@@ -89,6 +88,11 @@ public class TutorialSpeech : Control
             if (buttonEnum == ButtonList.MaskMiddle)
             {
                 return "WheelUp";
+            }
+
+            if (buttonEnum is ButtonList.Left or ButtonList.Right or ButtonList.Middle)
+            {
+                return Enum.GetName(typeof(ButtonList), buttonEnum) + " " + this.Tr("controls.mouse");
             }
             return Enum.GetName(typeof(ButtonList), buttonEnum);
         }
