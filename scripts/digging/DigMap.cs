@@ -32,6 +32,8 @@ namespace ATimeGoneBy.scripts.digging
 
         protected PackedScene DiggingObjectScene { get; set; }
 
+        protected List<Tuple<MeshInstance, Material>> ItemsValidForLevel;
+
         protected List<DigItem> DigItems;
 
         protected Random Random;
@@ -80,6 +82,8 @@ namespace ATimeGoneBy.scripts.digging
             this.Depth = dimensions.z;
 
             this.ObjectsToGenerate = numObjects;
+
+            this.ItemsValidForLevel = GlobalConstants.GameManager.GetItemsForSiteSize(dimensions);
 
             this.Area = new AABB
             {
@@ -147,7 +151,10 @@ namespace ATimeGoneBy.scripts.digging
 
             this.PlaceObjects();
 
-            await this.ToSignal(this.GetTree(), "idle_frame");
+            while (this.DigItems.Last().ObjectMesh.IsInsideTree() == false)
+            {
+                await this.ToSignal(this.GetTree(), "idle_frame");
+            }
 
             this.RemoveOccludedTiles();
 
@@ -167,7 +174,8 @@ namespace ATimeGoneBy.scripts.digging
                 this.DigItems.Add(item);
                 this.AddChild(item);
 
-                item.AssignObject(GlobalConstants.GameManager.Items.GetRandom(), 100);
+                var itemTuple = this.ItemsValidForLevel.GetRandom();
+                item.AssignObject(itemTuple.Item1, itemTuple.Item2, 100);
             }
         }
 
@@ -200,6 +208,12 @@ namespace ATimeGoneBy.scripts.digging
         {
             foreach (DigItem item in this.DigItems)
             {
+                if (item.ObjectMesh.IsInsideTree() == false)
+                {
+                    GD.PrintErr("ITEM NOT IN TREE");
+                    continue;
+                }
+                
                 AABB aabb = item.ObjectMesh.GetTransformedAabb();
                 Vector3Int begin = new Vector3Int(aabb.Position);
                 Vector3Int end = new Vector3Int(aabb.End);

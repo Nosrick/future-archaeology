@@ -16,7 +16,7 @@ namespace ATimeGoneBy.scripts
 
         public IDictionary<string, ITool> ToolBox { get; protected set; }
 
-        public List<Tuple<ArrayMesh, Material>> Items { get; protected set; }
+        public List<Tuple<MeshInstance, Material>> Items { get; protected set; }
 
         protected PackedScene PauseMenuPackedScene { get; set; }
         protected PauseMenu PauseMenuScreen { get; set; }
@@ -73,7 +73,7 @@ namespace ATimeGoneBy.scripts
 
         public override void _Ready()
         {
-            this.Items = new List<Tuple<ArrayMesh, Material>>();
+            this.Items = new List<Tuple<MeshInstance, Material>>();
 
             List<string> files = new List<string>();
             Directory itemDir = new Directory();
@@ -83,7 +83,7 @@ namespace ATimeGoneBy.scripts
                 string file = itemDir.GetNext();
                 while (file != string.Empty)
                 {
-                    if (file.EndsWith(".tres"))
+                    if (file.EndsWith(".tscn"))
                     {
                         files.Add(file);
                     }
@@ -93,12 +93,13 @@ namespace ATimeGoneBy.scripts
 
                 foreach (string f in files)
                 {
-                    ArrayMesh mesh = GD.Load(ItemMeshPaths + "/" + f) as ArrayMesh;
-                    Material material = GD.Load(ItemMaterialPaths + "/" + f) as Material;
+                    MeshInstance mesh = GD.Load<PackedScene>(ItemMeshPaths + "/" + f).Instance<MeshInstance>();
+                    string materialFile = f.Substring(0, f.Length - 5) + ".tres";
+                    Material material = GD.Load<Material>(ItemMaterialPaths + "/" + materialFile);
                     if (mesh is null == false
                         && material is null == false)
                     {
-                        this.Items.Add(new Tuple<ArrayMesh, Material>(mesh, material));
+                        this.Items.Add(new Tuple<MeshInstance, Material>(mesh, material));
                     }
                 }
             }
@@ -166,6 +167,27 @@ namespace ATimeGoneBy.scripts
             }
 
             GlobalConstants.GameManager = this;
+        }
+
+        public List<Tuple<MeshInstance, Material>> GetItemsForSiteSize(Vector3Int size)
+        {
+            var items = new List<Tuple<MeshInstance, Material>>();
+
+            foreach (var item in this.Items)
+            {
+                AABB box = item.Item1.Mesh.GetAabb();
+
+                if (box.Size.x > size.x
+                    || box.Size.y > size.y
+                    || box.Size.z > size.z)
+                {
+                    continue;
+                }
+
+                items.Add(item);
+            }
+
+            return items;
         }
 
         public override void _Input(InputEvent @event)
@@ -350,7 +372,7 @@ namespace ATimeGoneBy.scripts
                 return;
             }
             
-            this.DiggingSpace.GenerateDigSite(new Vector3Int(3, 3, 3), 4);
+            this.DiggingSpace.GenerateDigSite(new Vector3Int(4), 4);
         }
 
         public void RunTutorial()
