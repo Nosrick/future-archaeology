@@ -215,17 +215,24 @@ namespace ATimeGoneBy.scripts.digging
                 }
                 
                 AABB aabb = item.ObjectMesh.GetTransformedAabb();
-                Vector3Int begin = new Vector3Int(aabb.Position);
+                Vector3Int begin = new Vector3Int(
+                    Mathf.RoundToInt(aabb.Position.x), 
+                    Mathf.RoundToInt(aabb.Position.y), 
+                    Mathf.RoundToInt(aabb.Position.z));
                 Vector3Int end = new Vector3Int(
-                    Mathf.CeilToInt(aabb.End.x), 
-                    Mathf.CeilToInt(aabb.End.y), 
-                    Mathf.CeilToInt(aabb.End.z));
+                    Mathf.RoundToInt(aabb.End.x), 
+                    Mathf.RoundToInt(aabb.End.y), 
+                    Mathf.RoundToInt(aabb.End.z));
 
-                for (int x = begin.x + 1; x < end.x - 1; x++)
+                int stepX = Mathf.Sign(end.x - begin.x);
+                int stepY = Mathf.Sign(end.y - begin.y);
+                int stepZ = Mathf.Sign(end.z - begin.z);
+
+                for (int x = begin.x + stepX; x < end.x - stepX; x++)
                 {
-                    for (int y = begin.y + 1; y < end.y - 1; y++)
+                    for (int y = begin.y + stepY; y < end.y - stepY; y++)
                     {
-                        for (int z = begin.z + 1; z < end.z - 1; z++)
+                        for (int z = begin.z + stepZ; z < end.z - stepZ; z++)
                         {
                             this.SetCellItem(x, y, z, EMPTY_CELL);
                         }
