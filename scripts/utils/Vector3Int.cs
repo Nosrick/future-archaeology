@@ -45,6 +45,13 @@ namespace ATimeGoneBy.scripts.utils
             this.z = Mathf.FloorToInt(z);
         }
 
+        public Vector3Int(int all)
+        {
+            this.x = all;
+            this.y = all;
+            this.z = all;
+        }
+
         public Vector3Int(Vector3 vec)
         {
             this.x = Mathf.FloorToInt(vec.x);
@@ -87,6 +94,11 @@ namespace ATimeGoneBy.scripts.utils
         public static Vector3Int operator *(Vector3Int left, int right)
         {
             return new Vector3Int(left.x * right, left.y * right, left.z * right);
+        }
+
+        public static Vector3Int operator /(Vector3Int left, int right)
+        {
+            return new Vector3Int(left.x / right, left.y / right, left.z / right);
         }
 
         public static bool operator ==(Vector3Int left, Vector3Int right)
