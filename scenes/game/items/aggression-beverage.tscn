@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://assets/meshes/items/aggression-beverage.obj" type="ArrayMesh" id=1]
+
+[node name="aggression-beverage" type="MeshInstance"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -60.8717, 63.421, -56.304 )
+mesh = ExtResource( 1 )
+skeleton = NodePath("../ageless-nutrition")
+material/0 = null

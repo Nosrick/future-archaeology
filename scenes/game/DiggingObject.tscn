@@ -1,10 +1,6 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://scenes/game/items/atari-cartridge.tres" type="ArrayMesh" id=1]
 [ext_resource path="res://scripts/digging/DigItem.cs" type="Script" id=2]
-
-[sub_resource type="ConvexPolygonShape" id=1]
-points = PoolVector3Array( -1.06681, -1.2, 0, -1.00019, -1.2, -0.32, -1.00019, -1.2, 0.32, -1.06681, 1.2, 0, 0.999981, -1.2, -0.32, -1.00019, 1.2, -0.32, 0.999981, -1.2, 0.32, -1.00019, 1.2, 0.32, 1.06681, -1.2, 0, 0.999981, 1.2, -0.32, 0.999981, 1.2, 0.32, 1.06681, 1.2, 0 )
 
 [sub_resource type="Animation" id=4]
 resource_name = "PickupBounce"
@@ -46,12 +42,9 @@ script = ExtResource( 2 )
 CashValue = 100
 
 [node name="ObjectMesh" type="MeshInstance" parent="."]
-mesh = ExtResource( 1 )
 skeleton = NodePath("../..")
-material/0 = null
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-shape = SubResource( 1 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 playback_speed = 2.0

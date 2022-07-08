@@ -37,8 +37,6 @@ namespace ATimeGoneBy.scripts.digging
             base._Ready();
 
             this.GetStuff();
-            this.GetPaths();
-            this.GetDuplicates();
         }
 
         protected void GetStuff()
@@ -49,10 +47,6 @@ namespace ATimeGoneBy.scripts.digging
 
             this.OutlineMaterial = GD.Load<ShaderMaterial>("assets/shaders/outline-material.tres");
             this.FlashMaterial = GD.Load<ShaderMaterial>("assets/shaders/flash-item-material.tres");
-            this.SurfaceCount = this.ObjectMesh.Mesh.GetSurfaceCount();
-
-            this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
-            this.MyMaterial = this.ObjectMesh.Mesh.SurfaceGetMaterial(0);
         }
 
         protected void GetPaths()
@@ -70,7 +64,7 @@ namespace ATimeGoneBy.scripts.digging
             this.MyMaterial = this.MyMaterial.Duplicate() as Material;
             for (int i = 0; i < this.SurfaceCount; i++)
             {
-                this.ObjectMesh.Mesh?.SurfaceSetMaterial(i, this.MyMaterial);
+                this.ObjectMesh.SetSurfaceMaterial(i, this.MyMaterial);
             }
         }
 
@@ -84,7 +78,7 @@ namespace ATimeGoneBy.scripts.digging
                 this.MyMaterial.NextPass = null;
                 for (int i = 0; i < this.SurfaceCount; i++)
                 {
-                    this.ObjectMesh.Mesh.SurfaceSetMaterial(i, this.MyMaterial);
+                    this.ObjectMesh.SetSurfaceMaterial(i, this.MyMaterial);
                 }
             }
         }
@@ -99,7 +93,7 @@ namespace ATimeGoneBy.scripts.digging
                 this.MyMaterial.NextPass = this.OutlineMaterial;
                 for (int i = 0; i < this.SurfaceCount; i++)
                 {
-                    this.ObjectMesh.Mesh.SurfaceSetMaterial(i, this.MyMaterial);
+                    this.ObjectMesh.SetSurfaceMaterial(i, this.MyMaterial);
                 }
             }
         }
@@ -115,7 +109,7 @@ namespace ATimeGoneBy.scripts.digging
                 this.MyMaterial.NextPass = this.FlashMaterial;
                 for (int i = 0; i < this.SurfaceCount; i++)
                 {
-                    this.ObjectMesh.Mesh.SurfaceSetMaterial(i, this.MyMaterial);
+                    this.ObjectMesh.SetSurfaceMaterial(i, this.MyMaterial);
                 }
             }
         }
@@ -131,7 +125,7 @@ namespace ATimeGoneBy.scripts.digging
                 this.MyMaterial.NextPass = null;
                 for (int i = 0; i < this.SurfaceCount; i++)
                 {
-                    this.ObjectMesh.Mesh.SurfaceSetMaterial(i, this.MyMaterial);
+                    this.ObjectMesh.SetSurfaceMaterial(i, this.MyMaterial);
                 }
             }
         }
@@ -141,32 +135,26 @@ namespace ATimeGoneBy.scripts.digging
             this.MyAnimationPlayer.Play(PICKUP_ANIM);
         }
 
-        public void AssignObject(ArrayMesh mesh, Material material, int cashValue, bool deferred = false)
+        public void AssignObject(MeshInstance mesh, Material material, int cashValue, bool deferred = false)
         {
             this.CashValue = cashValue;
 
             if (this.IsInsideTree())
             {
-                this.ObjectMesh.Mesh = (ArrayMesh) mesh.Duplicate();
-                this.SurfaceCount = this.ObjectMesh.Mesh.GetSurfaceCount();
+                this.ObjectMesh.Mesh = (Mesh) mesh.Mesh.Duplicate();
+                this.SurfaceCount = this.ObjectMesh.GetSurfaceMaterialCount();
                 this.MyMaterial = (Material) material.Duplicate();
-                for (int i = 0; i < this.SurfaceCount; i++)
-                {
-                    this.ObjectMesh.Mesh.SurfaceSetMaterial(i, this.MyMaterial);
-                }
                 this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
+                
+                this.GetPaths();
+                this.GetDuplicates();
                 return;
             }
 
             if (!deferred)
             {
-                this.CallDeferred(nameof(this.AssignObject), mesh, cashValue, true);
+                this.CallDeferred(nameof(this.AssignObject), mesh, material, cashValue, true);
             }
-        }
-
-        public void AssignObject(Tuple<ArrayMesh, Material> itemTuple, int cashValue, bool deferred = false)
-        {
-            this.AssignObject(itemTuple.Item1, itemTuple.Item2, cashValue, deferred);
         }
 
         public Dictionary Save()
@@ -203,7 +191,7 @@ namespace ATimeGoneBy.scripts.digging
             this.MyMaterial = GD.Load<Material>(this.MaterialPath).Duplicate() as Material;
             for (int i = 0; i < this.SurfaceCount; i++)
             {
-                this.ObjectMesh.Mesh?.SurfaceSetMaterial(i, this.MyMaterial);
+                this.ObjectMesh.SetSurfaceMaterial(i, this.MyMaterial);
             }
 
             this.Scale = (Vector3) data["scale"];

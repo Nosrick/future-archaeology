@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/materials/items/atari-cartridge.tres" type="Material" id=1]
+[ext_resource path="res://assets/meshes/items/atari-cartridge.obj" type="ArrayMesh" id=2]
+
+[node name="atari-cartridge" type="MeshInstance"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -62.4003, 61.3623, -53.5573 )
+mesh = ExtResource( 2 )
+skeleton = NodePath("../aggression-beverage")
+material/0 = ExtResource( 1 )
