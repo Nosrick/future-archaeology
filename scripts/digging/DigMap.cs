@@ -216,7 +216,10 @@ namespace ATimeGoneBy.scripts.digging
                 
                 AABB aabb = item.ObjectMesh.GetTransformedAabb();
                 Vector3Int begin = new Vector3Int(aabb.Position);
-                Vector3Int end = new Vector3Int(aabb.End);
+                Vector3Int end = new Vector3Int(
+                    Mathf.CeilToInt(aabb.End.x), 
+                    Mathf.CeilToInt(aabb.End.y), 
+                    Mathf.CeilToInt(aabb.End.z));
 
                 for (int x = begin.x + 1; x < end.x - 1; x++)
                 {
