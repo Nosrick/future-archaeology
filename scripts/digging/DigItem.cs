@@ -49,15 +49,6 @@ namespace ATimeGoneBy.scripts.digging
             this.FlashMaterial = GD.Load<ShaderMaterial>("assets/shaders/flash-item-material.tres");
         }
 
-        protected void GetPaths()
-        {
-            if (this.PathsRetrieved == false)
-            {
-                this.MeshPath = this.ObjectMesh.Mesh.ResourcePath;
-                this.MaterialPath = this.MyMaterial.ResourcePath;
-            }
-        }
-
         protected void GetDuplicates()
         {
             this.ObjectMesh.Mesh = this.ObjectMesh.Mesh.Duplicate() as Mesh;
@@ -141,12 +132,51 @@ namespace ATimeGoneBy.scripts.digging
 
             if (this.IsInsideTree())
             {
+                this.Name = mesh.Name;
+                
+                this.MeshPath = mesh.Filename;
+                this.MaterialPath = material.ResourcePath;
+                
                 this.ObjectMesh.Mesh = (Mesh) mesh.Mesh.Duplicate();
                 this.SurfaceCount = this.ObjectMesh.GetSurfaceMaterialCount();
                 this.MyMaterial = (Material) material.Duplicate();
                 this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
                 
-                this.GetPaths();
+                this.GetDuplicates();
+                return;
+            }
+
+            if (!deferred)
+            {
+                this.CallDeferred(nameof(this.AssignObject), mesh, material, cashValue, true);
+            }
+        }
+
+        protected void AssignObject(
+            MeshInstance mesh,
+            Material material,
+            string meshPath,
+            string materialPath,
+            int cashValue,
+            bool deferred = false)
+        {
+            this.CashValue = cashValue;
+
+            if (this.IsInsideTree())
+            {
+                this.Name = mesh.Name;
+                
+                this.MeshPath = mesh.Filename;
+                this.MaterialPath = material.ResourcePath;
+                
+                this.ObjectMesh.Mesh = (Mesh) mesh.Mesh.Duplicate();
+                this.SurfaceCount = this.ObjectMesh.GetSurfaceMaterialCount();
+                this.MyMaterial = (Material) material.Duplicate();
+                this.CollisionShape.Shape = this.ObjectMesh.Mesh.CreateConvexShape();
+                
+                this.MeshPath = meshPath;
+                this.MaterialPath = materialPath;
+                
                 this.GetDuplicates();
                 return;
             }
@@ -179,31 +209,28 @@ namespace ATimeGoneBy.scripts.digging
             }
 
             this.GetStuff();
-            this.MeshPath = data["mesh"] as string;
-            this.ObjectMesh.Mesh = GD.Load<Mesh>(this.MeshPath).Duplicate() as Mesh;
+            string meshPath = data["mesh"] as string;
+            MeshInstance myMesh = GD.Load<PackedScene>(meshPath).Instance<MeshInstance>().Duplicate() as MeshInstance;
 
             if (!data.Contains("material"))
             {
                 return false;
             }
 
-            this.MaterialPath = data["material"] as string;
-            this.MyMaterial = GD.Load<Material>(this.MaterialPath).Duplicate() as Material;
-            for (int i = 0; i < this.SurfaceCount; i++)
-            {
-                this.ObjectMesh.SetSurfaceMaterial(i, this.MyMaterial);
-            }
-
-            this.Scale = (Vector3) data["scale"];
-            this.Rotation = (Vector3) data["rotation"];
-            this.Translation = (Vector3) data["translation"];
+            string materialPath = data["material"] as string;
+            Material material = GD.Load<Material>(materialPath).Duplicate() as Material;
 
             if (!data.Contains("value"))
             {
                 return false;
             }
+            int cashValue = (int) data["value"];
+            
+            this.AssignObject(myMesh, material, meshPath, materialPath, cashValue);
 
-            this.CashValue = (int) data["value"];
+            this.Scale = (Vector3) data["scale"];
+            this.Rotation = (Vector3) data["rotation"];
+            this.Translation = (Vector3) data["translation"];
             this.PathsRetrieved = true;
 
             return true;
