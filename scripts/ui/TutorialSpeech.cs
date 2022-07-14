@@ -10,9 +10,11 @@ public class TutorialSpeech : Control
 {
     [Export] protected NodePath SpeakerLabelPath;
     [Export] protected NodePath SpeechLabelPath;
+    [Export] protected NodePath ContinueArrowPath;
 
     protected Label SpeakerLabel;
     protected RichTextLabel SpeechLabel;
+    protected Control ContinueArrow;
 
     protected int Index;
 
@@ -28,6 +30,7 @@ public class TutorialSpeech : Control
     {
         this.SpeakerLabel = this.GetNode<Label>(this.SpeakerLabelPath);
         this.SpeechLabel = this.GetNode<RichTextLabel>(this.SpeechLabelPath);
+        this.ContinueArrow = this.GetNode<Control>(this.ContinueArrowPath);
 
         this.TutorialText = new List<string>();
 
@@ -65,6 +68,8 @@ public class TutorialSpeech : Control
             }
 
             this.SpeechLabel.BbcodeText = text;
+
+            this.ContinueArrow.Visible = !this.CheckIfActionRequired();
         }
         else
         {

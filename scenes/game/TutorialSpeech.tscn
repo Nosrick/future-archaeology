@@ -21,6 +21,7 @@ custom_constants/separation = 0
 script = ExtResource( 1 )
 SpeakerLabelPath = NodePath("SpeakerContainer/SpeakerLabel")
 SpeechLabelPath = NodePath("BackgroundContainer/TextContainer/SpeechRichText")
+ContinueArrowPath = NodePath("BackgroundContainer/ContinueContainer")
 
 [node name="SpeakerContainer" type="Control" parent="SpeechContainer"]
 margin_right = 716.0
