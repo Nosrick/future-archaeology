@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scripts/ui/TutorialSpeech.cs" type="Script" id=1]
 [ext_resource path="res://assets/textures/ui/background-tile.png" type="Texture" id=2]
 [ext_resource path="res://assets/themes/basic-theme.tres" type="Theme" id=3]
 [ext_resource path="res://assets/textures/ui/draw.png" type="Texture" id=4]
+[ext_resource path="res://assets/textures/ui/text-continue.png" type="Texture" id=5]
 
 [node name="TutorialSpeech" type="Control"]
 anchor_right = 1.0
@@ -18,17 +19,17 @@ anchor_bottom = 1.0
 mouse_filter = 2
 custom_constants/separation = 0
 script = ExtResource( 1 )
-SpeakerLabelPath = NodePath("SpeechContainer/SpeakerLabel")
+SpeakerLabelPath = NodePath("SpeakerContainer/SpeakerLabel")
 SpeechLabelPath = NodePath("BackgroundContainer/TextContainer/SpeechRichText")
 
-[node name="SpeechContainer" type="Control" parent="SpeechContainer"]
+[node name="SpeakerContainer" type="Control" parent="SpeechContainer"]
 margin_right = 716.0
 margin_bottom = 48.0
 rect_min_size = Vector2( 0, 48 )
 mouse_filter = 2
 size_flags_horizontal = 3
 
-[node name="SpeechBackground" type="NinePatchRect" parent="SpeechContainer/SpeechContainer"]
+[node name="SpeakerBackground" type="NinePatchRect" parent="SpeechContainer/SpeakerContainer"]
 modulate = Color( 0.360784, 0.176471, 0.360784, 1 )
 anchor_right = 0.4
 anchor_bottom = 1.0
@@ -40,7 +41,7 @@ patch_margin_top = 3
 patch_margin_right = 3
 patch_margin_bottom = 3
 
-[node name="SpeakerLabel" type="Label" parent="SpeechContainer/SpeechContainer"]
+[node name="SpeakerLabel" type="Label" parent="SpeechContainer/SpeakerContainer"]
 anchor_left = 0.02
 anchor_top = 0.1
 anchor_right = 0.395
@@ -71,12 +72,14 @@ texture = ExtResource( 4 )
 patch_margin_bottom = 3
 
 [node name="TextContainer" type="Control" parent="SpeechContainer/BackgroundContainer"]
-anchor_left = 0.02
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_right = -10.0
-margin_bottom = -10.0
+anchor_left = 0.0195531
+anchor_right = 0.949721
+anchor_bottom = 0.924
+margin_bottom = -0.0440063
 mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": true
+}
 
 [node name="SpeechRichText" type="RichTextLabel" parent="SpeechContainer/BackgroundContainer/TextContainer"]
 anchor_right = 1.0
@@ -87,5 +90,26 @@ theme = ExtResource( 3 )
 bbcode_enabled = true
 bbcode_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam placerat sollicitudin neque. Proin vitae eros libero. Mauris dictum convallis justo, rutrum accumsan mi fringilla vel. Morbi hendrerit nunc dui, non cursus est vulputate eu. Suspendisse potenti. Curabitur fringilla nec diam sit amet scelerisque. Vestibulum lobortis, sem sed pharetra ullamcorper, nunc ipsum ullamcorper quam, ac rhoncus eros odio vel nunc. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."
 text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam placerat sollicitudin neque. Proin vitae eros libero. Mauris dictum convallis justo, rutrum accumsan mi fringilla vel. Morbi hendrerit nunc dui, non cursus est vulputate eu. Suspendisse potenti. Curabitur fringilla nec diam sit amet scelerisque. Vestibulum lobortis, sem sed pharetra ullamcorper, nunc ipsum ullamcorper quam, ac rhoncus eros odio vel nunc. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."
+
+[node name="ContinueContainer" type="Control" parent="SpeechContainer/BackgroundContainer"]
+anchor_left = 0.960894
+anchor_top = 0.854962
+anchor_right = 0.99162
+anchor_bottom = 0.954198
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="TextureRect" type="TextureRect" parent="SpeechContainer/BackgroundContainer/ContinueContainer"]
+anchor_left = -0.954545
+anchor_top = -1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 5 )
+expand = true
+stretch_mode = 6
+__meta__ = {
+"_edit_use_anchors_": true
+}
 
 [connection signal="gui_input" from="SpeechContainer/BackgroundContainer/TextContainer/SpeechRichText" to="SpeechContainer" method="ClickedOn"]
